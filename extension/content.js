@@ -45,24 +45,45 @@ function detectPlatform() {
 
 const ACTIVE_PLATFORM = detectPlatform();
 
+// Phase 3 (Coerción) — direct threats received. The extension scans messages
+// the user is *receiving* in chat, so both aggressor-speech ("te voy a
+// matar") and 1st-person reception ("me van a matar") need coverage in
+// case the user pastes/quotes the threat in a screenshot description.
 const PHASE3_REGEX = [
+  // Aggressor speech (typical incoming WhatsApp/Insta/Discord DM)
+  /te (voy|vamos) a (matar|tronar|levantar|desaparecer|dar piso)/i,
   /si intentas escapar te (descuartizo|matamos)/i,
-  /sabemos d(o|ó)nde vives/i,
-  /ya estás (adentro|marcado)/i,
-  /(levant(o|ó)n|tronar|dar piso|darte piso)/i,
-  /si te vas te (matamos|tronamos|damos piso)/i,
+  /si te (vas|rajas) te (matamos|tronamos|damos piso|encontramos)/i,
+  /sabemos d(o|ó)nde (vives|estudias|trabajas)/i,
+  /ya estás (adentro|marcado|en la lista)/i,
+  /(levant(o|ó)n|te tronamos|te damos piso|te ponemos en bolsa)/i,
+  /(última|ultima) oportunidad/i,
+  /ya sabes demasiado/i,
+  /te va a pesar/i,
+  // Reception (user pasted/forwarded the threat into chat)
+  /me (van|iban) a (matar|tronar|levantar|desaparecer|dar piso|chingar)/i,
+  /me amenaz(aron|an) (de muerte|con matarme)/i,
+  /si no (respondo|contesto|voy|pago) me van a/i,
 ];
 
+// Phase 4 (Explotación) — operative orders, sextortion, money requests.
 const PHASE4_REGEX = [
-  /(manda|env(í|i)a) (fotos|videos|nudes|pack)/i,
-  /(deposita|transfiere) \$?\s?\d+/i,
+  // Sextortion classics
+  /(manda|env(í|i)a|m(á|a)ndame) (fotos|videos|nudes|pack)/i,
+  /(deposita|transfiere|p(á|a)same) \$?\s?\d+/i,
   /si no pagas (las|tus) (fotos|nudes|videos)/i,
   /(las|tus) (fotos|nudes) (van|las mando) a/i,
+  // Narco-recruitment operative orders
   /no traigas celular/i,
-  // Roblox/voice-chat-style recruitment cues: gift cards, asking to leave
-  // the platform, "hablemos en discord", "pásame tu user".
+  /(ve|venga|trae) armado/i,
+  /tienes que (levantar|ejecutar|cargar piedra)/i,
+  /trae (la coca|la mota|las grapitas|la merca|la mercanc(í|i)a)/i,
+  /vas a (vender en el punto|halconear)/i,
+  /tienes que (dar piso|tronar)/i,
+  // Platform-pivot + grooming traps (Roblox / Discord / IG)
   /(gift\s?card|tarjeta de regalo|robux gratis)/i,
-  /(p(á|a)sate a|pasamos a) (discord|wpp|whatsapp|telegram|signal)/i,
+  /(p(á|a)sate a|pasamos a|m(é|e)tete a) (discord|wpp|whatsapp|telegram|signal)/i,
+  /(p(á|a)same|d(á|a)me) tu (user(name)?|cuenta|tag)/i,
 ];
 
 const COOLDOWN_MS = 5 * 60 * 1000;
@@ -116,11 +137,22 @@ function bumpHits() {
   });
 }
 
+// Bot phone number — used to build the wa.me deep link so the "Reportar al
+// bot" button opens a chat directly with the Nahual bot instead of an empty
+// WhatsApp dialog. Format: country code + national number, no '+', no spaces.
+// 5218445387404 = +52 1 844 538 7404 (Mexican mobile JID).
+const BOT_PHONE = '5218445387404';
+
 function showOverlay(phase, snippet) {
   if (overlayOpen) return;
   overlayOpen = true;
   const overlay = document.createElement('div');
   overlay.id = 'nahual-overlay';
+  const greeting =
+    phase === 'coercion'
+      ? 'Hola Nahual, recibí un mensaje con señales de coerción/amenaza. ¿Me ayudas?'
+      : 'Hola Nahual, recibí un mensaje con señales de explotación/sextorsión. ¿Me ayudas?';
+  const waLink = `https://wa.me/${BOT_PHONE}?text=${encodeURIComponent(greeting)}`;
   overlay.innerHTML = `
     <div class="nahual-card" role="dialog" aria-label="Alerta Nahual">
       <div class="nahual-header">🛡️ Nahual Shield</div>
@@ -130,7 +162,7 @@ function showOverlay(phase, snippet) {
         <p class="nahual-snippet">"${escapeHtml(snippet.slice(0, 140))}…"</p>
       </div>
       <div class="nahual-actions">
-        <a class="nahual-btn primary" href="https://wa.me/?text=${encodeURIComponent('Hola Nahual, recibí un mensaje sospechoso')}" target="_blank" rel="noopener">Reportar al bot</a>
+        <a class="nahual-btn primary" href="${waLink}" target="_blank" rel="noopener">Reportar al bot</a>
         <button class="nahual-btn secondary" id="nahual-close">Cerrar</button>
       </div>
       <div class="nahual-footer">Policía Cibernética: <strong>088</strong> · SIPINNA</div>
