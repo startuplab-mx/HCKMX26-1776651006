@@ -9,6 +9,11 @@ import axios from 'axios';
 
 const BASE_URL = (process.env.BOT_BACKEND_URL || 'http://localhost:8000').replace(/\/$/, '');
 const TIMEOUT_MS = 3000;
+// /sessions/* is a protected endpoint in production. Read NAHUAL_API_KEY from
+// the bot's env so persistence works behind the auth wall. When unset, the
+// header is empty and dev backends ignore it.
+const API_KEY = (process.env.NAHUAL_API_KEY || '').trim();
+const authHeader = API_KEY ? { 'X-API-Key': API_KEY } : {};
 
 const SESSIONS = new Map();
 const HYDRATING = new Map(); // jid -> Promise to dedupe concurrent hydrations
@@ -23,6 +28,7 @@ async function hydrate(jid) {
     try {
       const { data } = await axios.get(`${BASE_URL}/sessions/${encodeURIComponent(jid)}`, {
         timeout: TIMEOUT_MS,
+        headers: { ...authHeader },
       });
       SESSIONS.set(jid, { current_step: data.current_step, data: data.data || {} });
     } catch (err) {
@@ -62,7 +68,7 @@ function syncToBackend(jid) {
     .put(
       `${BASE_URL}/sessions/${encodeURIComponent(jid)}`,
       { current_step: s.current_step, data: s.data },
-      { timeout: TIMEOUT_MS },
+      { timeout: TIMEOUT_MS, headers: { ...authHeader } },
     )
     .catch((err) => {
       // Fire-and-forget: log and move on. Next mutation retries.
@@ -90,6 +96,9 @@ export function getSessionData(jid, key) {
 export function resetSession(jid) {
   SESSIONS.delete(jid);
   axios
-    .delete(`${BASE_URL}/sessions/${encodeURIComponent(jid)}`, { timeout: TIMEOUT_MS })
+    .delete(`${BASE_URL}/sessions/${encodeURIComponent(jid)}`, {
+      timeout: TIMEOUT_MS,
+      headers: { ...authHeader },
+    })
     .catch(() => {});
 }
