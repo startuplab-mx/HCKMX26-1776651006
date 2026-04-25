@@ -168,8 +168,6 @@ observer.observe(document.body, { childList: true, subtree: true });
 // Initial sweep so patterns already visible on load are caught too.
 for (const child of document.body.childNodes) scanNode(child);
 
-console.log(
-  '[Nahual Shield] active on',
-  location.hostname,
-  ACTIVE_PLATFORM ? `(platform=${ACTIVE_PLATFORM.name})` : '(unknown platform)',
-);
+// Privacy by design: no console output that reveals the extension is running.
+// (Earlier versions logged the active platform, which let host pages detect
+// the shield via console.* hooks. The popup UI is the only signal now.)

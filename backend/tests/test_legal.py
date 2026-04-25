@@ -179,7 +179,7 @@ def test_alert_response_includes_legal_block(tmp_path):
     with _client(tmp_path) as c:
         r = c.post(
             "/alert",
-            json={"text": "si intentas escapar te descuartizo, sabemos donde vives"},
+            json={"text": "te voy a matar, sabemos donde vives"},
         )
         body = r.json()
         assert r.status_code == 201
@@ -207,7 +207,7 @@ def test_alert_legal_endpoint_recomputes_from_storage(tmp_path):
     with _client(tmp_path) as c:
         aid = c.post(
             "/alert",
-            json={"text": "si intentas escapar te descuartizo"},
+            json={"text": "te voy a matar"},
         ).json()["id"]
         r = c.get(f"/alerts/{aid}/legal")
         body = r.json()

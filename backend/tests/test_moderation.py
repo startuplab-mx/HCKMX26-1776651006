@@ -134,7 +134,7 @@ def _client(tmp_path: Path):
 
 def test_patch_alert_updates_status(tmp_path):
     with _client(tmp_path) as c:
-        aid = c.post("/alert", json={"text": "si intentas escapar te descuartizo"}).json()["id"]
+        aid = c.post("/alert", json={"text": "te voy a matar"}).json()["id"]
         r = c.patch(f"/alerts/{aid}", json={"status": "reviewed", "reviewer": "marco"})
         assert r.status_code == 200
         assert r.json()["status"] == "reviewed"
@@ -142,14 +142,14 @@ def test_patch_alert_updates_status(tmp_path):
 
 def test_patch_rejects_invalid_status(tmp_path):
     with _client(tmp_path) as c:
-        aid = c.post("/alert", json={"text": "si intentas escapar te descuartizo"}).json()["id"]
+        aid = c.post("/alert", json={"text": "te voy a matar"}).json()["id"]
         r = c.patch(f"/alerts/{aid}", json={"status": "nonsense"})
         assert r.status_code == 422  # pydantic rejects before the endpoint runs
 
 
 def test_escalate_endpoint_persists(tmp_path):
     with _client(tmp_path) as c:
-        aid = c.post("/alert", json={"text": "si intentas escapar te descuartizo"}).json()["id"]
+        aid = c.post("/alert", json={"text": "te voy a matar"}).json()["id"]
         r = c.post(
             f"/alerts/{aid}/escalate",
             json={"destination": "088", "reason": "amenaza directa", "reviewer": "marco"},
@@ -169,8 +169,8 @@ def test_history_404_for_missing_alert(tmp_path):
 
 def test_list_alerts_status_filter(tmp_path):
     with _client(tmp_path) as c:
-        a = c.post("/alert", json={"text": "si intentas escapar te descuartizo"}).json()["id"]
-        c.post("/alert", json={"text": "si intentas escapar te descuartizo"})
+        a = c.post("/alert", json={"text": "te voy a matar"}).json()["id"]
+        c.post("/alert", json={"text": "te voy a matar"})
         c.patch(f"/alerts/{a}", json={"status": "reviewed", "reviewer": "marco"})
         reviewed = c.get("/alerts?status=reviewed").json()
         pending = c.get("/alerts?status=pending").json()
@@ -181,7 +181,7 @@ def test_list_alerts_status_filter(tmp_path):
 
 def test_stats_includes_by_status(tmp_path):
     with _client(tmp_path) as c:
-        a = c.post("/alert", json={"text": "si intentas escapar te descuartizo"}).json()["id"]
+        a = c.post("/alert", json={"text": "te voy a matar"}).json()["id"]
         c.post(f"/alerts/{a}/escalate", json={"destination": "088"})
         stats = c.get("/stats").json()
         assert "by_status" in stats

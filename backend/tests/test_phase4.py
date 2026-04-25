@@ -247,7 +247,7 @@ def test_alert_response_legal_still_present(tmp_path):
     with _client(tmp_path) as c:
         r = c.post(
             "/alert",
-            json={"text": "si intentas escapar te descuartizo", "session_id": "u5"},
+            json={"text": "te voy a matar", "session_id": "u5"},
         ).json()
         assert "legal" in r
         assert r["legal"]["urgency"] == "inmediata"
@@ -284,8 +284,8 @@ def test_explanations_from_ids_returns_specific_text():
     from classifier.heuristic import HeuristicClassifier
 
     h = HeuristicClassifier()
-    # First pattern in phase3 is "vas a ser sicario" → phase3.000
-    explanations = h.explanations_from_ids(["phase3.000"])
+    # Real-dataset id for "te voy a matar" (Marco's manifest, Apr 2026).
+    explanations = h.explanations_from_ids(["f3_001"])
     assert len(explanations) == 1
-    assert "rol criminal" in explanations[0]["what"]
+    assert "amenaza" in explanations[0]["what"]
     assert explanations[0]["type"] == "Coerción"

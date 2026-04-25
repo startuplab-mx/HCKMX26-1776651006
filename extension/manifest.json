@@ -7,11 +7,11 @@
   "content_scripts": [
     {
       "matches": [
-        "*://web.whatsapp.com/*",
-        "*://www.instagram.com/*",
-        "*://*.discord.com/*",
-        "*://www.roblox.com/*",
-        "*://*.roblox.com/*"
+        "https://web.whatsapp.com/*",
+        "https://www.instagram.com/*",
+        "https://*.discord.com/*",
+        "https://www.roblox.com/*",
+        "https://*.roblox.com/*"
       ],
       "js": ["content.js"],
       "css": ["styles.css"],

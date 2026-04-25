@@ -42,17 +42,23 @@ def _client(tmp_path: Path, *, api_key: str = ""):
 
 def test_public_endpoints_skip_auth_when_key_set(tmp_path):
     with _client(tmp_path, api_key="topsecret") as c:
-        # /health, /analyze, /alert, /contributions/stats, /transcribe→503
-        # should all respond *without* the X-API-Key header.
+        # /health, /analyze, /alert, /contributions/stats, /transcribe→503,
+        # /stats, /report/{id}, /profile/{id}, /feedback are all PUBLIC and
+        # respond *without* the X-API-Key header.
         assert c.get("/health").status_code == 200
         assert c.post("/analyze", json={"text": "hola"}).status_code == 200
-        assert c.post("/alert", json={"text": "hola"}).status_code == 201
+        aid = c.post("/alert", json={"text": "te voy a matar"}).json()["id"]
         assert c.get("/contributions/stats").status_code == 200
         # /transcribe is public-input — without GROQ_API_KEY it 503s, not 403.
         r = c.post("/transcribe", files={"file": ("a.ogg", b"\x00", "audio/ogg")})
         assert r.status_code in (400, 503)
         # /stats is also public.
         assert c.get("/stats").status_code == 200
+        # /report, /profile, /feedback are public per hackathon demo policy.
+        assert c.post(f"/report/{aid}").status_code == 200
+        assert c.get("/profile/u-public").status_code == 200
+        fb = {"feedback_type": "confirm", "pattern_ids": ["phase3.001"]}
+        assert c.post("/feedback", json=fb).status_code == 201
 
 
 def test_health_no_longer_exposes_db_path(tmp_path):
@@ -101,7 +107,7 @@ def test_patch_alert_requires_key(tmp_path):
     with _client(tmp_path, api_key="topsecret") as c:
         # Create an alert through the *public* /alert endpoint first.
         aid = c.post(
-            "/alert", json={"text": "si intentas escapar te descuartizo"}
+            "/alert", json={"text": "te voy a matar"}
         ).json()["id"]
         # PATCH without key → 403.
         r1 = c.patch(f"/alerts/{aid}", json={"status": "reviewed"})
@@ -118,7 +124,7 @@ def test_patch_alert_requires_key(tmp_path):
 def test_escalate_requires_key(tmp_path):
     with _client(tmp_path, api_key="topsecret") as c:
         aid = c.post(
-            "/alert", json={"text": "si intentas escapar te descuartizo"}
+            "/alert", json={"text": "te voy a matar"}
         ).json()["id"]
         r1 = c.post(f"/alerts/{aid}/escalate", json={"destination": "088"})
         assert r1.status_code == 403
@@ -155,30 +161,39 @@ def test_precision_endpoints_require_key(tmp_path):
         assert c.get("/precision/stats", headers=h).status_code == 200
 
 
-def test_profile_and_risk_history_require_key(tmp_path):
+def test_risk_history_requires_key_but_profile_is_public(tmp_path):
     with _client(tmp_path, api_key="topsecret") as c:
-        assert c.get("/profile/u").status_code == 403
+        # /profile/{id} is PUBLIC — pitch demo + extension overlay use it
+        # without a key. Returns 200 with status=no_data when never seen.
+        assert c.get("/profile/u").status_code == 200
+        # /risk-history/* remains protected (write/delete operator surface).
         assert c.get("/risk-history/u").status_code == 403
         assert c.delete("/risk-history/u").status_code == 403
         h = {"X-API-Key": "topsecret"}
-        assert c.get("/profile/u", headers=h).status_code == 200  # status=no_data
         assert c.get("/risk-history/u", headers=h).status_code == 200
 
 
-def test_report_requires_key(tmp_path):
+def test_report_is_public(tmp_path):
+    """PDF report is PUBLIC for demo: any alert ID can be exported.
+
+    Rationale: the alert IDs themselves are protected (/alerts requires key),
+    so to download a report you still need to know the integer id, and the
+    PDF body itself contains no PII (only hashes + categories).
+    """
     with _client(tmp_path, api_key="topsecret") as c:
-        aid = c.post("/alert", json={"text": "si intentas escapar te descuartizo"}).json()["id"]
-        assert c.post(f"/report/{aid}").status_code == 403
-        r = c.post(f"/report/{aid}", headers={"X-API-Key": "topsecret"})
+        aid = c.post("/alert", json={"text": "te voy a matar"}).json()["id"]
+        r = c.post(f"/report/{aid}")
         assert r.status_code == 200
         assert r.headers["content-type"].startswith("application/pdf")
 
 
-def test_feedback_requires_key(tmp_path):
+def test_feedback_is_public(tmp_path):
+    """User feedback (/feedback) is PUBLIC: bot + panel + extension submit
+    confirm/deny without a key. The auto-tuner treats every signal as a
+    weak prior and never trusts a single source."""
     with _client(tmp_path, api_key="topsecret") as c:
         payload = {"feedback_type": "confirm", "pattern_ids": ["phase3.001"]}
-        assert c.post("/feedback", json=payload).status_code == 403
-        r = c.post("/feedback", json=payload, headers={"X-API-Key": "topsecret"})
+        r = c.post("/feedback", json=payload)
         assert r.status_code == 201
 
 

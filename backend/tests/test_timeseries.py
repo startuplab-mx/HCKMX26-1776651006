@@ -107,7 +107,7 @@ def _client(tmp_path: Path):
 
 def test_timeseries_endpoint_returns_array(tmp_path):
     with _client(tmp_path) as c:
-        c.post("/alert", json={"text": "si intentas escapar te descuartizo"})
+        c.post("/alert", json={"text": "te voy a matar"})
         r = c.get("/stats/timeseries?interval=hour&hours=24")
         assert r.status_code == 200
         body = r.json()

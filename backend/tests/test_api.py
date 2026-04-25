@@ -47,7 +47,7 @@ def test_analyze_override_coercion(tmp_path):
     with _client(tmp_path) as c:
         r = c.post(
             "/analyze",
-            json={"text": "si intentas escapar te descuartizo", "use_llm": False},
+            json={"text": "te voy a matar", "use_llm": False},
         )
         body = r.json()
         assert r.status_code == 200
@@ -60,7 +60,7 @@ def test_alert_persists_and_lists(tmp_path):
         r = c.post(
             "/alert",
             json={
-                "text": "manda nudes o las fotos van a tu escuela",
+                "text": "tienes que levantar a alguien hoy",
                 "platform": "instagram",
                 "source": "extension",
             },
@@ -78,7 +78,7 @@ def test_alert_persists_and_lists(tmp_path):
 
 def test_stats_includes_seeded_levels(tmp_path):
     with _client(tmp_path) as c:
-        c.post("/alert", json={"text": "si intentas escapar te descuartizo"})
+        c.post("/alert", json={"text": "te voy a matar"})
         c.post("/alert", json={"text": "vienes al cumple"})
         r = c.get("/stats")
         body = r.json()
@@ -90,7 +90,7 @@ def test_stats_includes_seeded_levels(tmp_path):
 
 def test_report_generates_pdf(tmp_path):
     with _client(tmp_path) as c:
-        rid = c.post("/alert", json={"text": "si intentas escapar te descuartizo"}).json()["id"]
+        rid = c.post("/alert", json={"text": "te voy a matar"}).json()["id"]
         r = c.post(f"/report/{rid}")
         assert r.status_code == 200
         assert r.headers["content-type"].startswith("application/pdf")

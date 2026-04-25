@@ -277,7 +277,7 @@ def test_pattern_ids_propagate_to_alert_response(tmp_path):
         r = client.post(
             "/alert",
             json={
-                "text": "si intentas escapar te descuartizo",
+                "text": "te voy a matar",
                 "source_type": "audio",
             },
         )

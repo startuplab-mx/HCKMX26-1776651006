@@ -242,6 +242,23 @@ El endpoint público `GET /contributions/stats` expone agregados (top patrones, 
 
 ---
 
+## Limitaciones conocidas
+
+Nahual es un MVP de hackathon construido en 48 horas. Lo enviamos con una lectura honesta de lo que **no** hace todavía:
+
+1. **No reemplaza a un profesional.** Nahual orienta, no diagnostica. PELIGRO siempre debe escalarse a Policía Cibernética 088, SIPINNA o un adulto de confianza. El bot lo dice explícitamente en cada mensaje crítico.
+2. **Cobertura idiomática limitada.** El dataset (563 patrones) está calibrado para español mexicano informal. Variantes regionales (norteño, sureste) y otros países hispanohablantes tienen menor recall hasta enriquecer el dataset.
+3. **Texto > multimedia.** STT (Whisper-large-v3) y OCR (Claude Vision) están integrados pero requieren confirmación explícita del usuario antes del análisis. El tunado fino para audios cortos con ruido o capturas borrosas queda fuera de alcance.
+4. **Sin detección de deepfakes ni perfiles falsos.** Solo analizamos texto recibido. Verificación de identidad del emisor (cuentas falsas, suplantación) no es parte del pipeline.
+5. **Falsos positivos posibles.** El score heurístico se basa en patrones léxicos. Mensajes irónicos, citas literarias, lirismo narcocultural sin intención real pueden disparar ATENCIÓN. Por eso el panel permite marcar "descartar" y eso retro-alimenta al auto-tuner.
+6. **Falsos negativos posibles.** Lenguaje codificado nuevo (jerga emergente, emojis no catalogados) puede pasar inadvertido hasta que un operador lo reporte vía `/feedback`. La capa LLM mitiga esto en zona gris (0.3–0.6) pero no es infalible.
+7. **Privacidad first, telemetría limitada.** No almacenamos mensajes originales, solo SHA-256 + resumen anonimizado. Esto significa que NO podemos auditar retroactivamente el texto que disparó una alerta — solo los pattern_ids que matchearon.
+8. **Demo local, no producción.** El backend corre en SQLite (un archivo) y `uvicorn` sin reverse proxy. Para piloto real haría falta Postgres, autenticación OAuth (no API key estática), rate limiting por IP, y observabilidad (Sentry/Datadog).
+
+Si encuentras un caso donde Nahual falla, abre un issue con el patrón redactado (sin PII) y lo agregamos al backlog del dataset.
+
+---
+
 ## Documentación de IA
 
 - **Claude Code** — asistente de programación para boilerplate. Todo el código revisado e integrado por el equipo.

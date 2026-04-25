@@ -1,5 +1,19 @@
 const API = (window.NAHUAL_API_URL || 'http://localhost:8000').replace(/\/$/, '');
 const REFRESH_MS = 5000;
+// API key for protected endpoints (/alerts, /sessions, /precision, /risk-history).
+// Override at deploy time with `<script>window.NAHUAL_API_KEY = '...'</script>`
+// before this file loads, or via localStorage.setItem('nahual_api_key', '...').
+const API_KEY = (
+  window.NAHUAL_API_KEY ||
+  (window.localStorage && window.localStorage.getItem('nahual_api_key')) ||
+  'nahual-hackathon-2026'
+);
+
+function authHeaders(extra) {
+  const h = Object.assign({}, extra || {});
+  if (API_KEY) h['X-API-Key'] = API_KEY;
+  return h;
+}
 
 const state = {
   filterStatus: '',
@@ -14,7 +28,7 @@ const state = {
 };
 
 async function jget(path) {
-  const r = await fetch(`${API}${path}`);
+  const r = await fetch(`${API}${path}`, { headers: authHeaders() });
   if (!r.ok) throw new Error(`${path} → ${r.status}`);
   return r.json();
 }
@@ -22,7 +36,7 @@ async function jget(path) {
 async function jsend(path, method, body) {
   const r = await fetch(`${API}${path}`, {
     method,
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders({ 'Content-Type': 'application/json' }),
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!r.ok) throw new Error(`${path} → ${r.status}`);

@@ -123,7 +123,7 @@ def test_escalate_endpoint_fires_webhook(tmp_path):
     fired: list[dict] = []
     with client:
         aid = client.post(
-            "/alert", json={"text": "si intentas escapar te descuartizo"}
+            "/alert", json={"text": "te voy a matar"}
         ).json()["id"]
         # patch the dispatch on the imported module reference inside main
         with patch.object(main_module.webhooks, "dispatch") as mock:
@@ -143,7 +143,7 @@ def test_alert_override_fires_webhook(tmp_path):
     with client:
         with patch.object(main_module.webhooks, "dispatch") as mock:
             mock.side_effect = lambda payload, **kw: fired.append(payload) or 1
-            client.post("/alert", json={"text": "si intentas escapar te descuartizo"})
+            client.post("/alert", json={"text": "te voy a matar"})
     # Death threat → override → webhook fires automatically.
     assert any(p["event"] == "alert.override" for p in fired)
 

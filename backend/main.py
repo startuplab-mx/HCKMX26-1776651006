@@ -180,7 +180,7 @@ def delete_session(session_id: str):
     return None
 
 
-@app.get("/profile/{session_id}", dependencies=PROTECTED)
+@app.get("/profile/{session_id}")
 def risk_profile(session_id: str):
     """Cumulative risk profile for a session — used by panel and pitch demo.
 
@@ -258,7 +258,6 @@ def reset_risk_history(session_id: str):
 @app.post(
     "/feedback",
     status_code=status.HTTP_201_CREATED,
-    dependencies=PROTECTED,
 )
 def submit_feedback(payload: FeedbackCreate):
     """Record a feedback signal for the auto-tuner.
@@ -736,7 +735,7 @@ def stats_timeseries(interval: str = "hour", hours: int = 24):
         raise HTTPException(400, str(e))
 
 
-@app.post("/report/{alert_id}", dependencies=PROTECTED)
+@app.post("/report/{alert_id}")
 def report(alert_id: int):
     alert = app.state.db.get_alert(alert_id)
     if not alert:

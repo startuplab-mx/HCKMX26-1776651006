@@ -46,16 +46,17 @@ def test_phase1_captacion_message():
 
 def test_phase3_override_triggers_peligro():
     p = make_pipeline()
-    r = p.classify("si intentas escapar te descuartizo, sabemos dónde vives")
+    r = p.classify("te voy a matar, sabemos donde vives")
     assert r["override_triggered"] is True
     assert r["risk_level"] == "PELIGRO"
     assert r["risk_score"] == 1.0
     assert r["phase_detected"] == "coercion"
 
 
-def test_phase4_sextortion_override():
+def test_phase4_explotacion_override():
     p = make_pipeline()
-    r = p.classify("si no pagas las fotos van a tu escuela. deposita $500 a esta gift card")
+    # Operative narco-recruitment phrase from real dataset (Marco Apr 2026).
+    r = p.classify("tienes que levantar a alguien hoy")
     assert r["override_triggered"] is True
     assert r["risk_level"] == "PELIGRO"
     assert r["risk_score"] == 1.0
