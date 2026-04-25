@@ -1,0 +1,666 @@
+{
+  "phase": "captacion",
+  "phase_name": "Captacion",
+  "description": "Patrones de alta confiabilidad importados desde dataset_expansion_results.csv (Marco · expansión nocturna).",
+  "_note": "ETL-generated. Edits must go through scripts/etl_dataset_to_keywords.py to stay reproducible.",
+  "patterns": [
+    {
+      "id": "f1_101",
+      "pattern": "🥷 ninja",
+      "weight": 0.7,
+      "source": "Colmex/Infobae",
+      "regex": false,
+      "explanation": "símbolo de identidad criminal organizada",
+      "url": "https://www.infobae.com/mexico/2025/04/20/estos-son-los-emojis-que-ocupa-el-crimen-organizado-para-reclutar-jovenes-en-mexico/"
+    },
+    {
+      "id": "f1_102",
+      "pattern": "🪖 casco militar",
+      "weight": 0.65,
+      "source": "Colmex/Infobae",
+      "regex": false,
+      "explanation": "elemento de narcopropaganda",
+      "url": "https://www.infobae.com/mexico/2025/04/20/estos-son-los-emojis-que-ocupa-el-crimen-organizado-para-reclutar-jovenes-en-mexico/"
+    },
+    {
+      "id": "f1_103",
+      "pattern": "😈 diablo",
+      "weight": 0.6,
+      "source": "Colmex/Infobae",
+      "regex": false,
+      "explanation": "símbolo de identidad criminal organizada",
+      "url": "https://www.infobae.com/mexico/2025/04/20/estos-son-los-emojis-que-ocupa-el-crimen-organizado-para-reclutar-jovenes-en-mexico/"
+    },
+    {
+      "id": "f1_104",
+      "pattern": "🧿 ojo turco",
+      "weight": 0.6,
+      "source": "Colmex/Infobae",
+      "regex": false,
+      "explanation": "símbolo de identidad criminal organizada",
+      "url": "https://www.infobae.com/mexico/2025/04/20/estos-son-los-emojis-que-ocupa-el-crimen-organizado-para-reclutar-jovenes-en-mexico/"
+    },
+    {
+      "id": "f1_105",
+      "pattern": "🆖 NG emoji",
+      "weight": 0.75,
+      "source": "Colmex/Milenio",
+      "regex": false,
+      "explanation": "referencia codificada a un cártel específico",
+      "url": "https://www.milenio.com/policia/narcotrafico/emojis-hashtags-simbologia-del-narco-redes-sociales-y-su-significado"
+    },
+    {
+      "id": "f1_106",
+      "pattern": "🎩 sombrero emoji",
+      "weight": 0.65,
+      "source": "Colmex/Milenio",
+      "regex": false,
+      "explanation": "referencia codificada a un cártel específico",
+      "url": "https://www.milenio.com/policia/narcotrafico/emojis-hashtags-simbologia-del-narco-redes-sociales-y-su-significado"
+    },
+    {
+      "id": "f1_107",
+      "pattern": "🍓🐟 fresa y pez",
+      "weight": 0.7,
+      "source": "Colmex/Milenio",
+      "regex": false,
+      "explanation": "referencia codificada a un cártel específico",
+      "url": "https://www.milenio.com/policia/narcotrafico/emojis-hashtags-simbologia-del-narco-redes-sociales-y-su-significado"
+    },
+    {
+      "id": "f1_108",
+      "pattern": "#4letras",
+      "weight": 0.8,
+      "source": "Colmex",
+      "regex": false,
+      "explanation": "referencia codificada a un cártel específico",
+      "url": "https://www.infobae.com/mexico/2025/04/18/belicones-y-trabajo-para-la-mana-las-frases-en-tiktok-que-usa-el-narco-para-el-reclutamiento-criminal-de-jovenes/"
+    },
+    {
+      "id": "f1_109",
+      "pattern": "#gentedelmz",
+      "weight": 0.75,
+      "source": "Colmex",
+      "regex": false,
+      "explanation": "referencia codificada a un cártel específico",
+      "url": "https://www.infobae.com/mexico/2025/04/18/belicones-y-trabajo-para-la-mana-las-frases-en-tiktok-que-usa-el-narco-para-el-reclutamiento-criminal-de-jovenes/"
+    },
+    {
+      "id": "f1_110",
+      "pattern": "#trabajoparalamaña",
+      "weight": 0.85,
+      "source": "Colmex",
+      "regex": false,
+      "explanation": "lenguaje explícito de reclutamiento criminal",
+      "url": "https://www.infobae.com/mexico/2025/04/18/belicones-y-trabajo-para-la-mana-las-frases-en-tiktok-que-usa-el-narco-para-el-reclutamiento-criminal-de-jovenes/"
+    },
+    {
+      "id": "f1_111",
+      "pattern": "#belicones",
+      "weight": 0.6,
+      "source": "Colmex",
+      "regex": false,
+      "explanation": "señal de narcocultura aspiracional",
+      "url": "https://www.infobae.com/mexico/2025/04/18/belicones-y-trabajo-para-la-mana-las-frases-en-tiktok-que-usa-el-narco-para-el-reclutamiento-criminal-de-jovenes/"
+    },
+    {
+      "id": "f1_112",
+      "pattern": "#nuevageneracion",
+      "weight": 0.75,
+      "source": "Colmex/Milenio",
+      "regex": false,
+      "explanation": "referencia codificada a un cártel específico",
+      "url": "https://www.milenio.com/policia/narcotrafico/emojis-hashtags-simbologia-del-narco-redes-sociales-y-su-significado"
+    },
+    {
+      "id": "f1_113",
+      "pattern": "a mí me interesa",
+      "weight": 0.75,
+      "source": "Milenio/Colmex",
+      "regex": false,
+      "explanation": "expresión de auto-reclutamiento al cártel",
+      "url": "https://www.milenio.com/policia/reclutamiento-de-menores-en-mexico-asi-operan-los-carteles-en-redes"
+    },
+    {
+      "id": "f1_114",
+      "pattern": "la empresa cuida a los suyos",
+      "weight": 0.7,
+      "source": "Infobae/Colmex",
+      "regex": false,
+      "explanation": "discurso de lealtad al cártel",
+      "url": "https://www.infobae.com/mexico/2025/04/18/belicones-y-trabajo-para-la-mana-las-frases-en-tiktok-que-usa-el-narco-para-el-reclutamiento-criminal-de-jovenes/"
+    },
+    {
+      "id": "f1_115",
+      "pattern": "se buscan halcones",
+      "weight": 0.85,
+      "source": "Colmex/Infobae",
+      "regex": false,
+      "explanation": "reclutamiento para rol operativo del cártel",
+      "url": "https://www.infobae.com/mexico/2025/04/18/belicones-y-trabajo-para-la-mana-las-frases-en-tiktok-que-usa-el-narco-para-el-reclutamiento-criminal-de-jovenes/"
+    },
+    {
+      "id": "f1_116",
+      "pattern": "se necesitan cocineros",
+      "weight": 0.85,
+      "source": "Colmex/Infobae",
+      "regex": false,
+      "explanation": "reclutamiento para rol operativo del cártel",
+      "url": "https://www.infobae.com/mexico/2025/04/18/belicones-y-trabajo-para-la-mana-las-frases-en-tiktok-que-usa-el-narco-para-el-reclutamiento-criminal-de-jovenes/"
+    },
+    {
+      "id": "f1_117",
+      "pattern": "pagos semanales y protección a toda costa",
+      "weight": 0.8,
+      "source": "Colmex",
+      "regex": false,
+      "explanation": "ofrecimiento de incentivo material para captar",
+      "url": "https://www.infobae.com/mexico/2025/04/18/belicones-y-trabajo-para-la-mana-las-frases-en-tiktok-que-usa-el-narco-para-el-reclutamiento-criminal-de-jovenes/"
+    },
+    {
+      "id": "f1_118",
+      "pattern": "15 mil pesos a la semana",
+      "weight": 0.85,
+      "source": "Milenio/Proceso",
+      "regex": false,
+      "explanation": "oferta económica desproporcionada",
+      "url": "https://www.milenio.com/policia/reclutamiento-de-menores-en-mexico-asi-operan-los-carteles-en-redes"
+    },
+    {
+      "id": "f1_119",
+      "pattern": "20 mil pesos semanales",
+      "weight": 0.85,
+      "source": "Proceso",
+      "regex": false,
+      "explanation": "oferta económica desproporcionada",
+      "url": "https://www.proceso.com.mx/nacional/2026/4/17/policia-de-jalisco-evita-reclutamiento-de-dos-menores-contactados-por-crimen-organizado-en-tiktok-372393.html"
+    },
+    {
+      "id": "f1_120",
+      "pattern": "18 mil pesos quincenales más comida y hospedaje",
+      "weight": 0.85,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "oferta económica desproporcionada",
+      "url": "https://www.infobae.com/mexico/2024/02/04/las-ofertas-laborales-del-narco-asi-es-como-el-crimen-organizado-recluta-a-jovenes-en-redes/"
+    },
+    {
+      "id": "f1_121",
+      "pattern": "de 4 a 12 mil pesos semanales",
+      "weight": 0.8,
+      "source": "Proceso",
+      "regex": false,
+      "explanation": "oferta económica desproporcionada",
+      "url": "https://www.proceso.com.mx/nacional/2025/3/24/teuchitlan-asi-operaba-el-lastra-para-reclutar-personas-para-el-cjng-en-el-rancho-izaguirre-347986.html"
+    },
+    {
+      "id": "f1_123",
+      "pattern": "seguridad privada sin experiencia",
+      "weight": 0.75,
+      "source": "Proceso/Infobae",
+      "regex": false,
+      "explanation": "oferta laboral señuelo del crimen organizado",
+      "url": "https://www.proceso.com.mx/nacional/2025/3/24/teuchitlan-asi-operaba-el-lastra-para-reclutar-personas-para-el-cjng-en-el-rancho-izaguirre-347986.html"
+    },
+    {
+      "id": "f1_127",
+      "pattern": "tu currículum está en revisión",
+      "weight": 0.7,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "enganche disfrazado como proceso laboral",
+      "url": "https://www.infobae.com/mexico/2026/04/19/ofertas-de-trabajo-falsas-en-redes-sociales-una-trampa-que-puede-terminar-en-violacion-o-secuestro/"
+    },
+    {
+      "id": "f1_128",
+      "pattern": "altos salarios por tareas simples sin experiencia",
+      "weight": 0.65,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "oferta laboral señuelo del crimen organizado",
+      "url": "https://www.infobae.com/mexico/2026/04/19/ofertas-de-trabajo-falsas-en-redes-sociales-una-trampa-que-puede-terminar-en-violacion-o-secuestro/"
+    },
+    {
+      "id": "f1_129",
+      "pattern": "se solicita personal para despacho jurídico",
+      "weight": 0.65,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "oferta laboral señuelo del crimen organizado",
+      "url": "https://www.infobae.com/mexico/2026/04/19/ofertas-de-trabajo-falsas-en-redes-sociales-una-trampa-que-puede-terminar-en-violacion-o-secuestro/"
+    },
+    {
+      "id": "f1_131",
+      "pattern": "pollitos de colores",
+      "weight": 0.7,
+      "source": "Excélsior",
+      "regex": false,
+      "explanation": "reclutamiento dirigido a menores de edad",
+      "url": "https://www.excelsior.com.mx/nacional/narco-recluta-a-ninos-y-los-suma-a-pollitos-de-colores-como-halcones/1718351"
+    },
+    {
+      "id": "f1_132",
+      "pattern": "apoyo para madres solteras",
+      "weight": 0.7,
+      "source": "Colmex/N+",
+      "regex": false,
+      "explanation": "incentivo dirigido a mujeres en situación vulnerable",
+      "url": "https://www.nmas.com.mx/nacional/seguridad/emojis-hashtags-y-canciones-las-estrategias-del-narco-para-reclutar-en-tiktok/"
+    },
+    {
+      "id": "f1_133",
+      "pattern": "beca o apoyo para estudiantes",
+      "weight": 0.65,
+      "source": "Colmex/N+",
+      "regex": false,
+      "explanation": "incentivo dirigido a estudiantes",
+      "url": "https://www.nmas.com.mx/nacional/seguridad/emojis-hashtags-y-canciones-las-estrategias-del-narco-para-reclutar-en-tiktok/"
+    },
+    {
+      "id": "f1_142",
+      "pattern": "yo quiero ser sicario",
+      "weight": 0.7,
+      "source": "Vanguardia",
+      "regex": false,
+      "explanation": "expresión de auto-reclutamiento al cártel",
+      "url": "https://vanguardia.com.mx/noticias/mexico/yo-quiero-ser-sicario-que-es-el-comando-calavera-del-cjng-ligado-a-centros-de-adiestramiento-de-jovenes-HE15447257"
+    },
+    {
+      "id": "f1_143",
+      "pattern": "Comando Calavera",
+      "weight": 0.75,
+      "source": "Vanguardia",
+      "regex": false,
+      "explanation": "referencia codificada a un cártel específico",
+      "url": "https://vanguardia.com.mx/noticias/mexico/yo-quiero-ser-sicario-que-es-el-comando-calavera-del-cjng-ligado-a-centros-de-adiestramiento-de-jovenes-HE15447257"
+    },
+    {
+      "id": "f1_144",
+      "pattern": "te pasamos al otro lado",
+      "weight": 0.7,
+      "source": "N+/Colmex",
+      "regex": false,
+      "explanation": "ofrecimiento ligado a tráfico de migrantes",
+      "url": "https://www.nmas.com.mx/nacional/seguridad/emojis-hashtags-y-canciones-las-estrategias-del-narco-para-reclutar-en-tiktok/"
+    },
+    {
+      "id": "f1_147",
+      "pattern": "18 mil pesos quincenales interesados escribir",
+      "weight": 0.85,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "convocatoria abierta de reclutamiento",
+      "url": "https://www.infobae.com/mexico/2024/02/04/las-ofertas-laborales-del-narco-asi-es-como-el-crimen-organizado-recluta-a-jovenes-en-redes/"
+    },
+    {
+      "id": "f1_148",
+      "pattern": "trabajo para el CDN",
+      "weight": 0.8,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "referencia codificada a un cártel específico",
+      "url": "https://www.infobae.com/mexico/2024/02/04/las-ofertas-laborales-del-narco-asi-es-como-el-crimen-organizado-recluta-a-jovenes-en-redes/"
+    },
+    {
+      "id": "f1_149",
+      "pattern": "voy para sicario de las 4 letras nadie me obliga",
+      "weight": 0.85,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "expresión de auto-reclutamiento al cártel",
+      "url": "https://www.infobae.com/mexico/2025/04/06/estas-son-las-cuatro-modalidades-de-reclutamiento-que-el-cjng-utiliza-para-hacer-crecer-sus-ejercitos/"
+    },
+    {
+      "id": "f1_150",
+      "pattern": "vacante de guardia de seguridad 3000 semanales",
+      "weight": 0.8,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "oferta laboral señuelo del crimen organizado",
+      "url": "https://www.infobae.com/mexico/2024/11/11/exrecluta-del-cjng-narra-como-se-unio-al-grupo-criminal-de-el-mencho-tras-caer-en-trampa-de-falsa-oferta-laboral/"
+    },
+    {
+      "id": "f1_151",
+      "pattern": "mis tíos me daban dinero carros joyas",
+      "weight": 0.8,
+      "source": "Univision",
+      "regex": false,
+      "explanation": "incentivo dirigido a beneficio familiar del menor",
+      "url": "https://www.univision.com/noticias/narcotrafico/testimonios-de-ninos-reclutados-por-el-narco-en-mexico"
+    },
+    {
+      "id": "f1_152",
+      "pattern": "a los 14 años entré al cartel",
+      "weight": 0.75,
+      "source": "Univision",
+      "regex": false,
+      "explanation": "expresión de auto-reclutamiento al cártel",
+      "url": "https://www.univision.com/noticias/narcotrafico/testimonios-de-ninos-reclutados-por-el-narco-en-mexico"
+    },
+    {
+      "id": "f1_153",
+      "pattern": "te regalamos juguetes y dulces",
+      "weight": 0.65,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "captación inicial mediante regalos u obsequios",
+      "url": "https://www.infobae.com/mexico/2025/12/25/juguetes-dulces-y-reclutamiento-de-menores-el-trasfondo-de-la-navidad-para-el-crimen-organizado-en-mexico/"
+    },
+    {
+      "id": "f1_154",
+      "pattern": "el reclutamiento empieza con la normalización",
+      "weight": 0.6,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "discurso para normalizar la actividad criminal",
+      "url": "https://www.infobae.com/mexico/2025/12/25/juguetes-dulces-y-reclutamiento-de-menores-el-trasfondo-de-la-navidad-para-el-crimen-organizado-en-mexico/"
+    },
+    {
+      "id": "f1_155",
+      "pattern": "12 mil pesos a la semana en redes sociales",
+      "weight": 0.8,
+      "source": "Sopitas",
+      "regex": false,
+      "explanation": "oferta económica desproporcionada",
+      "url": "https://www.sopitas.com/teuchitlan-reclutamiento-cjng-redes-sociales/"
+    },
+    {
+      "id": "f1_156",
+      "pattern": "vacante de asistente de oficina",
+      "weight": 0.65,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "oferta laboral señuelo del crimen organizado",
+      "url": "https://www.infobae.com/mexico/2025/04/06/estas-son-las-cuatro-modalidades-de-reclutamiento-que-el-cjng-utiliza-para-hacer-crecer-sus-ejercitos/"
+    },
+    {
+      "id": "f1_157",
+      "pattern": "vacante de ayudante de limpieza",
+      "weight": 0.6,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "oferta laboral señuelo del crimen organizado",
+      "url": "https://www.infobae.com/mexico/2025/04/06/estas-son-las-cuatro-modalidades-de-reclutamiento-que-el-cjng-utiliza-para-hacer-crecer-sus-ejercitos/"
+    },
+    {
+      "id": "f1_158",
+      "pattern": "la Chapiza recluta",
+      "weight": 0.75,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "referencia codificada a un cártel específico",
+      "url": "https://www.infobae.com/mexico/2025/09/09/propaganda-digital-y-reclutamiento-forzado-el-nuevo-rostro-del-cartel-de-sinaloa-a-un-ano-de-su-guerra-interna/"
+    },
+    {
+      "id": "f1_159",
+      "pattern": "propaganda narco en TikTok armas y dinero",
+      "weight": 0.65,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "propaganda visual o textual de actividad criminal",
+      "url": "https://www.infobae.com/mexico/2025/09/09/propaganda-digital-y-reclutamiento-forzado-el-nuevo-rostro-del-cartel-de-sinaloa-a-un-ano-de-su-guerra-interna/"
+    },
+    {
+      "id": "f1_165",
+      "pattern": "ropa táctica y botas",
+      "weight": 0.65,
+      "source": "Proceso",
+      "regex": false,
+      "explanation": "ofrecimiento de bienes materiales (carro, ropa, arma)",
+      "url": "https://www.proceso.com.mx/nacional/2025/3/24/teuchitlan-asi-operaba-el-lastra-para-reclutar-personas-para-el-cjng-en-el-rancho-izaguirre-347986.html"
+    },
+    {
+      "id": "f1_171",
+      "pattern": "vacante en rancho o tequilera",
+      "weight": 0.7,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "oferta laboral señuelo del crimen organizado",
+      "url": "https://www.infobae.com/mexico/2025/03/19/no-robar-no-drogarse-y-no-pelearse-testimonios-revelan-las-reglas-en-escuela-de-sicarios-del-cjng/"
+    },
+    {
+      "id": "f1_172",
+      "pattern": "2000 a 4000 pesos semanales en Facebook",
+      "weight": 0.75,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "oferta económica desproporcionada",
+      "url": "https://www.infobae.com/mexico/2025/03/19/no-robar-no-drogarse-y-no-pelearse-testimonios-revelan-las-reglas-en-escuela-de-sicarios-del-cjng/"
+    },
+    {
+      "id": "f1_173",
+      "pattern": "El Gallito de Fuerza Regida",
+      "weight": 0.55,
+      "source": "Politico.mx",
+      "regex": false,
+      "explanation": "señal de narcocultura aspiracional",
+      "url": "https://polls.politico.mx/2025/05/14/las-canciones-usadas-por-el-narco-para-reclutar-en-tik-tok/"
+    },
+    {
+      "id": "f1_174",
+      "pattern": "Fierro por la 300",
+      "weight": 0.5,
+      "source": "Politico.mx",
+      "regex": false,
+      "explanation": "señal de narcocultura aspiracional",
+      "url": "https://polls.politico.mx/2025/05/14/las-canciones-usadas-por-el-narco-para-reclutar-en-tik-tok/"
+    },
+    {
+      "id": "f1_175",
+      "pattern": "Las cuatro de las cuatro letras",
+      "weight": 0.55,
+      "source": "Politico.mx",
+      "regex": false,
+      "explanation": "señal de narcocultura aspiracional",
+      "url": "https://polls.politico.mx/2025/05/14/las-canciones-usadas-por-el-narco-para-reclutar-en-tik-tok/"
+    },
+    {
+      "id": "f1_176",
+      "pattern": "Comandante Toro",
+      "weight": 0.5,
+      "source": "Politico.mx",
+      "regex": false,
+      "explanation": "señal de narcocultura aspiracional",
+      "url": "https://polls.politico.mx/2025/05/14/las-canciones-usadas-por-el-narco-para-reclutar-en-tik-tok/"
+    },
+    {
+      "id": "f1_210",
+      "pattern": "6 de cada 10 empleos en redes son falsos",
+      "weight": 0.7,
+      "source": "Publimetro",
+      "regex": false,
+      "explanation": "dato estadístico citado en el patrón",
+      "url": "https://www.publimetro.com.mx/nacional/2025/03/18/cuidado-6-de-cada-10-empleos-en-redes-son-falsos-estafas-y-trampas-del-crimen/"
+    },
+    {
+      "id": "f1_212",
+      "pattern": "reclutan niños desde los 9 años",
+      "weight": 0.8,
+      "source": "REDIM",
+      "regex": false,
+      "explanation": "reclutamiento dirigido a edad temprana",
+      "url": "https://blog.derechosinfancia.org.mx/2025/09/30/reclutamiento-y-utilizacion-de-ninas-ninos-y-adolescentes-por-agrupaciones-delictivas-en-mexico-2010-2023/"
+    },
+    {
+      "id": "f1_213",
+      "pattern": "niños de 6 a 12 años como mensajeros",
+      "weight": 0.8,
+      "source": "REDIM",
+      "regex": false,
+      "explanation": "reclutamiento dirigido a menores de edad",
+      "url": "https://blog.derechosinfancia.org.mx/2025/09/30/reclutamiento-y-utilizacion-de-ninas-ninos-y-adolescentes-por-agrupaciones-delictivas-en-mexico-2010-2023/"
+    },
+    {
+      "id": "f1_287",
+      "pattern": "video declarando nombre completo y que no es obligado",
+      "weight": 0.95,
+      "source": "CSIS 2025",
+      "regex": false,
+      "explanation": "señal de ritual de ingreso documentado en video para compromiso",
+      "url": "https://www.csis.org/analysis/role-social-media-cartel-recruitment"
+    },
+    {
+      "id": "f1_288",
+      "pattern": "se solicita personal de seguridad privada",
+      "weight": 0.9,
+      "source": "CSIS 2025",
+      "regex": false,
+      "explanation": "señal de oferta laboral disfrazada como empleo de seguridad",
+      "url": "https://www.csis.org/analysis/role-social-media-cartel-recruitment"
+    },
+    {
+      "id": "f1_289",
+      "pattern": "se busca chofer personal con buena paga",
+      "weight": 0.85,
+      "source": "CSIS 2025",
+      "regex": false,
+      "explanation": "señal de oferta de empleo como conductor para encubrir reclutamiento",
+      "url": "https://www.csis.org/analysis/role-social-media-cartel-recruitment"
+    },
+    {
+      "id": "f1_290",
+      "pattern": "casa gratis, comida y entrenamiento militar",
+      "weight": 0.9,
+      "source": "CSIS 2025",
+      "regex": false,
+      "explanation": "señal de paquete de incentivos totales para atraer reclutas jóvenes",
+      "url": "https://www.csis.org/analysis/role-social-media-cartel-recruitment"
+    },
+    {
+      "id": "f1_291",
+      "pattern": "te cubrimos el pasaje hasta acá",
+      "weight": 0.85,
+      "source": "CSIS 2025",
+      "regex": false,
+      "explanation": "señal de ofrecen cubrir gastos de transporte para facilitar reclutamiento",
+      "url": "https://www.csis.org/analysis/role-social-media-cartel-recruitment"
+    },
+    {
+      "id": "f1_292",
+      "pattern": "gana hasta 15 mil pesos semanales",
+      "weight": 0.9,
+      "source": "Infobae/Milenio 2025",
+      "regex": false,
+      "explanation": "señal de oferta económica específica de alto monto para reclutar",
+      "url": "https://www.infobae.com/mexico/2025/03/01/nuevas-tacticas-del-crimen-organizado-el-reclutamiento-de-menores-a-traves-de-videojuegos-y-redes-sociales-en-mexico/"
+    },
+    {
+      "id": "f1_293",
+      "pattern": "si te dieron de baja aquí te pagamos bien",
+      "weight": 0.95,
+      "source": "Prensa Libre 2025",
+      "regex": false,
+      "explanation": "señal de reclutamiento dirigido a ex fuerzas del orden",
+      "url": "https://www.prensalibre.com/internacional/si-te-dieron-de-baja-aqui-te-pagamos-bien-cartel-mexicano-recluta-a-expolicias-por-whatsapp/"
+    },
+    {
+      "id": "f1_294",
+      "pattern": "narcomarketing en TikTok",
+      "weight": 0.8,
+      "source": "Vanguardia 2025",
+      "regex": false,
+      "explanation": "señal de uso de técnicas de marketing digital para glamurizar vida narco",
+      "url": "https://vanguardia.com.mx/noticias/nacional/carteles-hacen-narcomarketing-en-tiktok-para-reclutar-jovenes-CTVG3561276"
+    },
+    {
+      "id": "f1_295",
+      "pattern": "contenido narco viralizado por algoritmo",
+      "weight": 0.85,
+      "source": "OECD AI 2026",
+      "regex": false,
+      "explanation": "señal de explotación de algoritmos de recomendación para llegar a menores",
+      "url": "https://oecd.ai/en/incidents/2026-02-21-f87d"
+    },
+    {
+      "id": "f1_296",
+      "pattern": "ofertas de empleo narco en Facebook e Instagram",
+      "weight": 0.85,
+      "source": "El Español 2023",
+      "regex": false,
+      "explanation": "señal de uso de redes sociales como bolsa de trabajo criminal",
+      "url": "https://www.elespanol.com/mundo/america/20231004/linkedin-narco-mayor-cartel-mexico-recluta-sicarios-traves-facebook-instagram/798920428_0.html"
+    },
+    {
+      "id": "f1_297",
+      "pattern": "reclutamiento por Discord y Twitch",
+      "weight": 0.8,
+      "source": "SEGOB/Infobae 2025",
+      "regex": false,
+      "explanation": "señal de uso de plataformas de gaming para captar jóvenes",
+      "url": "https://www.infobae.com/mexico/2025/03/01/nuevas-tacticas-del-crimen-organizado-el-reclutamiento-de-menores-a-traves-de-videojuegos-y-redes-sociales-en-mexico/"
+    },
+    {
+      "id": "f1_298",
+      "pattern": "55% de cuentas investigadas vinculadas a CJNG",
+      "weight": 0.9,
+      "source": "CSIS 2025",
+      "regex": false,
+      "explanation": "señal de dato estadístico sobre dominancia de cjng en reclutamiento digital",
+      "url": "https://www.csis.org/analysis/role-social-media-cartel-recruitment"
+    },
+    {
+      "id": "f1_299",
+      "pattern": "corridos tumbados como herramienta de reclutamiento",
+      "weight": 0.8,
+      "source": "Milenio/CNN 2025",
+      "regex": false,
+      "explanation": "señal de uso de género musical popular para normalizar y atraer",
+      "url": "https://www.milenio.com/policia/reclutamiento-de-menores-en-mexico-asi-operan-los-carteles-en-redes"
+    },
+    {
+      "id": "f1_300",
+      "pattern": "contacto inicial por Free Fire mantenido durante meses",
+      "weight": 0.9,
+      "source": "LatinTimes 2025",
+      "regex": false,
+      "explanation": "señal de grooming prolongado a través de videojuego móvil antes de encuentro físico",
+      "url": "https://www.latintimes.com/tiktok-has-become-main-platform-cartels-use-recruit-teenagers-mexico-report-finds-592198"
+    },
+    {
+      "id": "f1_301",
+      "pattern": "captación de niñas por apps de citas",
+      "weight": 0.9,
+      "source": "LatinTimes 2025",
+      "regex": false,
+      "explanation": "señal de uso de aplicaciones de citas para captar niñas para explotación sexual",
+      "url": "https://www.latintimes.com/tiktok-has-become-main-platform-cartels-use-recruit-teenagers-mexico-report-finds-592198"
+    },
+    {
+      "id": "f1_303",
+      "pattern": "sueldo de 4500 pesos semanales garantizados",
+      "weight": 0.85,
+      "source": "CSIS 2025",
+      "regex": false,
+      "explanation": "señal de oferta salarial específica mencionada en investigación csis",
+      "url": "https://www.csis.org/analysis/role-social-media-cartel-recruitment"
+    },
+    {
+      "id": "f1_305",
+      "pattern": "🆖",
+      "weight": 0.85,
+      "source": "CSIS 2025",
+      "regex": false,
+      "explanation": "señal de emoji usado para referenciar cjng evitando filtros de texto",
+      "url": "https://www.csis.org/analysis/role-social-media-cartel-recruitment"
+    },
+    {
+      "id": "f1_314",
+      "pattern": "uso de inteligencia artificial para perfilar víctimas menores",
+      "weight": 0.9,
+      "source": "OECD AI 2026",
+      "regex": false,
+      "explanation": "señal de explotación de herramientas de ia para identificar menores vulnerables",
+      "url": "https://oecd.ai/en/incidents/2026-02-21-f87d"
+    },
+    {
+      "id": "f1_315",
+      "pattern": "60% de menores interactúa con desconocidos en internet",
+      "weight": 0.85,
+      "source": "Infobae/Red Grooming Latam 2025",
+      "regex": false,
+      "explanation": "señal de dato estadístico que revela la exposición masiva de menores al riesgo digital",
+      "url": "https://www.infobae.com/tendencias/2025/05/13/el-60-de-los-ninos-y-adolescentes-interactuo-con-desconocidos-en-internet-advirtio-un-estudio-en-america-latina/"
+    }
+  ],
+  "whitelist": []
+}

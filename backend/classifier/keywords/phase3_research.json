@@ -1,0 +1,333 @@
+{
+  "phase": "coercion",
+  "phase_name": "Coercion",
+  "description": "Patrones de alta confiabilidad importados desde dataset_expansion_results.csv (Marco · expansión nocturna).",
+  "_note": "ETL-generated. Edits must go through scripts/etl_dataset_to_keywords.py to stay reproducible.",
+  "patterns": [
+    {
+      "id": "f3_085",
+      "pattern": "si no haces lo que digo colgaré tus fotos en la red",
+      "weight": 0.9,
+      "source": "Derecho de la Red",
+      "regex": false,
+      "explanation": "amenaza de difusión de contenido digital privado",
+      "url": "https://derechodelared.com/las-frases-mas-comunes-del-grooming/"
+    },
+    {
+      "id": "f3_086",
+      "pattern": "en otros países esto es normal",
+      "weight": 0.6,
+      "source": "Derecho de la Red",
+      "regex": false,
+      "explanation": "discurso para normalizar la actividad criminal",
+      "url": "https://derechodelared.com/las-frases-mas-comunes-del-grooming/"
+    },
+    {
+      "id": "f3_087",
+      "pattern": "tengo tus fotos íntimas y las voy a publicar",
+      "weight": 0.95,
+      "source": "REDIM/Consejo Ciudadano",
+      "regex": false,
+      "explanation": "amenaza de difusión de material íntimo (sextorsión)",
+      "url": "https://www.eluniversal.com.mx/nacion/ninas-ninos-y-adolescentes-principales-victimas-de-sextorsion-en-mexico-incrementa-delito-en-56/"
+    },
+    {
+      "id": "f3_088",
+      "pattern": "mándame más material o le digo a tus papás",
+      "weight": 0.9,
+      "source": "REDIM/Consejo Ciudadano",
+      "regex": false,
+      "explanation": "amenaza de difusión de material íntimo (sextorsión)",
+      "url": "https://www.eluniversal.com.mx/nacion/ninas-ninos-y-adolescentes-principales-victimas-de-sextorsion-en-mexico-incrementa-delito-en-56/"
+    },
+    {
+      "id": "f3_089",
+      "pattern": "mándame dinero o publico todo",
+      "weight": 0.95,
+      "source": "FinCEN/REDIM",
+      "regex": false,
+      "explanation": "extorsión financiera con demanda monetaria",
+      "url": "https://www.fincen.gov/news/news-releases/fincen-issues-notice-financially-motivated-sextortion"
+    },
+    {
+      "id": "f3_090",
+      "pattern": "entrega tus pertenencias",
+      "weight": 0.9,
+      "source": "Proceso",
+      "regex": false,
+      "explanation": "imposición de control inmediato sobre tus pertenencias",
+      "url": "https://www.proceso.com.mx/nacional/2025/3/24/teuchitlan-asi-operaba-el-lastra-para-reclutar-personas-para-el-cjng-en-el-rancho-izaguirre-347986.html"
+    },
+    {
+      "id": "f3_091",
+      "pattern": "vas a estar incomunicado un mes",
+      "weight": 0.9,
+      "source": "Proceso",
+      "regex": false,
+      "explanation": "aislamiento forzado, típico de trata o reclutamiento",
+      "url": "https://www.proceso.com.mx/nacional/2025/3/24/teuchitlan-asi-operaba-el-lastra-para-reclutar-personas-para-el-cjng-en-el-rancho-izaguirre-347986.html"
+    },
+    {
+      "id": "f3_092",
+      "pattern": "si te quieres ir te va mal",
+      "weight": 0.95,
+      "source": "Proceso",
+      "regex": false,
+      "explanation": "amenaza ante intento de abandonar el grupo",
+      "url": "https://www.proceso.com.mx/nacional/2025/3/24/teuchitlan-asi-operaba-el-lastra-para-reclutar-personas-para-el-cjng-en-el-rancho-izaguirre-347986.html"
+    },
+    {
+      "id": "f3_093",
+      "pattern": "for tutoring (memo engañosa)",
+      "weight": 0.7,
+      "source": "FinCEN",
+      "regex": false,
+      "explanation": "intento de evadir detección operativa",
+      "url": "https://www.fincen.gov/news/news-releases/fincen-issues-notice-financially-motivated-sextortion"
+    },
+    {
+      "id": "f3_094",
+      "pattern": "pagos rápidos P2P a desconocidos",
+      "weight": 0.7,
+      "source": "FinCEN",
+      "regex": false,
+      "explanation": "red flag financiero (FinCEN)",
+      "url": "https://www.fincen.gov/news/news-releases/fincen-issues-notice-financially-motivated-sextortion"
+    },
+    {
+      "id": "f3_095",
+      "pattern": "deepfake amenaza con IA",
+      "weight": 0.85,
+      "source": "FinCEN",
+      "regex": false,
+      "explanation": "amenaza con material generado por IA (deepfake)",
+      "url": "https://www.fincen.gov/news/news-releases/fincen-issues-notice-financially-motivated-sextortion"
+    },
+    {
+      "id": "f3_097",
+      "pattern": "tú vas para la escuela de sicarios",
+      "weight": 0.95,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "imposición forzada de reclutamiento criminal",
+      "url": "https://www.infobae.com/mexico/2025/04/06/estas-son-las-cuatro-modalidades-de-reclutamiento-que-el-cjng-utiliza-para-hacer-crecer-sus-ejercitos/"
+    },
+    {
+      "id": "f3_098",
+      "pattern": "voy a levantarte a ti y a toda tu familia la voy a matar",
+      "weight": 1.0,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "amenaza dirigida hacia tus familiares",
+      "url": "https://www.infobae.com/mexico/2025/04/06/estas-son-las-cuatro-modalidades-de-reclutamiento-que-el-cjng-utiliza-para-hacer-crecer-sus-ejercitos/"
+    },
+    {
+      "id": "f3_099",
+      "pattern": "aquí vienes a ser sicario",
+      "weight": 0.95,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "imposición coercitiva de un rol o tarea",
+      "url": "https://www.infobae.com/mexico/2024/11/11/exrecluta-del-cjng-narra-como-se-unio-al-grupo-criminal-de-el-mencho-tras-caer-en-trampa-de-falsa-oferta-laboral/"
+    },
+    {
+      "id": "f3_100",
+      "pattern": "aquí ya no eres tú eres tu alias",
+      "weight": 0.85,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "imposición de un alias o cambio de identidad",
+      "url": "https://www.infobae.com/mexico/2024/11/11/exrecluta-del-cjng-narra-como-se-unio-al-grupo-criminal-de-el-mencho-tras-caer-en-trampa-de-falsa-oferta-laboral/"
+    },
+    {
+      "id": "f3_101",
+      "pattern": "tienes que pedir autorización para todo",
+      "weight": 0.9,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "imposición de control total sobre tus acciones",
+      "url": "https://www.infobae.com/mexico/2024/11/11/exrecluta-del-cjng-narra-como-se-unio-al-grupo-criminal-de-el-mencho-tras-caer-en-trampa-de-falsa-oferta-laboral/"
+    },
+    {
+      "id": "f3_102",
+      "pattern": "cuidar a la gente y proteger al pueblo",
+      "weight": 0.7,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "eufemismo del lenguaje criminal",
+      "url": "https://www.infobae.com/mexico/2024/11/11/exrecluta-del-cjng-narra-como-se-unio-al-grupo-criminal-de-el-mencho-tras-caer-en-trampa-de-falsa-oferta-laboral/"
+    },
+    {
+      "id": "f3_103",
+      "pattern": "ya no puedes hablar con tu familia",
+      "weight": 0.9,
+      "source": "UNODC",
+      "regex": false,
+      "explanation": "aislamiento forzado, típico de trata o reclutamiento",
+      "url": "https://www.unodc.org/lpomex/es/articulos/2022/uso-y-abuso-de-la-tecnologa-en-el-enganche-a-vctimas-de-trata-de-personas.html"
+    },
+    {
+      "id": "f3_104",
+      "pattern": "era como matar animales",
+      "weight": 0.9,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "desensibilización progresiva ante la violencia",
+      "url": "https://www.infobae.com/mexico/2023/11/26/era-como-matar-animales-el-crudo-testimonio-de-mauricio-un-menor-reclutado-por-el-cartel-del-noroeste/"
+    },
+    {
+      "id": "f3_105",
+      "pattern": "maté a mi mejor amigo por lealtad al cartel",
+      "weight": 0.95,
+      "source": "Hora Cero",
+      "regex": false,
+      "explanation": "exigencia de prueba de lealtad criminal",
+      "url": "https://horacero.com.mx/nacional/mate-a-mi-mejor-amigo-por-lealtad-al-cartel-testimonio-del-reclutamiento-infantil-en-el-narco"
+    },
+    {
+      "id": "f3_118",
+      "pattern": "no robar no drogarse no pelearse",
+      "weight": 0.8,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "reglas de control durante el entrenamiento",
+      "url": "https://www.infobae.com/mexico/2025/03/19/no-robar-no-drogarse-y-no-pelearse-testimonios-revelan-las-reglas-en-escuela-de-sicarios-del-cjng/"
+    },
+    {
+      "id": "f3_119",
+      "pattern": "la única forma de salir es con los pies por delante",
+      "weight": 1.0,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "amenaza explícita de muerte",
+      "url": "https://www.infobae.com/mexico/2025/03/19/no-robar-no-drogarse-y-no-pelearse-testimonios-revelan-las-reglas-en-escuela-de-sicarios-del-cjng/"
+    },
+    {
+      "id": "f3_120",
+      "pattern": "no hagas preguntas",
+      "weight": 0.85,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "imposición de control total sobre tus acciones",
+      "url": "https://www.infobae.com/mexico/2025/03/19/no-robar-no-drogarse-y-no-pelearse-testimonios-revelan-las-reglas-en-escuela-de-sicarios-del-cjng/"
+    },
+    {
+      "id": "f3_122",
+      "pattern": "si no pagas te cerramos el negocio",
+      "weight": 0.9,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "extorsión con cobro forzoso",
+      "url": "https://www.infobae.com/america/mexico/2021/02/02/al-estilo-del-padrino-pero-con-una-cabeza-de-cerdo-mantas-y-redes-sociales-asi-amenazan-los-narcos-en-mexico/"
+    },
+    {
+      "id": "f3_123",
+      "pattern": "sabemos dónde van tus hijos a la escuela",
+      "weight": 0.95,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "amenaza dirigida hacia tus familiares",
+      "url": "https://www.infobae.com/america/mexico/2021/02/02/al-estilo-del-padrino-pero-con-una-cabeza-de-cerdo-mantas-y-redes-sociales-asi-amenazan-los-narcos-en-mexico/"
+    },
+    {
+      "id": "f3_124",
+      "pattern": "te encontraré atente a las consecuencias",
+      "weight": 0.85,
+      "source": "ADN40",
+      "regex": false,
+      "explanation": "amenaza explícita por WhatsApp",
+      "url": "https://www.adn40.mx/es-tendencia/extorsion-por-whatsapp-como-son-los-mensajes-que-reciben-las-victimas"
+    },
+    {
+      "id": "f3_125",
+      "pattern": "si no me mandas más fotos le cuento a todos",
+      "weight": 0.9,
+      "source": "Gobierno Guanajuato",
+      "regex": false,
+      "explanation": "amenaza de difusión masiva de contenido íntimo",
+      "url": "https://efectoprevencion.guanajuato.gob.mx/ninas-ninos-y-adolescentes/ciberacoso-sexual/"
+    },
+    {
+      "id": "f3_141",
+      "pattern": "eso nunca sucedió te lo estás inventando",
+      "weight": 0.75,
+      "source": "La Mente es Maravillosa",
+      "regex": false,
+      "explanation": "gaslighting / negación de hechos para confundir",
+      "url": "https://lamenteesmaravillosa.com/las-frases-mas-comunes-de-los-manipuladores/"
+    },
+    {
+      "id": "f3_142",
+      "pattern": "si me quisieras de verdad lo harías",
+      "weight": 0.8,
+      "source": "La Mente es Maravillosa",
+      "regex": false,
+      "explanation": "chantaje emocional para forzar un acto",
+      "url": "https://lamenteesmaravillosa.com/las-frases-mas-comunes-de-los-manipuladores/"
+    },
+    {
+      "id": "f3_143",
+      "pattern": "nadie más te va a querer como yo",
+      "weight": 0.8,
+      "source": "La Mente es Maravillosa",
+      "regex": false,
+      "explanation": "creación artificial de dependencia emocional",
+      "url": "https://lamenteesmaravillosa.com/las-frases-mas-comunes-de-los-manipuladores/"
+    },
+    {
+      "id": "f3_144",
+      "pattern": "la culpa es tuya por hacerme enojar",
+      "weight": 0.75,
+      "source": "La Mente es Maravillosa",
+      "regex": false,
+      "explanation": "culpabilización para mantener el sometimiento",
+      "url": "https://lamenteesmaravillosa.com/las-frases-mas-comunes-de-los-manipuladores/"
+    },
+    {
+      "id": "f3_145",
+      "pattern": "estás exagerando no es para tanto",
+      "weight": 0.7,
+      "source": "La Mente es Maravillosa",
+      "regex": false,
+      "explanation": "minimización de la gravedad para reducir tu resistencia",
+      "url": "https://lamenteesmaravillosa.com/las-frases-mas-comunes-de-los-manipuladores/"
+    },
+    {
+      "id": "f3_168",
+      "pattern": "te amenazaron con publicar información personal",
+      "weight": 0.8,
+      "source": "INEGI/REDIM",
+      "regex": false,
+      "explanation": "amenaza de revelar tu identidad o ubicación pública",
+      "url": "https://blog.derechosinfancia.org.mx/2025/08/14/ciberacoso-de-adolescentes-en-mexico-2017-2024/"
+    },
+    {
+      "id": "f3_169",
+      "pattern": "hicimos un grupo para exhibirte",
+      "weight": 0.8,
+      "source": "SSC/CDMX",
+      "regex": false,
+      "explanation": "ciberbullying con potencial de derivar a coerción",
+      "url": "https://www.ssc.cdmx.gob.mx/comunicacion/nota/1173-la-policia-cibernetica-de-la-ssc-alerta-sobre-grupos-en-redes-sociales-que-incitan-el-ciberbullying"
+    },
+    {
+      "id": "f3_170",
+      "pattern": "ya pagué tu deuda ahora tú me pagas a mí",
+      "weight": 0.9,
+      "source": "UNODC",
+      "regex": false,
+      "explanation": "servidumbre por deuda inducida",
+      "url": null
+    },
+    {
+      "id": "f3_188",
+      "pattern": "ya tenemos tu video, no puedes rajarte",
+      "weight": 0.95,
+      "source": "CSIS/derivado 2025",
+      "regex": false,
+      "explanation": "señal de uso del video de lealtad inicial como material de chantaje",
+      "url": "https://www.csis.org/analysis/role-social-media-cartel-recruitment"
+    }
+  ],
+  "whitelist": []
+}

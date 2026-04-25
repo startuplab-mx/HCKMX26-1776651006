@@ -1,0 +1,513 @@
+{
+  "phase": "enganche",
+  "phase_name": "Enganche",
+  "description": "Patrones de alta confiabilidad importados desde dataset_expansion_results.csv (Marco · expansión nocturna).",
+  "_note": "ETL-generated. Edits must go through scripts/etl_dataset_to_keywords.py to stay reproducible.",
+  "patterns": [
+    {
+      "id": "f2_091",
+      "pattern": "hospedaje pagos y entrenamiento",
+      "weight": 0.75,
+      "source": "Colmex/Infobae",
+      "regex": false,
+      "explanation": "ofrecimiento de incentivo material para captar",
+      "url": "https://www.infobae.com/mexico/2025/04/18/belicones-y-trabajo-para-la-mana-las-frases-en-tiktok-que-usa-el-narco-para-el-reclutamiento-criminal-de-jovenes/"
+    },
+    {
+      "id": "f2_093",
+      "pattern": "únete a mi equipo de Roblox",
+      "weight": 0.65,
+      "source": "Milenio",
+      "regex": false,
+      "explanation": "contacto inicial vía videojuego",
+      "url": "https://www.milenio.com/policia/roblox-crimen-organizado-recluta-difunde-mensajes-en-videojuego"
+    },
+    {
+      "id": "f2_096",
+      "pattern": "escenarios narco en Roblox",
+      "weight": 0.6,
+      "source": "Milenio",
+      "regex": false,
+      "explanation": "propaganda criminal dentro de plataformas de videojuego",
+      "url": "https://www.milenio.com/policia/roblox-crimen-organizado-recluta-difunde-mensajes-en-videojuego"
+    },
+    {
+      "id": "f2_099",
+      "pattern": "te mando diamantes en Free Fire",
+      "weight": 0.7,
+      "source": "Vanguardia",
+      "regex": false,
+      "explanation": "ofrecimiento de bienes virtuales en videojuegos",
+      "url": "https://vanguardia.com.mx/noticias/mexico/carteles-usan-videojuegos-como-free-fire-para-reclutar-ninos-y-adolescentes-AD13892561"
+    },
+    {
+      "id": "f2_100",
+      "pattern": "gallo y pizza en juegos Roblox",
+      "weight": 0.65,
+      "source": "Milenio",
+      "regex": false,
+      "explanation": "propaganda criminal dentro de plataformas de videojuego",
+      "url": "https://www.milenio.com/policia/roblox-crimen-organizado-recluta-difunde-mensajes-en-videojuego"
+    },
+    {
+      "id": "f2_101",
+      "pattern": "nos gustan las mismas cosas vamos a ser buenos amigos",
+      "weight": 0.65,
+      "source": "Derecho de la Red",
+      "regex": false,
+      "explanation": "construcción artificial de confianza",
+      "url": "https://derechodelared.com/las-frases-mas-comunes-del-grooming/"
+    },
+    {
+      "id": "f2_102",
+      "pattern": "pareces triste cuéntame qué te pasa",
+      "weight": 0.7,
+      "source": "Derecho de la Red",
+      "regex": false,
+      "explanation": "perfilamiento del menor para identificar vulnerabilidades",
+      "url": "https://derechodelared.com/las-frases-mas-comunes-del-grooming/"
+    },
+    {
+      "id": "f2_103",
+      "pattern": "si te envío una foto mía me envías una tuya",
+      "weight": 0.75,
+      "source": "Derecho de la Red",
+      "regex": false,
+      "explanation": "perfilamiento del menor para identificar vulnerabilidades",
+      "url": "https://derechodelared.com/las-frases-mas-comunes-del-grooming/"
+    },
+    {
+      "id": "f2_104",
+      "pattern": "eres el amor de mi vida",
+      "weight": 0.65,
+      "source": "Derecho de la Red",
+      "regex": false,
+      "explanation": "manipulación emocional clásica de grooming",
+      "url": "https://derechodelared.com/las-frases-mas-comunes-del-grooming/"
+    },
+    {
+      "id": "f2_105",
+      "pattern": "nunca te pediré algo que no quieras hacer",
+      "weight": 0.7,
+      "source": "Derecho de la Red",
+      "regex": false,
+      "explanation": "manipulación emocional clásica de grooming",
+      "url": "https://derechodelared.com/las-frases-mas-comunes-del-grooming/"
+    },
+    {
+      "id": "f2_106",
+      "pattern": "diles a tus papás que vas a hacer un trabajo",
+      "weight": 0.8,
+      "source": "Derecho de la Red",
+      "regex": false,
+      "explanation": "intento de aislar al menor de su red de apoyo",
+      "url": "https://derechodelared.com/las-frases-mas-comunes-del-grooming/"
+    },
+    {
+      "id": "f2_107",
+      "pattern": "cuál es tu película favorita",
+      "weight": 0.5,
+      "source": "Derecho de la Red",
+      "regex": false,
+      "explanation": "perfilamiento del menor para identificar vulnerabilidades",
+      "url": "https://derechodelared.com/las-frases-mas-comunes-del-grooming/"
+    },
+    {
+      "id": "f2_108",
+      "pattern": "tú pones los límites cuando quieras que paremos dímelo",
+      "weight": 0.7,
+      "source": "Derecho de la Red",
+      "regex": false,
+      "explanation": "manipulación emocional clásica de grooming",
+      "url": "https://derechodelared.com/las-frases-mas-comunes-del-grooming/"
+    },
+    {
+      "id": "f2_110",
+      "pattern": "te citamos en la central de autobuses",
+      "weight": 0.85,
+      "source": "Proceso",
+      "regex": false,
+      "explanation": "fijación de punto de encuentro presencial",
+      "url": "https://www.proceso.com.mx/nacional/2026/4/17/policia-de-jalisco-evita-reclutamiento-de-dos-menores-contactados-por-crimen-organizado-en-tiktok-372393.html"
+    },
+    {
+      "id": "f2_111",
+      "pattern": "te recogemos en un vehículo",
+      "weight": 0.85,
+      "source": "Proceso",
+      "regex": false,
+      "explanation": "fijación de punto de encuentro presencial",
+      "url": "https://www.proceso.com.mx/nacional/2026/4/17/policia-de-jalisco-evita-reclutamiento-de-dos-menores-contactados-por-crimen-organizado-en-tiktok-372393.html"
+    },
+    {
+      "id": "f2_118",
+      "pattern": "ven a una entrevista de trabajo",
+      "weight": 0.75,
+      "source": "El Imparcial",
+      "regex": false,
+      "explanation": "enganche disfrazado como proceso laboral",
+      "url": "https://www.elimparcial.com/mexico/2026/04/24/tres-adolescentes-desaparecen-en-tijuana-tras-acudir-a-una-oferta-de-trabajo-lo-que-se-sabe-y-como-evitar-caer-en-enganos/"
+    },
+    {
+      "id": "f2_119",
+      "pattern": "te trasladamos a otro estado",
+      "weight": 0.8,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "intento de mover la conversación a un punto de captación",
+      "url": "https://www.infobae.com/mexico/2026/04/19/ofertas-de-trabajo-falsas-en-redes-sociales-una-trampa-que-puede-terminar-en-violacion-o-secuestro/"
+    },
+    {
+      "id": "f2_120",
+      "pattern": "Uber pagado para el traslado a la entrevista",
+      "weight": 0.75,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "enganche disfrazado como proceso laboral",
+      "url": "https://www.infobae.com/mexico/2024/11/11/exrecluta-del-cjng-narra-como-se-unio-al-grupo-criminal-de-el-mencho-tras-caer-en-trampa-de-falsa-oferta-laboral/"
+    },
+    {
+      "id": "f2_121",
+      "pattern": "breve entrenamiento de tres días",
+      "weight": 0.75,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "enganche disfrazado como proceso laboral",
+      "url": "https://www.infobae.com/mexico/2024/11/11/exrecluta-del-cjng-narra-como-se-unio-al-grupo-criminal-de-el-mencho-tras-caer-en-trampa-de-falsa-oferta-laboral/"
+    },
+    {
+      "id": "f2_122",
+      "pattern": "CD9 o Code 9",
+      "weight": 0.65,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "código de seguridad para evadir adultos",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_123",
+      "pattern": "GNOC",
+      "weight": 0.85,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "explotación operativa o sexual del menor",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_124",
+      "pattern": "LMIRL",
+      "weight": 0.8,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "escalamiento gradual hacia conducta de mayor riesgo",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_125",
+      "pattern": "NP4NP",
+      "weight": 0.85,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "explotación operativa o sexual del menor",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_126",
+      "pattern": "P911 o PIR",
+      "weight": 0.6,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "código de seguridad para evadir adultos",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_127",
+      "pattern": "TDTM",
+      "weight": 0.75,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "escalamiento gradual hacia conducta de mayor riesgo",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_128",
+      "pattern": "1174",
+      "weight": 0.7,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "código numérico predatorio",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_129",
+      "pattern": "143",
+      "weight": 0.5,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "manipulación emocional clásica de grooming",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_130",
+      "pattern": "sneaky link",
+      "weight": 0.7,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "escalamiento gradual hacia conducta de mayor riesgo",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_131",
+      "pattern": "catch a case",
+      "weight": 0.8,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "señal predatoria documentada (AFP)",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_132",
+      "pattern": "🍑 emoji durazno",
+      "weight": 0.6,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "emoji codificado por agresores sexuales (AFP)",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_133",
+      "pattern": "🤤 emoji cara babeando",
+      "weight": 0.6,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "emoji codificado por agresores sexuales (AFP)",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_134",
+      "pattern": "🍜 emoji fideos",
+      "weight": 0.7,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "emoji codificado por agresores sexuales (AFP)",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_135",
+      "pattern": "🌽 emoji maíz",
+      "weight": 0.55,
+      "source": "AFP",
+      "regex": false,
+      "explanation": "intento de evadir filtros con leet speak",
+      "url": "https://www.afp.gov.au/news-centre/media-release/afp-releases-glossary-terms-used-some-sex-predators-groom-children"
+    },
+    {
+      "id": "f2_136",
+      "pattern": "se fue con el novio",
+      "weight": 0.7,
+      "source": "Consejo Ciudadano",
+      "regex": false,
+      "explanation": "normalización del lenguaje propio de la trata",
+      "url": "https://consejociudadanomx.org/contenido/detectamos-nuevos-medios-de-captacion-en-trata-de-personas"
+    },
+    {
+      "id": "f2_137",
+      "pattern": "ven conmigo te voy a cuidar",
+      "weight": 0.75,
+      "source": "UNODC",
+      "regex": false,
+      "explanation": "enganche con discurso sentimental o de pareja",
+      "url": "https://www.unodc.org/lpomex/es/articulos/2022/uso-y-abuso-de-la-tecnologa-en-el-enganche-a-vctimas-de-trata-de-personas.html"
+    },
+    {
+      "id": "f2_138",
+      "pattern": "te ofrezco trabajo de modelo",
+      "weight": 0.75,
+      "source": "Consejo Ciudadano",
+      "regex": false,
+      "explanation": "oferta laboral señuelo asociada a trata de personas",
+      "url": "https://consejociudadanomx.org/contenido/detectamos-nuevos-medios-de-captacion-en-trata-de-personas"
+    },
+    {
+      "id": "f2_139",
+      "pattern": "vámonos a vivir juntos",
+      "weight": 0.8,
+      "source": "Lado B",
+      "regex": false,
+      "explanation": "señal de aislamiento trata",
+      "url": "https://www.ladobe.com.mx/2019/11/de-amor-mentiras-y-trabajo-los-metodos-de-trata/"
+    },
+    {
+      "id": "f2_140",
+      "pattern": "primero vigilar después entregar mensajes",
+      "weight": 0.75,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "escalamiento gradual de tareas de complicidad",
+      "url": "https://www.infobae.com/mexico/2025/12/25/juguetes-dulces-y-reclutamiento-de-menores-el-trasfondo-de-la-navidad-para-el-crimen-organizado-en-mexico/"
+    },
+    {
+      "id": "f2_141",
+      "pattern": "entrevista de trabajo con examen médico",
+      "weight": 0.7,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "enganche disfrazado como proceso laboral",
+      "url": "https://www.infobae.com/mexico/2025/04/06/estas-son-las-cuatro-modalidades-de-reclutamiento-que-el-cjng-utiliza-para-hacer-crecer-sus-ejercitos/"
+    },
+    {
+      "id": "f2_142",
+      "pattern": "transferimos a Zacatecas para entrenamiento",
+      "weight": 0.8,
+      "source": "Milenio",
+      "regex": false,
+      "explanation": "indicación de traslado a otro estado para 'capacitación'",
+      "url": "https://www.milenio.com/policia/cjng-asi-reclutan-personas-en-redes-sociales-con-ofertas-laborales"
+    },
+    {
+      "id": "f2_162",
+      "pattern": "lo siento quién eres te encontré en mi libreta",
+      "weight": 0.6,
+      "source": "ADN40",
+      "regex": false,
+      "explanation": "contacto inicial con técnica de estafa",
+      "url": "https://www.adn40.mx/es-tendencia/extorsion-por-whatsapp-como-son-los-mensajes-que-reciben-las-victimas"
+    },
+    {
+      "id": "f2_163",
+      "pattern": "reunámonos y divirtámonos grupo WhatsApp",
+      "weight": 0.6,
+      "source": "ADN40",
+      "regex": false,
+      "explanation": "invitación a un grupo cerrado",
+      "url": "https://www.adn40.mx/es-tendencia/extorsion-por-whatsapp-como-son-los-mensajes-que-reciben-las-victimas"
+    },
+    {
+      "id": "f2_164",
+      "pattern": "soy otro niño como tú",
+      "weight": 0.75,
+      "source": "Gobierno Guanajuato",
+      "regex": false,
+      "explanation": "suplantación de edad para generar confianza",
+      "url": "https://efectoprevencion.guanajuato.gob.mx/ninas-ninos-y-adolescentes/ciberacoso-sexual/"
+    },
+    {
+      "id": "f2_165",
+      "pattern": "te ofrezco ser mi novio/novia",
+      "weight": 0.7,
+      "source": "UNAM",
+      "regex": false,
+      "explanation": "enganche con discurso sentimental o de pareja",
+      "url": "https://www.gaceta.unam.mx/de-que-se-trata-eso-del-grooming-y-como-cuidamos-a-las-infancias-y-adolescencias/"
+    },
+    {
+      "id": "f2_166",
+      "pattern": "esto es un secreto entre nosotros",
+      "weight": 0.8,
+      "source": "UNAM",
+      "regex": false,
+      "explanation": "intento de aislar al menor de su red de apoyo",
+      "url": "https://www.gaceta.unam.mx/de-que-se-trata-eso-del-grooming-y-como-cuidamos-a-las-infancias-y-adolescencias/"
+    },
+    {
+      "id": "f2_167",
+      "pattern": "me voy a casar contigo",
+      "weight": 0.75,
+      "source": "Lado B",
+      "regex": false,
+      "explanation": "enganche con discurso sentimental o de pareja",
+      "url": "https://www.ladobe.com.mx/2019/11/de-amor-mentiras-y-trabajo-los-metodos-de-trata/"
+    },
+    {
+      "id": "f2_168",
+      "pattern": "te voy a sacar de aquí",
+      "weight": 0.75,
+      "source": "UNODC",
+      "regex": false,
+      "explanation": "enganche con discurso sentimental o de pareja",
+      "url": "https://www.unodc.org/lpomex/es/articulos/2022/uso-y-abuso-de-la-tecnologa-en-el-enganche-a-vctimas-de-trata-de-personas.html"
+    },
+    {
+      "id": "f2_192",
+      "pattern": "descarga esta app que se borran los mensajes",
+      "weight": 0.7,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "intento de mover la conversación a app cifrada",
+      "url": "https://www.infobae.com/mexico/2024/05/08/estas-son-las-aplicaciones-que-usan-el-cartel-de-sinaloa-y-los-chapitos-para-comunicarse-sin-dejar-rastro/"
+    },
+    {
+      "id": "f2_193",
+      "pattern": "usa Wickr Me para hablar",
+      "weight": 0.7,
+      "source": "Infobae/DEA",
+      "regex": false,
+      "explanation": "intento de mover la conversación a app cifrada",
+      "url": "https://www.infobae.com/mexico/2024/05/08/estas-son-las-aplicaciones-que-usan-el-cartel-de-sinaloa-y-los-chapitos-para-comunicarse-sin-dejar-rastro/"
+    },
+    {
+      "id": "f2_215",
+      "pattern": "te vamos a funear en redes",
+      "weight": 0.65,
+      "source": "SSC/CDMX",
+      "regex": false,
+      "explanation": "ciberbullying con potencial de derivar a coerción",
+      "url": "https://www.ssc.cdmx.gob.mx/comunicacion/nota/1173-la-policia-cibernetica-de-la-ssc-alerta-sobre-grupos-en-redes-sociales-que-incitan-el-ciberbullying"
+    },
+    {
+      "id": "f2_239",
+      "pattern": "te mando el link del grupo de WhatsApp",
+      "weight": 0.9,
+      "source": "CSIS 2025",
+      "regex": false,
+      "explanation": "señal de migración de contacto inicial a grupo privado de whatsapp",
+      "url": "https://www.csis.org/analysis/role-social-media-cartel-recruitment"
+    },
+    {
+      "id": "f2_241",
+      "pattern": "graba un video diciendo tu nombre y que vienes por voluntad",
+      "weight": 0.95,
+      "source": "CSIS 2025",
+      "regex": false,
+      "explanation": "señal de solicitud de video autoincriminatorio como mecanismo de control",
+      "url": "https://www.csis.org/analysis/role-social-media-cartel-recruitment"
+    },
+    {
+      "id": "f2_242",
+      "pattern": "te vamos a mandar a un campo de entrenamiento",
+      "weight": 0.9,
+      "source": "CSIS 2025",
+      "regex": false,
+      "explanation": "señal de promesa/amenaza de entrenamiento paramilitar",
+      "url": "https://www.csis.org/analysis/role-social-media-cartel-recruitment"
+    },
+    {
+      "id": "f2_244",
+      "pattern": "ya es hora de que nos veamos en persona",
+      "weight": 0.9,
+      "source": "LatinTimes/Oaxaca 2025",
+      "regex": false,
+      "explanation": "señal de transición del contacto digital al encuentro físico",
+      "url": "https://www.latintimes.com/tiktok-has-become-main-platform-cartels-use-recruit-teenagers-mexico-report-finds-592198"
+    },
+    {
+      "id": "f2_253",
+      "pattern": "no le digas a nadie de esto, es entre tú y yo",
+      "weight": 0.9,
+      "source": "Publimetro/INAI 2025",
+      "regex": false,
+      "explanation": "señal de imposición de secreto como indicador clásico de grooming",
+      "url": "https://www.publimetro.com.mx/noticias/2025/01/06/grooming-como-prevenir-el-ciberacoso-en-ninos-y-adolescentes-y-detectar-senales-de-alerta/"
+    },
+    {
+      "id": "f2_254",
+      "pattern": "eres muy maduro para tu edad",
+      "weight": 0.85,
+      "source": "Publimetro/UNICEF 2025",
+      "regex": false,
+      "explanation": "señal de halago manipulativo clásico de grooming para generar confianza",
+      "url": "https://www.publimetro.com.mx/noticias/2025/01/06/grooming-como-prevenir-el-ciberacoso-en-ninos-y-adolescentes-y-detectar-senales-de-alerta/"
+    }
+  ],
+  "whitelist": []
+}

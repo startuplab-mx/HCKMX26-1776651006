@@ -1,0 +1,225 @@
+{
+  "phase": "explotacion",
+  "phase_name": "Explotacion",
+  "description": "Patrones de alta confiabilidad importados desde dataset_expansion_results.csv (Marco · expansión nocturna).",
+  "_note": "ETL-generated. Edits must go through scripts/etl_dataset_to_keywords.py to stay reproducible.",
+  "patterns": [
+    {
+      "id": "f4_101",
+      "pattern": "necesitamos punteros",
+      "weight": 0.8,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "reclutamiento para rol operativo del cártel",
+      "url": "https://www.infobae.com/mexico/2025/11/15/desde-el-halcon-hasta-el-patron-asi-funciona-la-estructura-interna-de-los-carteles-mexicanos/"
+    },
+    {
+      "id": "f4_102",
+      "pattern": "necesitamos estacas",
+      "weight": 0.85,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "reclutamiento para rol operativo del cártel",
+      "url": "https://www.infobae.com/mexico/2025/11/15/desde-el-halcon-hasta-el-patron-asi-funciona-la-estructura-interna-de-los-carteles-mexicanos/"
+    },
+    {
+      "id": "f4_103",
+      "pattern": "zancudo",
+      "weight": 0.85,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "reclutamiento dirigido a menores de edad",
+      "url": "https://www.infobae.com/mexico/2025/11/15/desde-el-halcon-hasta-el-patron-asi-funciona-la-estructura-interna-de-los-carteles-mexicanos/"
+    },
+    {
+      "id": "f4_104",
+      "pattern": "necesitamos droneros",
+      "weight": 0.75,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "reclutamiento para rol operativo del cártel",
+      "url": "https://www.infobae.com/mexico/2025/11/15/desde-el-halcon-hasta-el-patron-asi-funciona-la-estructura-interna-de-los-carteles-mexicanos/"
+    },
+    {
+      "id": "f4_105",
+      "pattern": "necesitamos troqueros",
+      "weight": 0.7,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "reclutamiento para rol operativo del cártel",
+      "url": "https://www.infobae.com/mexico/2025/11/15/desde-el-halcon-hasta-el-patron-asi-funciona-la-estructura-interna-de-los-carteles-mexicanos/"
+    },
+    {
+      "id": "f4_106",
+      "pattern": "gente del cerro",
+      "weight": 0.7,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "reclutamiento para rol operativo del cártel",
+      "url": "https://www.infobae.com/mexico/2025/11/15/desde-el-halcon-hasta-el-patron-asi-funciona-la-estructura-interna-de-los-carteles-mexicanos/"
+    },
+    {
+      "id": "f4_107",
+      "pattern": "se buscan escoltas",
+      "weight": 0.75,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "reclutamiento para rol operativo del cártel",
+      "url": "https://www.infobae.com/mexico/2025/11/15/desde-el-halcon-hasta-el-patron-asi-funciona-la-estructura-interna-de-los-carteles-mexicanos/"
+    },
+    {
+      "id": "f4_108",
+      "pattern": "jefe de plaza",
+      "weight": 0.7,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "referencia a jerarquía interna del cártel",
+      "url": "https://www.infobae.com/mexico/2025/11/15/desde-el-halcon-hasta-el-patron-asi-funciona-la-estructura-interna-de-los-carteles-mexicanos/"
+    },
+    {
+      "id": "f4_119",
+      "pattern": "encobijado",
+      "weight": 0.8,
+      "source": "Animal Político",
+      "regex": false,
+      "explanation": "señal de violencia",
+      "url": "https://animalpolitico.com/2017/09/tacha-buchon-encobijado-mundo-los-narcos-se-ha-infiltrado-espanol-mexico"
+    },
+    {
+      "id": "f4_120",
+      "pattern": "narcomanta",
+      "weight": 0.7,
+      "source": "Animal Político",
+      "regex": false,
+      "explanation": "comunicación criminal pública (narcomanta)",
+      "url": "https://animalpolitico.com/2017/09/tacha-buchon-encobijado-mundo-los-narcos-se-ha-infiltrado-espanol-mexico"
+    },
+    {
+      "id": "f4_121",
+      "pattern": "plaza",
+      "weight": 0.65,
+      "source": "Animal Político",
+      "regex": false,
+      "explanation": "señal de territorio",
+      "url": "https://animalpolitico.com/2017/09/tacha-buchon-encobijado-mundo-los-narcos-se-ha-infiltrado-espanol-mexico"
+    },
+    {
+      "id": "f4_123",
+      "pattern": "código 14 pecho tierra código 15 posición de tiro",
+      "weight": 0.8,
+      "source": "Infobae",
+      "regex": false,
+      "explanation": "instrucción militar paramilitar",
+      "url": "https://www.infobae.com/mexico/2024/11/11/exrecluta-del-cjng-narra-como-se-unio-al-grupo-criminal-de-el-mencho-tras-caer-en-trampa-de-falsa-oferta-laboral/"
+    },
+    {
+      "id": "f4_156",
+      "pattern": "vamos a la playa",
+      "weight": 0.7,
+      "source": "Xataka",
+      "regex": false,
+      "explanation": "código operativo para concertar cita",
+      "url": "https://www.xataka.com.mx/telecomunicaciones/estas-son-las-claves-y-metodos-que-usan-los-narcotraficantes-para-comunicarse"
+    },
+    {
+      "id": "f4_157",
+      "pattern": "hace calor",
+      "weight": 0.65,
+      "source": "Xataka",
+      "regex": false,
+      "explanation": "código operativo de confirmación",
+      "url": "https://www.xataka.com.mx/telecomunicaciones/estas-son-las-claves-y-metodos-que-usan-los-narcotraficantes-para-comunicarse"
+    },
+    {
+      "id": "f4_158",
+      "pattern": "la cerveza está fría",
+      "weight": 0.7,
+      "source": "Xataka",
+      "regex": false,
+      "explanation": "señal de código tránsito",
+      "url": "https://www.xataka.com.mx/telecomunicaciones/estas-son-las-claves-y-metodos-que-usan-los-narcotraficantes-para-comunicarse"
+    },
+    {
+      "id": "f4_159",
+      "pattern": "estoy con mi esposa",
+      "weight": 0.65,
+      "source": "Xataka",
+      "regex": false,
+      "explanation": "código operativo de retorno o regreso",
+      "url": "https://www.xataka.com.mx/telecomunicaciones/estas-son-las-claves-y-metodos-que-usan-los-narcotraficantes-para-comunicarse"
+    },
+    {
+      "id": "f4_160",
+      "pattern": "tengo diarrea",
+      "weight": 0.65,
+      "source": "Xataka",
+      "regex": false,
+      "explanation": "señal de código verificación",
+      "url": "https://www.xataka.com.mx/telecomunicaciones/estas-son-las-claves-y-metodos-que-usan-los-narcotraficantes-para-comunicarse"
+    },
+    {
+      "id": "f4_161",
+      "pattern": "Mercedes",
+      "weight": 0.65,
+      "source": "Xataka",
+      "regex": false,
+      "explanation": "código operativo de transacción completada",
+      "url": "https://www.xataka.com.mx/telecomunicaciones/estas-son-las-claves-y-metodos-que-usan-los-narcotraficantes-para-comunicarse"
+    },
+    {
+      "id": "f4_162",
+      "pattern": "hamburguesa",
+      "weight": 0.6,
+      "source": "Xataka",
+      "regex": false,
+      "explanation": "código operativo de faltante u objeto no encontrado",
+      "url": "https://www.xataka.com.mx/telecomunicaciones/estas-son-las-claves-y-metodos-que-usan-los-narcotraficantes-para-comunicarse"
+    },
+    {
+      "id": "f4_163",
+      "pattern": "me gusta tu hermana",
+      "weight": 0.65,
+      "source": "Xataka",
+      "regex": false,
+      "explanation": "código operativo de problema en operación",
+      "url": "https://www.xataka.com.mx/telecomunicaciones/estas-son-las-claves-y-metodos-que-usan-los-narcotraficantes-para-comunicarse"
+    },
+    {
+      "id": "f4_164",
+      "pattern": "vamos al cine",
+      "weight": 0.7,
+      "source": "Xataka",
+      "regex": false,
+      "explanation": "código operativo de seguimiento o rastreo",
+      "url": "https://www.xataka.com.mx/telecomunicaciones/estas-son-las-claves-y-metodos-que-usan-los-narcotraficantes-para-comunicarse"
+    },
+    {
+      "id": "f4_165",
+      "pattern": "soda e hielo",
+      "weight": 0.75,
+      "source": "Infobae/DEA",
+      "regex": false,
+      "explanation": "código operativo del narcomenudeo",
+      "url": "https://www.infobae.com/mexico/2024/05/08/estas-son-las-aplicaciones-que-usan-el-cartel-de-sinaloa-y-los-chapitos-para-comunicarse-sin-dejar-rastro/"
+    },
+    {
+      "id": "f4_166",
+      "pattern": "100 200 500 (cantidades codificadas)",
+      "weight": 0.7,
+      "source": "DEA/Xataka",
+      "regex": false,
+      "explanation": "código operativo de cantidad o dosis",
+      "url": "https://www.xataka.com.mx/telecomunicaciones/estas-son-las-claves-y-metodos-que-usan-los-narcotraficantes-para-comunicarse"
+    },
+    {
+      "id": "f4_167",
+      "pattern": "color del día lunes rojo martes amarillo",
+      "weight": 0.65,
+      "source": "Xataka",
+      "regex": false,
+      "explanation": "código operativo basado en tiempo",
+      "url": "https://www.xataka.com.mx/telecomunicaciones/estas-son-las-claves-y-metodos-que-usan-los-narcotraficantes-para-comunicarse"
+    }
+  ],
+  "whitelist": []
+}
