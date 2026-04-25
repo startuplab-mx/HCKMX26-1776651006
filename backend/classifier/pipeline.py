@@ -28,12 +28,18 @@ import hashlib
 import os
 from typing import Any
 
+from .escalation import EscalationDetector
 from .heuristic import HeuristicClassifier, PHASE_NAMES
 from .llm_layer import LLMLayer
 
 OVERRIDE_THRESHOLD = float(os.getenv("OVERRIDE_THRESHOLD", "0.80"))
 GREY_ZONE_MIN = float(os.getenv("LLM_GREY_ZONE_MIN", "0.3"))
 GREY_ZONE_MAX = float(os.getenv("LLM_GREY_ZONE_MAX", "0.6"))
+
+# When the escalation detector reports rapid growth or phase progression,
+# bump ATENCION → PELIGRO. The hackathon UX rule: trajectory matters as
+# much as any single message.
+ESCALATION_LEVEL_BUMP_VELOCITY = 0.20
 
 PHASE_WEIGHTS = {"phase1": 0.15, "phase2": 0.25, "phase3": 0.35, "phase4": 0.25}
 
@@ -65,20 +71,52 @@ def text_hash(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def build_why(explanations: list[dict[str, str]], limit: int = 6) -> list[str]:
+    """Turn the heuristic's `explanations` into short human-readable lines.
+
+    Cap at `limit` and dedupe so the bot's WhatsApp message stays
+    readable. Sorted by severity (alta first) so the most damning
+    signals show up at the top.
+    """
+    severity_rank = {"alta": 0, "media": 1, "baja": 2}
+    ordered = sorted(
+        explanations, key=lambda e: severity_rank.get(e.get("severity", "baja"), 3)
+    )
+    why: list[str] = []
+    seen: set[str] = set()
+    for exp in ordered:
+        line = f"Se detectó {exp['what']} (fase: {exp['type']})"
+        if line not in seen:
+            seen.add(line)
+            why.append(line)
+        if len(why) >= limit:
+            break
+    return why
+
+
 class Pipeline:
     def __init__(
         self,
         heuristic: HeuristicClassifier | None = None,
         llm: LLMLayer | None = None,
+        escalation: EscalationDetector | None = None,
     ) -> None:
         self.heuristic = heuristic or HeuristicClassifier()
         self.llm = llm or LLMLayer()
+        self.escalation = escalation  # set lazily by caller (needs DB)
 
-    def classify(self, text: str, use_llm: bool = True) -> dict[str, Any]:
+    def classify(
+        self,
+        text: str,
+        use_llm: bool = True,
+        session_id: str | None = None,
+        source_type: str = "text",
+    ) -> dict[str, Any]:
         h = self.heuristic.classify(text)
         phase_scores: dict[str, float] = h["phase_scores"]
         categories: list[str] = h["categories"]
         pattern_ids: list[str] = h.get("matched_pattern_ids", [])
+        explanations: list[dict[str, str]] = h.get("explanations", [])
 
         if (
             phase_scores["phase3"] >= OVERRIDE_THRESHOLD
@@ -89,16 +127,19 @@ class Pipeline:
                 if phase_scores["phase3"] >= phase_scores["phase4"]
                 else "explotacion"
             )
-            return self._build_result(
+            return self._finalize(
                 risk_score=1.0,
                 phase_scores=phase_scores,
                 categories=categories,
                 pattern_ids=pattern_ids,
+                explanations=explanations,
                 phase_detected=override_phase,
                 override=True,
                 llm_used=False,
                 llm_rationale=None,
                 text=text,
+                session_id=session_id,
+                source_type=source_type,
             )
 
         weighted = sum(phase_scores[k] * w for k, w in PHASE_WEIGHTS.items())
@@ -124,38 +165,81 @@ class Pipeline:
                 llm_used = True
                 llm_rationale = llm_result["rationale"]
 
-        return self._build_result(
+        return self._finalize(
             risk_score=final_score,
             phase_scores=phase_scores,
             categories=categories,
             pattern_ids=pattern_ids,
+            explanations=explanations,
             phase_detected=dominant_phase(phase_scores),
             override=False,
             llm_used=llm_used,
             llm_rationale=llm_rationale,
             text=text,
+            session_id=session_id,
+            source_type=source_type,
         )
 
-    def _build_result(
+    def _finalize(
         self,
+        *,
         risk_score: float,
         phase_scores: dict[str, float],
         categories: list[str],
         pattern_ids: list[str],
+        explanations: list[dict[str, str]],
         phase_detected: str,
         override: bool,
         llm_used: bool,
         llm_rationale: str | None,
         text: str,
+        session_id: str | None,
+        source_type: str,
     ) -> dict[str, Any]:
+        risk_level = risk_level_for(risk_score)
+        escalation = None
+        escalation_override = False
+
+        if session_id and self.escalation is not None:
+            escalation = self.escalation.analyze_escalation(
+                session_id=session_id,
+                current_score=risk_score,
+                current_level=risk_level,
+                current_phase=phase_detected,
+                source_type=source_type,
+            )
+            # Trajectory override: a string of ATENCION messages that's
+            # rapidly climbing should escalate to PELIGRO before the user
+            # gets hurt. Keep override flag separate from the static
+            # phase3/phase4 override so we can label it correctly.
+            # Trajectory bump only triggers with at least 2 prior deltas
+            # (history_length >= 3). A single large jump from SEGURO is
+            # not enough — we want evidence that risk is sustained.
+            if (
+                risk_level == "ATENCION"
+                and escalation["alert_escalation"]
+                and escalation["history_length"] >= 3
+                and (
+                    escalation["velocity"] >= ESCALATION_LEVEL_BUMP_VELOCITY
+                    or escalation["phase_progression"]
+                )
+            ):
+                risk_score = max(risk_score, 0.75)
+                risk_level = "PELIGRO"
+                escalation_override = True
+
         return {
             "risk_score": round(risk_score, 4),
-            "risk_level": risk_level_for(risk_score),
+            "risk_level": risk_level,
             "phase_detected": phase_detected,
             "phase_scores": {k: round(v, 4) for k, v in phase_scores.items()},
             "categories": categories,
             "pattern_ids": pattern_ids,
+            "explanations": explanations,
+            "why": build_why(explanations),
             "override_triggered": override,
+            "escalation_override": escalation_override,
+            "escalation": escalation,
             "llm_used": llm_used,
             "llm_rationale": llm_rationale,
             "text_hash": text_hash(text),

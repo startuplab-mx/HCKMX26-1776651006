@@ -354,6 +354,7 @@ async function refreshContributions() {
   try {
     const stats = await jget('/contributions/stats');
     setText('contrib-total', stats.total_contributions);
+    setText('contribBannerNumber', stats.total_contributions);
     renderKvList('contrib-by-level', stats.by_level);
     renderKvList('contrib-by-platform', stats.by_platform);
     renderKvList('contrib-by-source', stats.by_source);
@@ -366,6 +367,32 @@ async function refreshContributions() {
   } catch (err) {
     console.error('contributions refresh failed', err);
   }
+}
+
+function colorForScore(s) {
+  if (s >= 0.7) return '#EF4444';
+  if (s >= 0.3) return '#EAB308';
+  return '#22C55E';
+}
+
+function renderRiskTimeline(alerts) {
+  const chart = document.getElementById('riskChart');
+  if (!chart) return;
+  const recent = (alerts || []).slice(0, 30).reverse();
+  if (recent.length === 0) {
+    chart.innerHTML = '<div class="text-xs text-white/40 italic m-auto">Aún no hay alertas registradas.</div>';
+    return;
+  }
+  chart.innerHTML = recent
+    .map((a) => {
+      const score = Number(a.risk_score) || 0;
+      const heightPct = Math.max(score * 100, 4);
+      const color = colorForScore(score);
+      const folio = `NAH-2026-${String(a.id).padStart(4, '0')}`;
+      const tip = `${folio} · ${a.risk_level} ${(score * 100).toFixed(0)}% · ${a.platform}`;
+      return `<div class="timeline-bar" style="height:${heightPct}%;background:${color};" title="${tip}"></div>`;
+    })
+    .join('');
 }
 
 async function refresh() {
@@ -385,6 +412,9 @@ async function refresh() {
 
     const qs = state.filterStatus ? `?limit=100&status=${state.filterStatus}` : '?limit=100';
     const alerts = await jget(`/alerts${qs}`);
+    // Mini risk-timeline (always shows the freshest 30 alerts unfiltered)
+    const allAlerts = state.filterStatus ? await jget('/alerts?limit=30') : alerts;
+    renderRiskTimeline(allAlerts);
     // Refresh open history in place.
     await Promise.all(
       [...state.expanded].map(async (id) => {

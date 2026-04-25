@@ -108,7 +108,27 @@ export const MESSAGES = {
   reporteListo: (folio) =>
     `📄 Tu reporte fue generado con folio *${folio}*. Puedes descargarlo desde el panel o pedirlo aquí.`,
 
-  // Legal context (Phase 4) -------------------------------------------
+  // Why + escalation (Phase 4 — diferenciación) ----------------------
+  porQue: (why = []) => {
+    if (!why.length) return null;
+    const lines = why.slice(0, 4).map((w, i) => `${i + 1}. ${w}`).join('\n');
+    return `🧠 *¿Por qué?*\n${lines}`;
+  },
+
+  escalamientoDetectado: (escalation) => {
+    if (!escalation || !escalation.alert_escalation) return null;
+    const history = (escalation.score_history || [])
+      .map((s) => `${Math.round(s * 100)}%`)
+      .join(' → ');
+    const lines = ['📈 *Escalamiento de riesgo detectado*'];
+    if (history) lines.push(`Historial: ${history}`);
+    if (escalation.description) lines.push(escalation.description);
+    if (escalation.phase_progression)
+      lines.push('Las fases de reclutamiento están progresando.');
+    return lines.join('\n');
+  },
+
+  // Legal context (Phase 3 / 4) ----------------------------------------
   // The bot keeps WhatsApp messages short. We cap actions at 5 and
   // authorities at 3 — the full list goes to the PDF report.
   guiaLegal: (legal) => {

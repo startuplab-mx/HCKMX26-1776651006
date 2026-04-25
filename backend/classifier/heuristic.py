@@ -36,11 +36,31 @@ PHASE_NAMES = {
     "phase4": "explotacion",
 }
 
+# Display labels for user-facing explanations / WhatsApp messages /
+# the panel "why?" view. Keep these capitalized + accented.
+PHASE_DISPLAY = {
+    "phase1": "Captación",
+    "phase2": "Enganche",
+    "phase3": "Coerción",
+    "phase4": "Explotación",
+}
+
 # Saturation factor: divides accumulated weights to produce the phase score.
 # At 1.0 each pattern's JSON weight maps directly to a per-phase score share, so
 # a single weight=1.0 pattern (e.g. an explicit death threat) saturates the
 # phase and triggers override; multi-pattern accumulation simply clamps to 1.0.
 SATURATION = 1.0
+
+
+# Generic, human-readable explanation per phase. Used as a fallback when a
+# pattern's JSON entry doesn't carry an `explanation` field. The bot turns
+# these into "Se detectó <what> (fase: <type>)" lines for the WA reply.
+DEFAULT_EXPLANATIONS: dict[str, str] = {
+    "captacion": "lenguaje de oferta económica o reclutamiento aspiracional",
+    "enganche": "intento de aislamiento o solicitud de datos personales",
+    "coercion": "lenguaje de amenaza, presión o intimidación",
+    "explotacion": "instrucción operativa, sextorsión o demanda económica",
+}
 
 
 def _normalize(text: str) -> str:
@@ -54,9 +74,9 @@ class HeuristicClassifier:
     def __init__(self, keywords_dir: Path | str = KEYWORDS_DIR) -> None:
         self.keywords_dir = Path(keywords_dir)
         self._phase_data: dict[str, dict[str, Any]] = {}
-        # (compiled, weight, source, pattern_id)
+        # (compiled, weight, source, pattern_id, explanation)
         self._compiled_patterns: dict[
-            str, list[tuple[re.Pattern[str], float, str, str]]
+            str, list[tuple[re.Pattern[str], float, str, str, str]]
         ] = {}
         self._whitelists: dict[str, list[re.Pattern[str]]] = {}
         self._emojis: list[dict[str, Any]] = []
@@ -85,8 +105,19 @@ class HeuristicClassifier:
                 # contributions (Phase 3) so we can aggregate which patterns
                 # fire across populations without exposing message text.
                 pattern_id = p.get("id") or f"{phase_key}.{idx:03d}"
+                explanation = (
+                    p.get("explanation")
+                    or p.get("category")
+                    or DEFAULT_EXPLANATIONS[PHASE_NAMES[phase_key]]
+                )
                 self._compiled_patterns[phase_key].append(
-                    (compiled, float(p["weight"]), p.get("source", ""), pattern_id)
+                    (
+                        compiled,
+                        float(p["weight"]),
+                        p.get("source", ""),
+                        pattern_id,
+                        explanation,
+                    )
                 )
             self._whitelists[phase_key] = [
                 re.compile(re.escape(_normalize(w)), re.IGNORECASE)
@@ -102,17 +133,27 @@ class HeuristicClassifier:
 
     def _score_phase(
         self, phase_key: str, normalized: str
-    ) -> tuple[float, list[str], list[str]]:
+    ) -> tuple[float, list[str], list[str], list[dict[str, str]]]:
         matched_descriptions: list[str] = []
         matched_ids: list[str] = []
+        explanations: list[dict[str, str]] = []
         raw = 0.0
         max_matched_weight = 0.0
-        for compiled, weight, source, pattern_id in self._compiled_patterns[phase_key]:
+        phase_label = PHASE_DISPLAY[phase_key]
+        for compiled, weight, source, pattern_id, exp in self._compiled_patterns[
+            phase_key
+        ]:
             if compiled.search(normalized):
                 raw += weight
                 max_matched_weight = max(max_matched_weight, weight)
                 matched_descriptions.append(f"{compiled.pattern} ({source})")
                 matched_ids.append(pattern_id)
+                severity = (
+                    "alta" if weight >= 0.7 else "media" if weight >= 0.4 else "baja"
+                )
+                explanations.append(
+                    {"type": phase_label, "what": exp, "severity": severity}
+                )
         # Whitelist penalty is proportional to matched signal: a benign-but-similar
         # phrase shouldn't wipe out a strong threat signal, but should neutralize
         # weak signals (low matched weights).
@@ -120,14 +161,15 @@ class HeuristicClassifier:
             if wl.search(normalized):
                 raw -= min(0.5, max_matched_weight * 0.6 + 0.1)
         score = max(0.0, min(1.0, raw / SATURATION))
-        return score, matched_descriptions, matched_ids
+        return score, matched_descriptions, matched_ids, explanations
 
     def _score_emojis(
         self, raw_text: str
-    ) -> tuple[dict[str, float], list[str], list[str]]:
+    ) -> tuple[dict[str, float], list[str], list[str], list[dict[str, str]]]:
         boosts = {"phase1": 0.0, "phase2": 0.0, "phase3": 0.0, "phase4": 0.0}
         categories: list[str] = []
         ids: list[str] = []
+        explanations: list[dict[str, str]] = []
         for e in self._emojis:
             if e["emoji"] in raw_text:
                 weight = float(e["weight"])
@@ -141,23 +183,40 @@ class HeuristicClassifier:
                 slug = re.sub(r"[^a-z0-9]+", "_", slug).strip("_")
                 categories.append(f"narco_emoji_{slug}")
                 ids.append(self._emoji_ids[e["emoji"]])
-        return boosts, categories, ids
+                severity = (
+                    "alta" if weight >= 0.7 else "media" if weight >= 0.4 else "baja"
+                )
+                explanations.append(
+                    {
+                        "type": "Narcocultura",
+                        "what": f"emoji asociado a {e['meaning']}",
+                        "severity": severity,
+                    }
+                )
+        return boosts, categories, ids, explanations
 
     def classify(self, text: str) -> dict[str, Any]:
         normalized = _normalize(text)
         per_phase: dict[str, float] = {}
         matched_per_phase: dict[str, list[str]] = {}
         ids_per_phase: dict[str, list[str]] = {}
+        all_explanations: list[dict[str, str]] = []
 
         for phase_key in PHASE_FILES:
-            score, matched, ids = self._score_phase(phase_key, normalized)
+            score, matched, ids, explanations = self._score_phase(
+                phase_key, normalized
+            )
             per_phase[phase_key] = score
             matched_per_phase[phase_key] = matched
             ids_per_phase[phase_key] = ids
+            all_explanations.extend(explanations)
 
-        emoji_boosts, emoji_categories, emoji_ids = self._score_emojis(text)
+        emoji_boosts, emoji_categories, emoji_ids, emoji_explanations = (
+            self._score_emojis(text)
+        )
         for k, boost in emoji_boosts.items():
             per_phase[k] = max(0.0, min(1.0, per_phase[k] + boost))
+        all_explanations.extend(emoji_explanations)
 
         categories: list[str] = []
         for phase_key, matched in matched_per_phase.items():
@@ -179,4 +238,5 @@ class HeuristicClassifier:
             "matched_pattern_ids": matched_pattern_ids,
             "categories": list(dict.fromkeys(categories)),
             "emoji_boosts": emoji_boosts,
+            "explanations": all_explanations,
         }

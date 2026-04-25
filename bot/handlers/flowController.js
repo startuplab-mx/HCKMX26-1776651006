@@ -107,6 +107,14 @@ async function analyzeAndReply(sock, jid, text, sourceType = 'text') {
     }
     await sock.sendMessage(jid, { text: reply });
 
+    // ── Phase 4: explainability + escalation banners ──
+    if (result.risk_level !== 'SEGURO') {
+      const why = MESSAGES.porQue(result.why || []);
+      if (why) await sock.sendMessage(jid, { text: why });
+      const esc = MESSAGES.escalamientoDetectado(result.escalation);
+      if (esc) await sock.sendMessage(jid, { text: esc });
+    }
+
     // Legal guide: send only when risk_level is not SEGURO and the API
     // returned a populated `legal` block. Capped to 5 actions / 3 authorities
     // to keep the WA message readable; the PDF carries the full list.

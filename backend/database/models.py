@@ -12,6 +12,8 @@ SourceType = Literal["text", "audio", "image"]
 class AnalyzeRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=8000)
     use_llm: bool = True
+    session_id: str | None = None
+    source_type: Literal["text", "audio", "image"] = "text"
 
 
 class PhaseScores(BaseModel):

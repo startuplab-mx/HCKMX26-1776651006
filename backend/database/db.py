@@ -75,14 +75,29 @@ CREATE TABLE IF NOT EXISTS contributions (
     override_triggered INTEGER DEFAULT 0
 );
 
+-- Per-session risk score history. One row per analysis. Used by
+-- classifier/escalation.py to detect when risk is increasing across a
+-- conversation, even when individual messages would land in ATENCION.
+CREATE TABLE IF NOT EXISTS risk_history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id TEXT NOT NULL,
+    timestamp TEXT NOT NULL DEFAULT (datetime('now')),
+    risk_score REAL NOT NULL,
+    risk_level TEXT NOT NULL,
+    phase_detected TEXT,
+    source_type TEXT DEFAULT 'text'
+);
+
 CREATE INDEX IF NOT EXISTS idx_alerts_created_at ON alerts(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_alerts_risk_level ON alerts(risk_level);
 CREATE INDEX IF NOT EXISTS idx_alerts_platform ON alerts(platform);
 CREATE INDEX IF NOT EXISTS idx_alerts_status ON alerts(status);
+CREATE INDEX IF NOT EXISTS idx_alerts_session ON alerts(session_id);
 CREATE INDEX IF NOT EXISTS idx_actions_alert_id ON alert_actions(alert_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_contrib_platform ON contributions(platform);
 CREATE INDEX IF NOT EXISTS idx_contrib_phase ON contributions(phase_detected);
 CREATE INDEX IF NOT EXISTS idx_contrib_created_at ON contributions(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_risk_history_session ON risk_history(session_id, timestamp);
 """
 
 # Columns added after v1.0 that need ALTER TABLE on pre-existing DBs.
@@ -601,6 +616,68 @@ class Database:
 
     def delete_session(self, session_id: str) -> None:
         self._conn.execute("DELETE FROM sessions WHERE id = ?", (session_id,))
+
+    # ---------------- Risk history (Phase 4 — escalation tracking) ----------------
+
+    def save_risk_history(
+        self,
+        *,
+        session_id: str,
+        risk_score: float,
+        risk_level: str,
+        phase_detected: str | None,
+        source_type: str = "text",
+    ) -> int:
+        cur = self._conn.execute(
+            """
+            INSERT INTO risk_history (
+                session_id, risk_score, risk_level, phase_detected, source_type
+            ) VALUES (?, ?, ?, ?, ?)
+            """,
+            (session_id, risk_score, risk_level, phase_detected, source_type),
+        )
+        return int(cur.lastrowid)
+
+    def get_risk_history(
+        self, session_id: str, limit: int = 50
+    ) -> list[dict[str, Any]]:
+        """Chronological history (oldest → newest) for the escalation detector."""
+        rows = self._conn.execute(
+            """
+            SELECT id, session_id, timestamp, risk_score, risk_level,
+                   phase_detected, source_type
+            FROM risk_history
+            WHERE session_id = ?
+            ORDER BY id ASC
+            LIMIT ?
+            """,
+            (session_id, limit),
+        ).fetchall()
+        return [
+            {
+                "id": r["id"],
+                "session_id": r["session_id"],
+                "timestamp": r["timestamp"],
+                "risk_score": r["risk_score"],
+                "risk_level": r["risk_level"],
+                "phase_detected": r["phase_detected"],
+                "source_type": r["source_type"],
+            }
+            for r in rows
+        ]
+
+    def get_alerts_by_session(self, session_id: str) -> list[dict[str, Any]]:
+        rows = self._conn.execute(
+            "SELECT * FROM alerts WHERE session_id = ? ORDER BY created_at ASC",
+            (session_id,),
+        ).fetchall()
+        return [self._row_to_alert(r) for r in rows]
+
+    def clear_risk_history(self, session_id: str) -> None:
+        """Reset history for a session — used by demo_live.py to start clean."""
+        self._conn.execute(
+            "DELETE FROM risk_history WHERE session_id = ?", (session_id,)
+        )
 
     def close(self) -> None:
         self._conn.close()

@@ -22,6 +22,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
 from classifier import Pipeline
+from classifier.escalation import EscalationDetector
 from database import get_db
 from legal import get_legal_context, get_privacy_disclaimer, serialize_context
 import webhooks
@@ -55,8 +56,8 @@ logger = logging.getLogger("nahual")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.pipeline = Pipeline()
     app.state.db = get_db()
+    app.state.pipeline = Pipeline(escalation=EscalationDetector(app.state.db))
     logger.info("Nahual backend up · LLM enabled=%s", app.state.pipeline.llm.enabled)
     yield
     app.state.db.close()
@@ -129,6 +130,77 @@ def upsert_session(session_id: str, payload: SessionUpsert):
 def delete_session(session_id: str):
     """Reset a bot session (e.g. after a completed flow)."""
     app.state.db.delete_session(session_id)
+    return None
+
+
+@app.get("/profile/{session_id}")
+def risk_profile(session_id: str):
+    """Cumulative risk profile for a session — used by panel and pitch demo.
+
+    Computes: trend, average score, max, dominant phase, phase distribution,
+    score timeline (last 10), and the count of alerts written for the
+    session. Returns `status=no_data` when the session has never been seen.
+    """
+    history = app.state.db.get_risk_history(session_id)
+    alerts = app.state.db.get_alerts_by_session(session_id)
+    if not history:
+        return {"session_id": session_id, "status": "no_data"}
+
+    scores = [h["risk_score"] for h in history]
+    phases = [
+        h["phase_detected"]
+        for h in history
+        if h["phase_detected"] and h["phase_detected"] != "ninguna"
+    ]
+    phase_counts: dict[str, int] = {}
+    for p in phases:
+        phase_counts[p] = phase_counts.get(p, 0) + 1
+    dominant = max(phase_counts, key=phase_counts.get) if phase_counts else None
+
+    if len(scores) >= 2:
+        diffs = [scores[i + 1] - scores[i] for i in range(len(scores) - 1)]
+        avg_diff = sum(diffs) / len(diffs)
+        if avg_diff > 0.05:
+            trend = "incremental"
+        elif avg_diff < -0.05:
+            trend = "decreciente"
+        else:
+            trend = "estable"
+    else:
+        trend = "insufficient_data"
+
+    return {
+        "session_id": session_id,
+        "status": "ok",
+        "total_analyses": len(history),
+        "risk_profile": {
+            "current_level": history[-1]["risk_level"],
+            "current_score": history[-1]["risk_score"],
+            "average_score": round(sum(scores) / len(scores), 3),
+            "max_score": max(scores),
+            "trend": trend,
+            "dominant_phase": dominant,
+            "phase_distribution": phase_counts,
+            "score_timeline": [round(s, 3) for s in scores[-10:]],
+        },
+        "total_alerts": len(alerts),
+        "first_analysis": history[0]["timestamp"],
+        "last_analysis": history[-1]["timestamp"],
+    }
+
+
+@app.get("/risk-history/{session_id}")
+def risk_history(session_id: str, limit: int = 50):
+    """Raw risk_history rows for the session (newest entries truncated to `limit`)."""
+    if limit < 1 or limit > 500:
+        raise HTTPException(400, "limit must be in [1, 500]")
+    return app.state.db.get_risk_history(session_id, limit=limit)
+
+
+@app.delete("/risk-history/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+def reset_risk_history(session_id: str):
+    """Clear the session's risk history. Used by demo_live.py to start clean."""
+    app.state.db.clear_risk_history(session_id)
     return None
 
 
@@ -305,13 +377,20 @@ def contributions_stats():
 
 @app.post("/analyze")
 def analyze(req: AnalyzeRequest):
-    """Analyze text + return classification AND applicable legal context.
+    """Analyze text + return classification + legal context + escalation.
 
-    The `legal` block is built by backend/legal/framework.py and lists
-    every Mexican law article that applies to the detected phase /
-    categories, plus the competent authorities and recommended actions.
+    When `session_id` is provided, the call participates in escalation
+    tracking: each analysis is appended to risk_history and the trend
+    is reported in `escalation`. A trajectory of climbing ATENCION
+    messages can also auto-promote risk_level to PELIGRO via
+    `escalation_override`.
     """
-    result = app.state.pipeline.classify(req.text, use_llm=req.use_llm)
+    result = app.state.pipeline.classify(
+        req.text,
+        use_llm=req.use_llm,
+        session_id=req.session_id,
+        source_type=req.source_type,
+    )
     legal = get_legal_context(
         phase=result["phase_detected"],
         categories=result["categories"],
@@ -330,6 +409,9 @@ def analyze(req: AnalyzeRequest):
         text_hash=result["text_hash"],
         summary=result["summary"],
     ).model_dump()
+    body["why"] = result.get("why", [])
+    body["escalation"] = result.get("escalation")
+    body["escalation_override"] = result.get("escalation_override", False)
     body["legal"] = serialize_context(legal)
     body["privacy_disclaimer"] = get_privacy_disclaimer()
     return body
@@ -343,7 +425,12 @@ def create_alert(payload: AlertCreate):
     second /analyze trip. The text is never persisted — only its SHA-256 hash
     plus an anonymized summary.
     """
-    result = app.state.pipeline.classify(payload.text, use_llm=True)
+    result = app.state.pipeline.classify(
+        payload.text,
+        use_llm=True,
+        session_id=payload.session_id,
+        source_type=payload.source_type,
+    )
     alert_id = app.state.db.insert_alert(
         platform=payload.platform,
         source=payload.source,
@@ -374,6 +461,9 @@ def create_alert(payload: AlertCreate):
         "categories": result["categories"],
         "pattern_ids": result.get("pattern_ids", []),
         "override_triggered": result["override_triggered"],
+        "escalation_override": result.get("escalation_override", False),
+        "escalation": result.get("escalation"),
+        "why": result.get("why", []),
         "llm_used": result["llm_used"],
         "summary": result["summary"],
         "source_type": payload.source_type,
