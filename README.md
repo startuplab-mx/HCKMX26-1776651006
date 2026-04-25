@@ -189,7 +189,7 @@ Cada análisis con `session_id` se persiste en `risk_history`. El `EscalationDet
 Cada patrón en los JSON de keywords incluye campo `explanation` en español natural. La API surface el `why[]` array en `/analyze` y `/alert`, y `/alerts/{id}/why` lo reconstruye desde los `pattern_ids` persistidos — sin necesidad de re-clasificar (lo que sería imposible porque nunca se guarda el texto). El bot manda 🧠 *¿Por qué?* después del veredicto y el panel lo muestra al expandir cada alerta.
 
 ### 🛡️ Marco legal programático
-Cada fase / categoría se mapea a artículos mexicanos vigentes (CPEUM 4 & 16, LGDNNA 47-VII / 48, CPF 209 Quáter / 282 / 199 Octies-Decies, LGAMVLV 20 Quáter, LGPSEDMTP 10, LFPDPPP 5-8) + autoridades (088, FEVIMTRA, Comisión de Búsqueda, etc.) + acciones recomendadas + derechos de la víctima. Surface en API, PDF dinámico, bot WhatsApp y panel.
+Cada fase / categoría se mapea a artículos mexicanos (CPEUM 4 & 16, LGDNNA 47-VII / 48 / 101 Bis 2, **CPF 209 Sextus *propuesto*** — reclutamiento forzado pendiente de DOF, marzo 2026, CPF 282 / 199 Octies-Decies, LGAMVLV 20 Quáter, LGPSEDMTP 10, LFPDPPP 5-8) + autoridades (088, FEVIMTRA, Comisión de Búsqueda, etc.) + acciones recomendadas + derechos de la víctima. Surface en API, PDF dinámico, bot WhatsApp y panel.
 
 ### 🎬 Demo en vivo
 `scripts/demo_live.py` proyecta en terminal una secuencia de 5 mensajes (contacto → captación → enganche → coerción → explotación) con barras de progreso ANSI, why list, trayectoria visual, y diferenciación entre override estático y override por trayectoria. Press ENTER para avanzar.

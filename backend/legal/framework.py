@@ -25,7 +25,7 @@ class LegalArticle:
     """Un artículo de ley específico."""
     law_name: str             # "Código Penal Federal"
     law_abbreviation: str     # "CPF"
-    article: str              # "Art. 209 Quáter"
+    article: str              # "Art. 209 Sextus (propuesto)"
     title: str                # "Reclutamiento Ilícito"
     summary: str              # Descripción breve
     penalty: str | None = None        # "9-18 años de prisión"
@@ -111,17 +111,33 @@ ARTICLES: dict[str, LegalArticle] = {
         ),
         source_url="https://www.diputados.gob.mx/LeyesBiblio/pdf/LGDNNA.pdf",
     ),
+    "lgdnna_101bis2": LegalArticle(
+        law_name="Ley General de los Derechos de Niñas, Niños y Adolescentes",
+        law_abbreviation="LGDNNA",
+        article="Art. 101 Bis 2",
+        title="Derecho al uso seguro de internet",
+        summary=(
+            "Reconoce el derecho de NNA al acceso y uso seguro del Internet."
+        ),
+        source_url="https://www.diputados.gob.mx/LeyesBiblio/pdf/LGDNNA.pdf",
+    ),
+    # Reclutamiento de menores: la reforma fue aprobada por la Cámara de
+    # Diputados en marzo 2026 pero aún está pendiente de publicación en
+    # el DOF. La numeración propuesta es 209 Sextus (no Quáter como
+    # refieren algunas fuentes preliminares). Lo dejamos marcado como
+    # "(propuesto)" para evitar inducir a error legal — el bot y el PDF
+    # citarán explícitamente que está en proceso legislativo.
     "cpf_209quater": LegalArticle(
         law_name="Código Penal Federal",
         law_abbreviation="CPF",
-        article="Art. 209 Quáter",
-        title="Reclutamiento Ilícito de Menores",
+        article="Art. 209 Sextus (propuesto)",
+        title="Reclutamiento Forzado de Menores (en proceso legislativo)",
         summary=(
-            "Comete el delito de reclutamiento ilícito quien enliste, reclute u "
-            "obligue a participar directa o indirectamente en hostilidades o "
-            "acciones armadas a menores de 18 años."
+            "La Cámara de Diputados aprobó en marzo 2026 sancionar el "
+            "reclutamiento forzado con hasta 18 años de prisión. Pendiente de "
+            "publicación en DOF. Artículo propuesto: 209 Sextus CPF."
         ),
-        penalty="9 a 18 años de prisión + 1,000 a 2,500 días de multa",
+        penalty="Hasta 18 años de prisión (propuesto)",
         source_url="https://www.diputados.gob.mx/LeyesBiblio/pdf/CPF.pdf",
     ),
     "cpf_199octies": LegalArticle(
@@ -336,6 +352,7 @@ def get_legal_context(
     # ── Baseline constitucional y de protección a NNA ──
     articles.append(ARTICLES["cpeum_4"])
     articles.append(ARTICLES["lgdnna_47_vii"])
+    articles.append(ARTICLES["lgdnna_101bis2"])  # uso seguro de internet
 
     # ── Por fase ──
     if p == "captacion":

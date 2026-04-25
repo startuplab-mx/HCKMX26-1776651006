@@ -105,6 +105,14 @@
       "phase_affinity": ["enganche"],
       "source": "Sintético",
       "confidence": "bajo"
+    },
+    {
+      "emoji": "❓",
+      "meaning": "Referencia codificada a facciones del cártel",
+      "weight": 0.6,
+      "phase_affinity": ["captacion"],
+      "source": "Colmex",
+      "confidence": "confirmado"
     }
   ]
 }

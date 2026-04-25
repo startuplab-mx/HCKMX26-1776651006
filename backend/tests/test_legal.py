@@ -38,10 +38,13 @@ def test_sextorsion_returns_ley_olimpia():
 
 
 def test_captacion_returns_reclutamiento():
-    """Captación debe incluir Art. 209 Quáter (Reclutamiento Ilícito)."""
+    """Captación debe incluir el art. de Reclutamiento Forzado (propuesto)."""
     ctx = get_legal_context("captacion", [], "ATENCION")
     arts = [a.article for a in ctx.articles]
-    assert "Art. 209 Quáter" in arts
+    assert any("Sextus" in a for a in arts)
+    # Y debe estar etiquetado como propuesto, no como ley vigente.
+    matching = [a for a in ctx.articles if "Sextus" in a.article]
+    assert all("propuesto" in a.article.lower() for a in matching)
 
 
 def test_peligro_includes_emergency_contacts():
@@ -60,11 +63,12 @@ def test_urgency_levels():
 
 
 def test_always_includes_base_articles():
-    """Siempre incluir Art. 4 CPEUM y Art. 47 LGDNNA."""
+    """Siempre incluir Art. 4 CPEUM, Art. 47 LGDNNA y Art. 101 Bis 2 LGDNNA."""
     ctx = get_legal_context("captacion", [], "SEGURO")
     pairs = [(a.law_abbreviation, a.article) for a in ctx.articles]
     assert any(law == "CPEUM" and "Art. 4" in art for law, art in pairs)
     assert any(law == "LGDNNA" and "Art. 47" in art for law, art in pairs)
+    assert any(law == "LGDNNA" and "101 Bis 2" in art for law, art in pairs)
 
 
 def test_always_includes_privacy_compliance():
@@ -133,7 +137,7 @@ def test_serialize_context_returns_jsonable_dict():
 
 def test_articles_dict_has_expected_keys():
     expected = {
-        "cpeum_4", "cpeum_16", "lgdnna_47_vii", "lgdnna_48",
+        "cpeum_4", "cpeum_16", "lgdnna_47_vii", "lgdnna_48", "lgdnna_101bis2",
         "cpf_209quater", "cpf_199octies", "cpf_199nonies", "cpf_199decies",
         "lgamvlv_20quater", "lfpdppp_5", "lgpsedmtp_10", "cpf_282",
     }
