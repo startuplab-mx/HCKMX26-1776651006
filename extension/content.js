@@ -76,6 +76,21 @@ function flagText(text) {
   return null;
 }
 
+// Defensive HTML escape — the snippet may come from any DOM node on the
+// host page (potentially an attacker-controlled chat message). The
+// overlay used to inline the raw text via template literal, which would
+// execute markup. Escaping the five XSS-relevant characters keeps the
+// overlay rendering as plain text.
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  })[c]);
+}
+
 function hash32(str) {
   let h = 0;
   for (let i = 0; i < str.length; i++) {
@@ -112,7 +127,7 @@ function showOverlay(phase, snippet) {
       <div class="nahual-body">
         <p><strong>Detectamos un patrón de ${phase === 'coercion' ? 'COERCIÓN' : 'EXPLOTACIÓN'}.</strong></p>
         <p>Esto puede ser reclutamiento criminal o sextorsión. No estás solo/a.</p>
-        <p class="nahual-snippet">"${snippet.slice(0, 140)}…"</p>
+        <p class="nahual-snippet">"${escapeHtml(snippet.slice(0, 140))}…"</p>
       </div>
       <div class="nahual-actions">
         <a class="nahual-btn primary" href="https://wa.me/?text=${encodeURIComponent('Hola Nahual, recibí un mensaje sospechoso')}" target="_blank" rel="noopener">Reportar al bot</a>

@@ -17,9 +17,10 @@ import base64
 
 import httpx
 from dotenv import load_dotenv
-from fastapi import FastAPI, File, HTTPException, UploadFile, status
+from fastapi import Depends, FastAPI, File, HTTPException, Security, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.security import APIKeyHeader
 
 from classifier import Pipeline
 from classifier.escalation import EscalationDetector
@@ -70,6 +71,9 @@ async def lifespan(app: FastAPI):
     app.state.db.close()
 
 
+_ENV = os.getenv("ENVIRONMENT", "development").strip().lower()
+_PROD = _ENV == "production"
+
 app = FastAPI(
     title="Nahual API",
     description=(
@@ -78,9 +82,41 @@ app = FastAPI(
     ),
     version="1.0.0",
     lifespan=lifespan,
+    # Disable interactive docs in production. /openapi.json is also
+    # implicitly disabled when both docs urls are None.
+    docs_url=None if _PROD else "/docs",
+    redoc_url=None if _PROD else "/redoc",
+    openapi_url=None if _PROD else "/openapi.json",
 )
 
-cors_origins_env = os.getenv("CORS_ORIGINS", "*")
+# ---------------- API key auth (opt-in via NAHUAL_API_KEY) ----------------
+
+API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+
+def require_api_key(provided: str | None = Security(API_KEY_HEADER)) -> None:
+    """Gate sensitive endpoints behind the X-API-Key header.
+
+    When `NAHUAL_API_KEY` is unset or empty, auth is disabled — keeps
+    dev/test environments and the 126-test suite working without
+    changes. Once the env var is set, every protected endpoint demands
+    a matching header or returns 403.
+    """
+    expected = os.getenv("NAHUAL_API_KEY", "").strip()
+    if not expected:
+        return  # dev mode: no enforcement
+    if not provided or provided != expected:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Invalid or missing X-API-Key",
+        )
+
+
+# Reusable dependency list for protected routes.
+PROTECTED = [Depends(require_api_key)]
+
+
+cors_origins_env = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8000")
 allow_origins = (
     ["*"] if cors_origins_env.strip() == "*" else [o.strip() for o in cors_origins_env.split(",")]
 )
@@ -111,7 +147,7 @@ def root():
     }
 
 
-@app.get("/sessions/{session_id}", response_model=SessionState)
+@app.get("/sessions/{session_id}", response_model=SessionState, dependencies=PROTECTED)
 def get_session(session_id: str):
     """Fetch a bot session. 404 if it doesn't exist (caller may PUT to create)."""
     sess = app.state.db.get_session(session_id)
@@ -120,7 +156,7 @@ def get_session(session_id: str):
     return sess
 
 
-@app.put("/sessions/{session_id}", response_model=SessionState)
+@app.put("/sessions/{session_id}", response_model=SessionState, dependencies=PROTECTED)
 def upsert_session(session_id: str, payload: SessionUpsert):
     """Upsert bot session state. Used by the bot to survive restarts."""
     app.state.db.upsert_session(
@@ -133,14 +169,18 @@ def upsert_session(session_id: str, payload: SessionUpsert):
     return sess
 
 
-@app.delete("/sessions/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete(
+    "/sessions/{session_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=PROTECTED,
+)
 def delete_session(session_id: str):
     """Reset a bot session (e.g. after a completed flow)."""
     app.state.db.delete_session(session_id)
     return None
 
 
-@app.get("/profile/{session_id}")
+@app.get("/profile/{session_id}", dependencies=PROTECTED)
 def risk_profile(session_id: str):
     """Cumulative risk profile for a session — used by panel and pitch demo.
 
@@ -196,7 +236,7 @@ def risk_profile(session_id: str):
     }
 
 
-@app.get("/risk-history/{session_id}")
+@app.get("/risk-history/{session_id}", dependencies=PROTECTED)
 def risk_history(session_id: str, limit: int = 50):
     """Raw risk_history rows for the session (newest entries truncated to `limit`)."""
     if limit < 1 or limit > 500:
@@ -204,14 +244,22 @@ def risk_history(session_id: str, limit: int = 50):
     return app.state.db.get_risk_history(session_id, limit=limit)
 
 
-@app.delete("/risk-history/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete(
+    "/risk-history/{session_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=PROTECTED,
+)
 def reset_risk_history(session_id: str):
     """Clear the session's risk history. Used by demo_live.py to start clean."""
     app.state.db.clear_risk_history(session_id)
     return None
 
 
-@app.post("/feedback", status_code=status.HTTP_201_CREATED)
+@app.post(
+    "/feedback",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=PROTECTED,
+)
 def submit_feedback(payload: FeedbackCreate):
     """Record a feedback signal for the auto-tuner.
 
@@ -233,25 +281,25 @@ def submit_feedback(payload: FeedbackCreate):
     return {"received": True, "id": fid}
 
 
-@app.get("/precision/diagnostics")
+@app.get("/precision/diagnostics", dependencies=PROTECTED)
 def precision_diagnostics():
     """Snapshot of the auto-tuner: active adjustments + problematic patterns."""
     return app.state.precision.get_diagnostics()
 
 
-@app.get("/precision/stats")
+@app.get("/precision/stats", dependencies=PROTECTED)
 def precision_stats():
     """Counts of feedback rows in the queue by type + pending."""
     return app.state.db.feedback_stats()
 
 
-@app.post("/precision/tune")
+@app.post("/precision/tune", dependencies=PROTECTED)
 def precision_tune():
     """Force a tuning cycle (drains the feedback_log queue once)."""
     return app.state.precision.process_pending_feedback()
 
 
-@app.get("/precision/state")
+@app.get("/precision/state", dependencies=PROTECTED)
 def precision_state():
     """Export full processor state (adjustments + per-pattern stats).
 
@@ -266,8 +314,8 @@ def health():
     return {
         "status": "ok",
         "llm_enabled": app.state.pipeline.llm.enabled,
-        "db_path": str(app.state.db.path),
         "groq_enabled": bool(os.getenv("GROQ_API_KEY")),
+        "auth_enforced": bool(os.getenv("NAHUAL_API_KEY", "").strip()),
     }
 
 
@@ -309,6 +357,8 @@ async def transcribe_audio(file: UploadFile = File(...)):
         raise HTTPException(413, f"audio exceeds {MAX_AUDIO_BYTES // (1024 * 1024)} MB")
 
     mime = file.content_type or "audio/ogg"
+    if mime not in ALLOWED_AUDIO_MIME:
+        raise HTTPException(415, f"unsupported audio type {mime!r}")
     timeout = float(os.getenv("STT_TIMEOUT_SECONDS", "15"))
 
     try:
@@ -537,7 +587,7 @@ def create_alert(payload: AlertCreate):
     return response
 
 
-@app.get("/alerts")
+@app.get("/alerts", dependencies=PROTECTED)
 def list_alerts(
     limit: int = 100,
     offset: int = 0,
@@ -554,7 +604,7 @@ def list_alerts(
     )
 
 
-@app.get("/alerts/{alert_id}")
+@app.get("/alerts/{alert_id}", dependencies=PROTECTED)
 def get_alert(alert_id: int):
     alert = app.state.db.get_alert(alert_id)
     if not alert:
@@ -562,7 +612,7 @@ def get_alert(alert_id: int):
     return alert
 
 
-@app.patch("/alerts/{alert_id}")
+@app.patch("/alerts/{alert_id}", dependencies=PROTECTED)
 def patch_alert(alert_id: int, payload: AlertUpdate):
     """Update triage state (status / notes / reviewer). Writes audit trail."""
     try:
@@ -579,7 +629,11 @@ def patch_alert(alert_id: int, payload: AlertUpdate):
     return updated
 
 
-@app.post("/alerts/{alert_id}/escalate", status_code=status.HTTP_200_OK)
+@app.post(
+    "/alerts/{alert_id}/escalate",
+    status_code=status.HTTP_200_OK,
+    dependencies=PROTECTED,
+)
 def escalate_alert(alert_id: int, payload: EscalationRequest):
     """Escalate an alert to an external authority (088, SIPINNA, Fiscalía).
 
@@ -607,7 +661,11 @@ def escalate_alert(alert_id: int, payload: EscalationRequest):
     return updated
 
 
-@app.get("/alerts/{alert_id}/history", response_model=list[AlertAction])
+@app.get(
+    "/alerts/{alert_id}/history",
+    response_model=list[AlertAction],
+    dependencies=PROTECTED,
+)
 def alert_history(alert_id: int):
     """Audit trail for an alert — every status change, note and escalation."""
     if app.state.db.get_alert(alert_id) is None:
@@ -615,7 +673,7 @@ def alert_history(alert_id: int):
     return app.state.db.list_actions(alert_id)
 
 
-@app.get("/alerts/{alert_id}/why")
+@app.get("/alerts/{alert_id}/why", dependencies=PROTECTED)
 def alert_why(alert_id: int):
     """Reconstruct the human-readable "¿Por qué?" view for a stored alert.
 
@@ -637,7 +695,7 @@ def alert_why(alert_id: int):
     }
 
 
-@app.get("/alerts/{alert_id}/legal")
+@app.get("/alerts/{alert_id}/legal", dependencies=PROTECTED)
 def alert_legal(alert_id: int):
     """Recompute the legal context for a stored alert.
 
@@ -678,7 +736,7 @@ def stats_timeseries(interval: str = "hour", hours: int = 24):
         raise HTTPException(400, str(e))
 
 
-@app.post("/report/{alert_id}")
+@app.post("/report/{alert_id}", dependencies=PROTECTED)
 def report(alert_id: int):
     alert = app.state.db.get_alert(alert_id)
     if not alert:
