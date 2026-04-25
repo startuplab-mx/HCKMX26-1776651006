@@ -539,7 +539,19 @@ async function refresh() {
         state.history.set(id, await jget(`/alerts/${id}/history`).catch(() => []));
       }),
     );
-    document.getElementById('alerts-body').innerHTML = alerts.map(row).join('');
+    const body = document.getElementById('alerts-body');
+    if (!alerts.length) {
+      const filterLabel = state.filterStatus
+        ? `con estado "${state.filterStatus}"`
+        : 'aún';
+      body.innerHTML = `
+        <tr><td colspan="9" class="px-4 py-10 text-center text-white/45 text-sm">
+          🛡️  No hay alertas ${filterLabel}.<br/>
+          <span class="text-xs">Las alertas aparecen aquí en cuanto el bot, la extensión o el endpoint /alert reciban un mensaje sospechoso.</span>
+        </td></tr>`;
+    } else {
+      body.innerHTML = alerts.map(row).join('');
+    }
   } catch (err) {
     CONSEC_FAILS += 1;
     if (CONSEC_FAILS === 1) setHealthPill('degraded', 'reconectando…');

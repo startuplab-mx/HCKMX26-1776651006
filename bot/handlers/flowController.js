@@ -393,7 +393,30 @@ export async function advance(sock, jid, text) {
       return;
 
     case 'ask_region': {
-      const region = SKIP_RE.test(text) ? null : text.trim().slice(0, 80) || null;
+      // Validate the region input. Real Mexican states/cities are 3-40
+      // chars, mostly letters + spaces + a few accents. Reject obvious
+      // garbage (questions, sentences with verbs, very long noise) so the
+      // research dataset stays clean — we caught noise like
+      // "Hola cuantos años tienes?" leaking into by_region.
+      let region = null;
+      if (!SKIP_RE.test(text)) {
+        const cleaned = text.trim().replace(/\s+/g, ' ');
+        const looksLikeQuestion = /\?|¿/.test(cleaned);
+        const looksLikeSentence = cleaned.split(' ').length > 6;
+        const validShape = /^[A-Za-zÁÉÍÓÚáéíóúÑñ ,.\-]{2,40}$/.test(cleaned);
+        if (validShape && !looksLikeQuestion && !looksLikeSentence) {
+          // Title-case for consistency in the panel ("saltillo" → "Saltillo").
+          region = cleaned
+            .toLowerCase()
+            .replace(/(^|\s)\S/g, (c) => c.toUpperCase())
+            .slice(0, 60);
+        } else {
+          await sock.sendMessage(jid, {
+            text: 'No reconocí la región. Mándame sólo el nombre (ej. "Coahuila", "CDMX") o escribe *paso* para omitir.',
+          });
+          return; // stay in ask_region
+        }
+      }
       await fireContribution(sock, jid, region);
       return;
     }
