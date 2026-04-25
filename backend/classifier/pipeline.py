@@ -205,8 +205,14 @@ class Pipeline:
                             text_hash=text_hash(text),
                             session_id=session_id,
                         )
-                    except Exception:  # noqa: BLE001 — feedback is best-effort
-                        pass
+                    except Exception as e:  # noqa: BLE001 — feedback is best-effort
+                        # Log so a broken auto-tuner is debuggable. Was just
+                        # silently swallowed which made the precision processor
+                        # impossible to diagnose in production.
+                        import logging as _log
+                        _log.getLogger("nahual").warning(
+                            "feedback save failed: %s", e
+                        )
 
         result = self._finalize(
             risk_score=final_score,

@@ -13,6 +13,7 @@ import os
 import sys
 import time
 from contextlib import asynccontextmanager
+from datetime import datetime
 from pathlib import Path
 
 import base64
@@ -484,6 +485,71 @@ async def _bump_metrics(request, call_next):
     elif p == "/ocr" and request.method == "POST":
         _REQUEST_METRICS["ocr_total"] += 1
     return await call_next(request)
+
+
+@app.get("/admin/healthcheck-deep")
+async def admin_healthcheck_deep():
+    """Full health probe — includes LLM and STT round-trips. Slow (≤6s).
+
+    Use sparingly (the panel only calls it once on demand). Each external
+    check is bounded by its own timeout so a dead Groq doesn't make the
+    whole probe hang.
+    """
+    out = {
+        "service": "nahual-backend",
+        "started_at": datetime.fromtimestamp(_REQUEST_METRICS["boot_time"]).isoformat(),
+        "checks": {},
+    }
+    # SQLite: run a trivial query through the locked connection.
+    try:
+        app.state.db.list_alerts(limit=1)
+        out["checks"]["db"] = {"ok": True}
+    except Exception as e:
+        out["checks"]["db"] = {"ok": False, "error": str(e)[:120]}
+
+    # Anthropic — small ping so we know the model id and key are valid.
+    if app.state.pipeline.llm.enabled:
+        try:
+            async with httpx.AsyncClient(timeout=4.0) as client:
+                r = await client.post(
+                    ANTHROPIC_MESSAGES_URL,
+                    headers={
+                        "x-api-key": os.getenv("ANTHROPIC_API_KEY", ""),
+                        "anthropic-version": "2023-06-01",
+                        "content-type": "application/json",
+                    },
+                    json={
+                        "model": os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-5-20250929"),
+                        "max_tokens": 5,
+                        "messages": [{"role": "user", "content": "ping"}],
+                    },
+                )
+            out["checks"]["anthropic"] = {
+                "ok": r.status_code == 200,
+                "status": r.status_code,
+                "model": os.getenv("ANTHROPIC_MODEL"),
+            }
+        except Exception as e:
+            out["checks"]["anthropic"] = {"ok": False, "error": str(e)[:120]}
+    else:
+        out["checks"]["anthropic"] = {"ok": False, "reason": "disabled"}
+
+    # Groq — only validates the key shape; actual transcribe needs a real audio file.
+    if os.getenv("GROQ_API_KEY"):
+        try:
+            async with httpx.AsyncClient(timeout=3.0) as client:
+                r = await client.get(
+                    "https://api.groq.com/openai/v1/models",
+                    headers={"Authorization": f"Bearer {os.getenv('GROQ_API_KEY')}"},
+                )
+            out["checks"]["groq"] = {"ok": r.status_code == 200, "status": r.status_code}
+        except Exception as e:
+            out["checks"]["groq"] = {"ok": False, "error": str(e)[:120]}
+    else:
+        out["checks"]["groq"] = {"ok": False, "reason": "GROQ_API_KEY unset"}
+
+    out["all_ok"] = all(c.get("ok") for c in out["checks"].values())
+    return out
 
 
 @app.get("/admin/metrics")

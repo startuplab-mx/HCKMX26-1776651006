@@ -81,14 +81,33 @@ def build_payload(
     }
 
 
-def _post_one(url: str, payload: dict[str, Any]) -> None:
-    try:
-        with httpx.Client(timeout=WEBHOOK_TIMEOUT_S) as client:
-            r = client.post(url, json=payload, headers=_headers())
-        if r.status_code >= 400:
-            logger.warning("webhook %s returned %s", url, r.status_code)
-    except Exception as e:  # network, DNS, timeout — never raise
-        logger.warning("webhook %s failed: %s", url, e)
+def _post_one(url: str, payload: dict[str, Any], *, max_retries: int = 3) -> None:
+    """POST with bounded exponential backoff retry. Each retry budget is
+    aligned with WEBHOOK_TIMEOUT_S so the total wall time stays small even
+    in the worst case (≈ 2 + 1 + 2 + 1 + 4 + 1 = 11s max, but typical happy
+    path is one 200 OK in <1s).
+
+    Caller still gets fire-and-forget semantics because dispatch() runs us
+    in a daemon thread.
+    """
+    backoff = (1.0, 2.0, 4.0)  # seconds between retries
+    for attempt in range(max_retries):
+        try:
+            with httpx.Client(timeout=WEBHOOK_TIMEOUT_S) as client:
+                r = client.post(url, json=payload, headers=_headers())
+            if r.status_code < 400:
+                return  # success
+            # 4xx is a permanent error — retrying won't help.
+            if 400 <= r.status_code < 500:
+                logger.warning("webhook %s returned %s (no retry on 4xx)", url, r.status_code)
+                return
+            logger.warning("webhook %s returned %s (will retry)", url, r.status_code)
+        except Exception as e:
+            logger.warning("webhook %s failed (attempt %d/%d): %s", url, attempt + 1, max_retries, e)
+        if attempt < len(backoff):
+            import time as _t
+            _t.sleep(backoff[attempt])
+    logger.error("webhook %s exhausted %d retries", url, max_retries)
 
 
 def dispatch(payload: dict[str, Any], *, urls: list[str] | None = None) -> int:
