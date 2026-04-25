@@ -18,6 +18,7 @@ import {
   setSessionData,
   getSessionData,
   resetSession,
+  checkRateLimit,
 } from '../utils/sessionManager.js';
 import {
   registerAlert,
@@ -105,6 +106,15 @@ async function sendReport(sock, jid) {
 }
 
 async function analyzeAndReply(sock, jid, text, sourceType = 'text') {
+  // Per-JID rate limit: 5 /alert per 60s. Without this a malicious user
+  // (or buggy WA client retry loop) could burn LLM budget rapidly.
+  const rl = checkRateLimit(jid);
+  if (!rl.ok) {
+    await sock.sendMessage(jid, {
+      text: `⏳ Estás mandando muchos análisis muy seguido. Espera ${rl.retryAfterSec}s y mándame el siguiente. Si urge: *088* (Policía Cibernética).`,
+    });
+    return;
+  }
   await sock.sendMessage(jid, { text: MESSAGES.recibido });
   setStep(jid, 'analizando');
   try {

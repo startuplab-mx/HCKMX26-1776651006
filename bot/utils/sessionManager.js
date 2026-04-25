@@ -17,6 +17,49 @@ const authHeader = API_KEY ? { 'X-API-Key': API_KEY } : {};
 
 const SESSIONS = new Map();
 const HYDRATING = new Map(); // jid -> Promise to dedupe concurrent hydrations
+// Per-JID rate limit: drop bursts of /alert from a single user. The bot
+// flow only emits /alert during analyzeAndReply — limiting that protects
+// the LLM/Groq spend AND the SQLite write throughput. 5 alerts per 60s
+// is generous (real users send <1 alert/min).
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_HITS = new Map(); // jid -> [timestamps]
+// Session TTL eviction: stale sessions sit in memory forever otherwise.
+// Sweep hourly, drop entries idle > 7 days (sessions older than 7 days
+// almost certainly belong to users who won't return).
+const SESSION_IDLE_MS = 7 * 24 * 60 * 60 * 1000;
+const SESSION_LAST_TOUCH = new Map();
+
+function touchSession(jid) {
+  SESSION_LAST_TOUCH.set(jid, Date.now());
+}
+
+function evictStaleSessions() {
+  const cutoff = Date.now() - SESSION_IDLE_MS;
+  let evicted = 0;
+  for (const [jid, ts] of SESSION_LAST_TOUCH) {
+    if (ts < cutoff) {
+      SESSIONS.delete(jid);
+      SESSION_LAST_TOUCH.delete(jid);
+      evicted += 1;
+    }
+  }
+  if (evicted) console.warn(`[sessionManager] evicted ${evicted} stale sessions`);
+}
+setInterval(evictStaleSessions, 60 * 60 * 1000); // hourly
+
+export function checkRateLimit(jid) {
+  const now = Date.now();
+  const hits = (RATE_LIMIT_HITS.get(jid) || []).filter(
+    (t) => now - t < RATE_LIMIT_WINDOW_MS,
+  );
+  if (hits.length >= RATE_LIMIT_MAX) {
+    return { ok: false, retryAfterSec: Math.ceil((RATE_LIMIT_WINDOW_MS - (now - hits[0])) / 1000) };
+  }
+  hits.push(now);
+  RATE_LIMIT_HITS.set(jid, hits);
+  return { ok: true };
+}
 
 function makeDefault() {
   return { current_step: 'inicio', data: {} };
@@ -58,6 +101,7 @@ export function getSession(jid) {
   if (!SESSIONS.has(jid)) {
     SESSIONS.set(jid, makeDefault());
   }
+  touchSession(jid);
   return SESSIONS.get(jid);
 }
 
