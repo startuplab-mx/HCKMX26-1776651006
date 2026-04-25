@@ -1,0 +1,26 @@
+{
+  "phase": "explotacion",
+  "phase_name": "Explotación",
+  "description": "Instrucciones operativas, sextorsión, depósitos, reclutamiento secundario. ACTIVA OVERRIDE si score ≥ 0.80",
+  "placeholder": true,
+  "_note": "CRÍTICO: estos patrones disparan override. Validar con Marco + FinCEN red flags.",
+  "patterns": [
+    { "pattern": "ve al punto", "weight": 0.6, "source": "Jerga operativa", "regex": false },
+    { "pattern": "recoge esto", "weight": 0.6, "source": "Jerga operativa", "regex": false },
+    { "pattern": "echa aguas", "weight": 0.6, "source": "Jerga MX (vigilancia)", "regex": false },
+    { "pattern": "trae a tus compas", "weight": 0.7, "source": "Reclutamiento secundario", "regex": false },
+    { "pattern": "trae a tus amigos", "weight": 0.7, "source": "Reclutamiento secundario", "regex": false },
+    { "pattern": "(manda|envía|mándame) (fotos|videos|nudes|pack)", "weight": 0.7, "source": "FinCEN sep 2025 (sextorsión)", "regex": true },
+    { "pattern": "(deposita|transfiere|pásame) \\$?\\s?\\d+", "weight": 0.7, "source": "FinCEN sep 2025", "regex": true },
+    { "pattern": "(gift card|tarjeta de regalo|spei)", "weight": 0.6, "source": "FinCEN sep 2025", "regex": true },
+    { "pattern": "no traigas celular", "weight": 0.7, "source": "Jerga operativa", "regex": false },
+    { "pattern": "te van a recoger", "weight": 0.7, "source": "Jerga operativa", "regex": false },
+    { "pattern": "(va por ti|pasan por ti) (alguien|un compa)", "weight": 0.7, "source": "Sintético", "regex": true },
+    { "pattern": "si no pagas (las|tus) (fotos|nudes|videos)", "weight": 0.95, "source": "FinCEN sextorsión", "regex": true },
+    { "pattern": "(las|tus) (fotos|nudes) (van|las mando) a (tu|todo)", "weight": 0.95, "source": "FinCEN sextorsión", "regex": true }
+  ],
+  "whitelist": [
+    "echa aguas en la calle",
+    "manda fotos del cumple"
+  ]
+}

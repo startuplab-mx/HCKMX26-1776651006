@@ -1,0 +1,110 @@
+{
+  "description": "Emojis codificados usados por cárteles. Fuente: Colmex (Dr. Rodrigo Peña), CSIS, Swissinfo, Infobae.",
+  "placeholder": true,
+  "emojis": [
+    {
+      "emoji": "🍕",
+      "meaning": "Cártel de Sinaloa (Chapiza)",
+      "weight": 0.7,
+      "phase_affinity": ["captacion"],
+      "source": "Colmex/Swissinfo",
+      "confidence": "confirmado"
+    },
+    {
+      "emoji": "🐓",
+      "meaning": "CJNG (Nemecio 'Mencho')",
+      "weight": 0.7,
+      "phase_affinity": ["captacion"],
+      "source": "Colmex/Swissinfo",
+      "confidence": "confirmado"
+    },
+    {
+      "emoji": "🔫",
+      "meaning": "Narcocultura genérica / armamento",
+      "weight": 0.5,
+      "phase_affinity": ["captacion", "coercion"],
+      "source": "CSIS/Infobae",
+      "confidence": "alto"
+    },
+    {
+      "emoji": "💰",
+      "meaning": "Glorificación dinero — combinado con jerga eleva captación",
+      "weight": 0.3,
+      "phase_affinity": ["captacion"],
+      "source": "CSIS",
+      "confidence": "medio"
+    },
+    {
+      "emoji": "💎",
+      "meaning": "Narcocultura aspiracional",
+      "weight": 0.3,
+      "phase_affinity": ["captacion"],
+      "source": "Derivado",
+      "confidence": "medio"
+    },
+    {
+      "emoji": "🤑",
+      "meaning": "Glorificación dinero",
+      "weight": 0.3,
+      "phase_affinity": ["captacion"],
+      "source": "Derivado",
+      "confidence": "medio"
+    },
+    {
+      "emoji": "💀",
+      "meaning": "Glorificación violencia",
+      "weight": 0.4,
+      "phase_affinity": ["captacion", "coercion"],
+      "source": "Derivado",
+      "confidence": "medio"
+    },
+    {
+      "emoji": "🖤",
+      "meaning": "Identidad narco-estética",
+      "weight": 0.3,
+      "phase_affinity": ["captacion"],
+      "source": "Derivado",
+      "confidence": "medio"
+    },
+    {
+      "emoji": "🦅",
+      "meaning": "Identidad criminal (águila)",
+      "weight": 0.4,
+      "phase_affinity": ["captacion"],
+      "source": "Derivado",
+      "confidence": "medio"
+    },
+    {
+      "emoji": "⚡",
+      "meaning": "Identidad criminal / acción",
+      "weight": 0.3,
+      "phase_affinity": ["captacion"],
+      "source": "Derivado",
+      "confidence": "bajo"
+    },
+    {
+      "emoji": "🏴‍☠️",
+      "meaning": "Identidad criminal (pirata)",
+      "weight": 0.5,
+      "phase_affinity": ["captacion"],
+      "source": "Derivado",
+      "confidence": "medio"
+    },
+    {
+      "emoji": "🤝",
+      "meaning": "Acuerdo (evaluar contexto)",
+      "weight": 0.2,
+      "phase_affinity": ["enganche"],
+      "source": "Sintético",
+      "confidence": "bajo"
+    },
+    {
+      "emoji": "🔒",
+      "meaning": "Secrecía (evaluar contexto)",
+      "weight": 0.3,
+      "phase_affinity": ["enganche"],
+      "source": "Sintético",
+      "confidence": "bajo"
+    }
+  ]
+}

@@ -37,6 +37,8 @@ bot/sessions/
 *.db
 *.sqlite
 *.sqlite3
+*.db-wal
+*.db-shm
 backend/nahual.db
 
 # Generated reports

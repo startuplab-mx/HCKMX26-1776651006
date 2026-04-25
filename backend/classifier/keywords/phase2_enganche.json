@@ -1,0 +1,25 @@
+{
+  "phase": "enganche",
+  "phase_name": "Enganche",
+  "description": "Aislamiento, secrecía, traslado a canales privados, recolección de datos personales",
+  "placeholder": true,
+  "_note": "Reemplazar con dataset definitivo de Marco.",
+  "patterns": [
+    { "pattern": "(dónde vives|en qué colonia|de dónde eres)", "weight": 0.5, "source": "Sintético", "regex": true },
+    { "pattern": "(pásate a|vámonos a|cámbiate a)\\s+(signal|telegram|privado|otro chat)", "weight": 0.6, "source": "Patrón observado", "regex": true },
+    { "pattern": "no le digas a nadie", "weight": 0.6, "source": "Sintético", "regex": false },
+    { "pattern": "manténlo en secreto", "weight": 0.6, "source": "Sintético", "regex": false },
+    { "pattern": "que sea entre tú y yo", "weight": 0.5, "source": "Sintético", "regex": false },
+    { "pattern": "confía en mí", "weight": 0.3, "source": "Sintético", "regex": false },
+    { "pattern": "yo te cuido", "weight": 0.3, "source": "Sintético", "regex": false },
+    { "pattern": "(necesitas|te falta) (dinero|lana|feria)", "weight": 0.4, "source": "Sintético", "regex": true },
+    { "pattern": "peleas con (la familia|tus papás|tu jefa)", "weight": 0.4, "source": "Sintético", "regex": true },
+    { "pattern": "envía tu ubicación", "weight": 0.7, "source": "Patrón observado", "regex": false },
+    { "pattern": "manda tu ubicación", "weight": 0.7, "source": "Patrón observado", "regex": false },
+    { "pattern": "tus papás no te entienden", "weight": 0.5, "source": "Sintético", "regex": false }
+  ],
+  "whitelist": [
+    "no le digas a nadie de la fiesta sorpresa",
+    "yo te cuido en el cumple"
+  ]
+}

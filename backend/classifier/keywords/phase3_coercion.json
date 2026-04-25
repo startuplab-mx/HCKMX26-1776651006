@@ -1,0 +1,24 @@
+{
+  "phase": "coercion",
+  "phase_name": "Coerción",
+  "description": "Amenazas, presión, encierro psicológico. ACTIVA OVERRIDE si score ≥ 0.80",
+  "placeholder": true,
+  "_note": "CRÍTICO: estos patrones disparan override. Validar EXTREMA cautela con Marco.",
+  "patterns": [
+    { "pattern": "vas a ser sicario", "weight": 0.9, "source": "El País 2025 (testimonio Rancho Izaguirre)", "regex": false },
+    { "pattern": "si intentas escapar te descuartizo", "weight": 1.0, "source": "El País 2025 (testimonio)", "regex": false },
+    { "pattern": "si te vas te (matamos|tronamos|damos piso)", "weight": 1.0, "source": "Derivado testimonios", "regex": true },
+    { "pattern": "ya sabes demasiado", "weight": 0.7, "source": "Sintético/cinematográfico verificado", "regex": false },
+    { "pattern": "ya estás adentro", "weight": 0.7, "source": "Sintético", "regex": false },
+    { "pattern": "te vamos a buscar", "weight": 0.9, "source": "Sintético", "regex": false },
+    { "pattern": "sabemos dónde vives", "weight": 0.95, "source": "Sintético", "regex": false },
+    { "pattern": "(sabemos|ya sabemos) (dónde|donde) (vives|estás|trabajas)", "weight": 0.95, "source": "Sintético", "regex": true },
+    { "pattern": "(levantón|levanton|tronar|dar piso|darte piso)", "weight": 0.8, "source": "Jerga criminal MX", "regex": true },
+    { "pattern": "última oportunidad", "weight": 0.5, "source": "Sintético", "regex": false },
+    { "pattern": "te va a pesar", "weight": 0.6, "source": "Sintético", "regex": false },
+    { "pattern": "ya no te puedes salir", "weight": 0.85, "source": "Sintético", "regex": false },
+    { "pattern": "ya estás marcado", "weight": 0.85, "source": "Jerga criminal", "regex": false },
+    { "pattern": "(conocemos|sabemos de) tu (familia|hermana|mamá|papá)", "weight": 0.95, "source": "Sintético", "regex": true }
+  ],
+  "whitelist": []
+}

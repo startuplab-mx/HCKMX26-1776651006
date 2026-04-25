@@ -1,0 +1,27 @@
+{
+  "phase": "captacion",
+  "phase_name": "Captación",
+  "description": "Ofertas falsas de trabajo, narcocultura aspiracional, contacto inicial",
+  "placeholder": true,
+  "_note": "Reemplazar con dataset definitivo de Marco. Pesos basados en NAHUAL2.",
+  "patterns": [
+    { "pattern": "yo quiero jale", "weight": 0.9, "source": "Swissinfo/Colmex", "regex": false },
+    { "pattern": "quiero jale", "weight": 0.85, "source": "Swissinfo", "regex": false },
+    { "pattern": "trabajo cortando agave", "weight": 0.7, "source": "El País 2025", "regex": false },
+    { "pattern": "corte de agave", "weight": 0.7, "source": "El País 2025", "regex": false },
+    { "pattern": "guardia de seguridad", "weight": 0.7, "source": "El País 2025 (Rancho Izaguirre)", "regex": false },
+    { "pattern": "te pago el viaje", "weight": 0.8, "source": "El País 2025", "regex": false },
+    { "pattern": "boleto de autobús incluido", "weight": 0.8, "source": "El País 2025", "regex": false },
+    { "pattern": "instalar cámaras de vigilancia", "weight": 0.6, "source": "El País 2025", "regex": false },
+    { "pattern": "\\$\\s?\\d{1,3}[,.]?\\d{3}\\s+(semanales|diarios|a la semana|al día)", "weight": 0.7, "source": "Colmex", "regex": true },
+    { "pattern": "(el jale|la chamba|el movimiento|el negocio)", "weight": 0.6, "source": "Jerga MX", "regex": true },
+    { "pattern": "necesito gente", "weight": 0.5, "source": "Sintético", "regex": false },
+    { "pattern": "trabajo fácil", "weight": 0.5, "source": "Sintético", "regex": false },
+    { "pattern": "dinero rápido", "weight": 0.6, "source": "Sintético", "regex": false }
+  ],
+  "whitelist": [
+    "estoy trabajando ahora",
+    "el jale escolar",
+    "guardia de seguridad de mi escuela"
+  ]
+}
