@@ -104,6 +104,8 @@ python -m http.server 3000
 
 ### 4. Extensión Nahual Shield
 
+Soporta **WhatsApp Web · Instagram · Discord · Roblox**.
+
 1. Abre `chrome://extensions/`
 2. Activa **Modo desarrollador**
 3. Click **Cargar descomprimida** → selecciona `extension/`
@@ -112,15 +114,37 @@ python -m http.server 3000
 
 ## API Endpoints
 
+### Análisis
 | Método | Ruta | Descripción |
 |--------|------|------------|
-| `POST` | `/analyze` | Analiza texto → risk_score, fases, categorías |
-| `POST` | `/alert` | Registra alerta (webhook bot) |
-| `GET` | `/alerts` | Lista todas las alertas |
-| `GET` | `/alerts/{id}` | Detalle de alerta |
-| `GET` | `/stats` | Estadísticas agregadas |
+| `POST` | `/analyze` | Analiza texto → risk_score, fases, categorías, pattern_ids |
+| `POST` | `/transcribe` | 🎙️ Audio → texto (Groq Whisper) |
+| `POST` | `/ocr` | 📸 Imagen → texto (Claude Vision) |
+
+### Alertas + Triage
+| Método | Ruta | Descripción |
+|--------|------|------------|
+| `POST` | `/alert` | Registra alerta (webhook bot/extensión) |
+| `GET` | `/alerts` | Lista (filtrable por status / risk_level) |
+| `GET` | `/alerts/{id}` | Detalle |
+| `PATCH` | `/alerts/{id}` | Actualiza status / notes / reviewer |
+| `POST` | `/alerts/{id}/escalate` | Escala a 088 / SIPINNA / Fiscalía |
+| `GET` | `/alerts/{id}/history` | Audit trail |
 | `POST` | `/report/{id}` | Genera PDF |
-| `GET` | `/health` | Health check |
+
+### Investigación anónima
+| Método | Ruta | Descripción |
+|--------|------|------------|
+| `POST` | `/contribute` | Aporta metadata anónima (sin PII) |
+| `GET` | `/contributions/stats` | Stats agregados (top patterns, regiones) |
+
+### Stats + sesiones + sistema
+| Método | Ruta | Descripción |
+|--------|------|------------|
+| `GET` | `/stats` | by_level, by_phase, by_platform, by_status |
+| `GET` | `/stats/timeseries` | Buckets por hora/día para gráfica del panel |
+| `GET/PUT/DELETE` | `/sessions/{id}` | Persistencia de sesión del bot |
+| `GET` | `/health` | Health check (LLM + STT enabled flags) |
 | `GET` | `/docs` | Swagger UI |
 
 ### Ejemplo
@@ -145,10 +169,37 @@ curl -X POST http://localhost:8000/analyze \
 
 ---
 
+## Capacidades multimedia (Phase 3)
+
+El bot acepta tres tipos de entrada:
+
+| Tipo | Cómo funciona | Servicio |
+|------|--------------|----------|
+| 📝 **Texto** | Pegar el mensaje sospechoso. Análisis directo. | Heurístico + Claude (zona gris) |
+| 🎙️ **Audio** | El bot transcribe con Whisper, muestra el texto al usuario para confirmar, después analiza. | Groq Whisper (`GROQ_API_KEY`) |
+| 📸 **Captura** | OCR vía Claude Vision, confirmación, después análisis. Funciona con WhatsApp, Instagram, TikTok, Discord, **Roblox**, etc. | Claude Vision (`ANTHROPIC_API_KEY`) |
+
+**Privacidad:** los bytes del audio/imagen se reenvían al proveedor para extracción y NO se persisten en Nahual. Sólo el texto extraído (tras confirmación del usuario) entra al pipeline normal — y de ahí únicamente se guarda el SHA-256.
+
+## Investigación abierta (Phase 3)
+
+Después de cada análisis el bot pregunta: *"¿quieres compartir los datos de este análisis de forma anónima?"*. Si el usuario acepta, se persiste en `contributions`:
+
+- platform, risk_level, risk_score, phase_detected
+- categories, pattern_ids (cuáles regex dispararon)
+- source_type (text/audio/image), region (opcional)
+- llm_used, override_triggered
+
+**Lo que NO se guarda jamás:** texto, teléfono, identidad, hash, session_id. El modelo Pydantic tiene `extra="forbid"` que rechaza cualquier campo desconocido con HTTP 422 — defensa en profundidad contra leakage accidental.
+
+El endpoint público `GET /contributions/stats` expone agregados (top patrones, distribución por región/plataforma). Esto convierte a Nahual en el primer dataset abierto sobre patrones de reclutamiento criminal digital en México.
+
 ## Privacy by Design
 
 - **No se almacenan mensajes completos**, solo SHA-256 + resumen anonimizado
 - **Alerta a tutor** contiene SOLO nivel de riesgo + plataforma, NUNCA el contenido
+- **Audio/imagen** se procesan y se descartan — sólo el texto extraído entra al pipeline (después de confirmación explícita)
+- **Contribuciones anónimas** rechazan campos desconocidos a nivel modelo (Pydantic `extra="forbid"`)
 - **Cumplimiento Art. 16 CPEUM** — no intercepta comunicaciones, sólo analiza datos autoinformados por el usuario
 - **LFPDPPP** — protección de datos personales de menores
 - **Ley Olimpia** — protocolo en casos de sextorsión

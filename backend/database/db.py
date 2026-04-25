@@ -58,11 +58,31 @@ CREATE TABLE IF NOT EXISTS alert_actions (
     FOREIGN KEY (alert_id) REFERENCES alerts(id) ON DELETE CASCADE
 );
 
+-- Anonymous research dataset. Populated only when a user opts in via the
+-- bot's ASK_CONTRIBUTE flow. Holds NO PII: no text, no phone, no session id.
+CREATE TABLE IF NOT EXISTS contributions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    platform TEXT NOT NULL,
+    risk_level TEXT NOT NULL,
+    risk_score REAL NOT NULL,
+    phase_detected TEXT,
+    categories TEXT,           -- JSON array of category names
+    pattern_ids TEXT,          -- JSON array of pattern IDs that fired
+    source_type TEXT NOT NULL DEFAULT 'text',  -- text | audio | image
+    region TEXT,               -- Optional state/region (voluntary)
+    llm_used INTEGER DEFAULT 0,
+    override_triggered INTEGER DEFAULT 0
+);
+
 CREATE INDEX IF NOT EXISTS idx_alerts_created_at ON alerts(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_alerts_risk_level ON alerts(risk_level);
 CREATE INDEX IF NOT EXISTS idx_alerts_platform ON alerts(platform);
 CREATE INDEX IF NOT EXISTS idx_alerts_status ON alerts(status);
 CREATE INDEX IF NOT EXISTS idx_actions_alert_id ON alert_actions(alert_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_contrib_platform ON contributions(platform);
+CREATE INDEX IF NOT EXISTS idx_contrib_phase ON contributions(phase_detected);
+CREATE INDEX IF NOT EXISTS idx_contrib_created_at ON contributions(created_at DESC);
 """
 
 # Columns added after v1.0 that need ALTER TABLE on pre-existing DBs.
@@ -71,6 +91,8 @@ ALERT_COLUMN_MIGRATIONS = (
     ("notes", "TEXT"),
     ("reviewer", "TEXT"),
     ("updated_at", "TEXT"),
+    ("pattern_ids", "TEXT"),     # JSON array of matched pattern IDs
+    ("source_type", "TEXT NOT NULL DEFAULT 'text'"),  # text | audio | image
 )
 
 
@@ -176,14 +198,16 @@ class Database:
         llm_used: bool,
         override_triggered: bool,
         session_id: str | None,
+        pattern_ids: list[str] | None = None,
+        source_type: str = "text",
     ) -> int:
         cur = self._conn.execute(
             """
             INSERT INTO alerts (
                 platform, source, risk_score, risk_level, phase_detected,
                 categories, summary, original_text_hash, contact_phone,
-                llm_used, override_triggered, session_id
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                llm_used, override_triggered, session_id, pattern_ids, source_type
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 platform,
@@ -198,6 +222,8 @@ class Database:
                 int(llm_used),
                 int(override_triggered),
                 session_id,
+                json.dumps(pattern_ids or [], ensure_ascii=False),
+                source_type,
             ),
         )
         return int(cur.lastrowid)
@@ -605,6 +631,122 @@ class Database:
             "status": row["status"] if "status" in keys else "pending",
             "notes": row["notes"] if "notes" in keys else None,
             "reviewer": row["reviewer"] if "reviewer" in keys else None,
+            "pattern_ids": (
+                json.loads(row["pattern_ids"] or "[]")
+                if "pattern_ids" in keys and row["pattern_ids"]
+                else []
+            ),
+            "source_type": row["source_type"] if "source_type" in keys else "text",
+        }
+
+    # ---------------- Contributions (anonymous research) ----------------
+
+    def insert_contribution(
+        self,
+        *,
+        platform: str,
+        risk_level: str,
+        risk_score: float,
+        phase_detected: str | None,
+        categories: list[str],
+        pattern_ids: list[str],
+        source_type: str = "text",
+        region: str | None = None,
+        llm_used: bool = False,
+        override_triggered: bool = False,
+    ) -> int:
+        """Persist anonymous research metadata. NO PII allowed.
+
+        Validators (defense-in-depth): the caller controls all fields, but
+        we still cap region length and reject suspicious payloads. The
+        endpoint layer re-validates with Pydantic.
+        """
+        if region is not None and len(region) > 80:
+            raise ValueError("region too long")
+        cur = self._conn.execute(
+            """
+            INSERT INTO contributions (
+                platform, risk_level, risk_score, phase_detected,
+                categories, pattern_ids, source_type, region,
+                llm_used, override_triggered
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                platform,
+                risk_level,
+                risk_score,
+                phase_detected,
+                json.dumps(categories, ensure_ascii=False),
+                json.dumps(pattern_ids, ensure_ascii=False),
+                source_type,
+                region,
+                int(llm_used),
+                int(override_triggered),
+            ),
+        )
+        return int(cur.lastrowid)
+
+    def contribution_stats(self) -> dict[str, Any]:
+        """Aggregate stats for the public /contributions/stats endpoint."""
+        with self._lock:
+            total = self._conn.execute(
+                "SELECT COUNT(*) AS c FROM contributions"
+            ).fetchone()["c"]
+            by_platform = {
+                r["platform"]: r["c"]
+                for r in self._conn.execute(
+                    "SELECT platform, COUNT(*) AS c FROM contributions GROUP BY platform"
+                ).fetchall()
+            }
+            by_phase = {
+                (r["phase_detected"] or "ninguna"): r["c"]
+                for r in self._conn.execute(
+                    "SELECT phase_detected, COUNT(*) AS c FROM contributions "
+                    "GROUP BY phase_detected"
+                ).fetchall()
+            }
+            by_level = {
+                r["risk_level"]: r["c"]
+                for r in self._conn.execute(
+                    "SELECT risk_level, COUNT(*) AS c FROM contributions GROUP BY risk_level"
+                ).fetchall()
+            }
+            by_source = {
+                r["source_type"]: r["c"]
+                for r in self._conn.execute(
+                    "SELECT source_type, COUNT(*) AS c FROM contributions GROUP BY source_type"
+                ).fetchall()
+            }
+            by_region = {
+                (r["region"] or "no especificada"): r["c"]
+                for r in self._conn.execute(
+                    "SELECT region, COUNT(*) AS c FROM contributions GROUP BY region"
+                ).fetchall()
+            }
+            top_patterns = [
+                {"pattern_id": r["pid"], "count": r["c"]}
+                for r in self._conn.execute(
+                    """
+                    SELECT json_each.value AS pid, COUNT(*) AS c
+                    FROM contributions, json_each(contributions.pattern_ids)
+                    GROUP BY pid
+                    ORDER BY c DESC
+                    LIMIT 10
+                    """
+                ).fetchall()
+            ]
+        for level in ("SEGURO", "ATENCION", "PELIGRO"):
+            by_level.setdefault(level, 0)
+        for st in ("text", "audio", "image"):
+            by_source.setdefault(st, 0)
+        return {
+            "total_contributions": total,
+            "by_platform": by_platform,
+            "by_phase": by_phase,
+            "by_level": by_level,
+            "by_source": by_source,
+            "by_region": by_region,
+            "top_patterns": top_patterns,
         }
 
 

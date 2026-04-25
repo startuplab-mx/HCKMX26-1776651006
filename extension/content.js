@@ -3,6 +3,48 @@
 // Phase 4 pattern fires, show a single overlay and persist the hit count to
 // chrome.storage so the popup can read it. No network I/O.
 
+// Per-platform DOM hints. The MutationObserver below scans the whole body
+// regardless, but the platform config is exposed so popups / future code
+// can know which site is active and adjust UX (e.g. a "Roblox detected"
+// banner). Keeping it data-only keeps the runtime trivial.
+const PLATFORMS = [
+  {
+    name: 'whatsapp',
+    matches: (host) => host.includes('whatsapp'),
+    chatSelector: '#main .copyable-text',
+    messageSelector: '.message-in .copyable-text span',
+    containerSelector: '#main',
+  },
+  {
+    name: 'instagram',
+    matches: (host) => host.includes('instagram'),
+    chatSelector: '[role="main"]',
+    messageSelector: 'div[dir="auto"]',
+    containerSelector: '[role="main"]',
+  },
+  {
+    name: 'discord',
+    matches: (host) => host.includes('discord'),
+    chatSelector: '[class*="chatContent"]',
+    messageSelector: '[id^="message-content"]',
+    containerSelector: '[class*="chatContent"]',
+  },
+  {
+    name: 'roblox',
+    matches: (host) => host.includes('roblox'),
+    chatSelector: '.chat-container, [class*="ChatWindow"], [class*="chat-window"]',
+    messageSelector: '.chat-message-content, [class*="message-content"]',
+    containerSelector: '.chat-container, [class*="ChatWindow"], [class*="chat-window"]',
+  },
+];
+
+function detectPlatform() {
+  const host = window.location.hostname;
+  return PLATFORMS.find((p) => p.matches(host)) || null;
+}
+
+const ACTIVE_PLATFORM = detectPlatform();
+
 const PHASE3_REGEX = [
   /si intentas escapar te (descuartizo|matamos)/i,
   /sabemos d(o|ó)nde vives/i,
@@ -17,6 +59,10 @@ const PHASE4_REGEX = [
   /si no pagas (las|tus) (fotos|nudes|videos)/i,
   /(las|tus) (fotos|nudes) (van|las mando) a/i,
   /no traigas celular/i,
+  // Roblox/voice-chat-style recruitment cues: gift cards, asking to leave
+  // the platform, "hablemos en discord", "pásame tu user".
+  /(gift\s?card|tarjeta de regalo|robux gratis)/i,
+  /(p(á|a)sate a|pasamos a) (discord|wpp|whatsapp|telegram|signal)/i,
 ];
 
 const COOLDOWN_MS = 5 * 60 * 1000;
@@ -107,4 +153,8 @@ observer.observe(document.body, { childList: true, subtree: true });
 // Initial sweep so patterns already visible on load are caught too.
 for (const child of document.body.childNodes) scanNode(child);
 
-console.log('[Nahual Shield] active on', location.hostname);
+console.log(
+  '[Nahual Shield] active on',
+  location.hostname,
+  ACTIVE_PLATFORM ? `(platform=${ACTIVE_PLATFORM.name})` : '(unknown platform)',
+);

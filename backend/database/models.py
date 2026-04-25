@@ -6,6 +6,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 AlertStatus = Literal["pending", "reviewed", "dismissed", "escalated"]
+SourceType = Literal["text", "audio", "image"]
 
 
 class AnalyzeRequest(BaseModel):
@@ -26,6 +27,7 @@ class AnalyzeResponse(BaseModel):
     phase_detected: str
     phase_scores: PhaseScores
     categories: list[str]
+    pattern_ids: list[str] = Field(default_factory=list)
     override_triggered: bool
     llm_used: bool
     llm_rationale: str | None = None
@@ -39,6 +41,7 @@ class AlertCreate(BaseModel):
     source: str = Field(default="bot")
     contact_phone: str | None = None
     session_id: str | None = None
+    source_type: SourceType = "text"
 
 
 class Alert(BaseModel):
@@ -115,3 +118,36 @@ class AlertAction(BaseModel):
     to_value: str | None
     notes: str | None
     created_at: str
+
+
+class TranscriptionResponse(BaseModel):
+    text: str
+    source: str  # 'groq_whisper' | 'claude_vision'
+
+
+class ContributionCreate(BaseModel):
+    """Anonymous research metadata. NEVER include text, phone, names, or any
+    other PII in this payload — Pydantic forbids unknown fields below.
+    """
+    model_config = {"extra": "forbid"}
+
+    platform: str = Field(..., min_length=1, max_length=64)
+    risk_level: Literal["SEGURO", "ATENCION", "PELIGRO"]
+    risk_score: float = Field(..., ge=0.0, le=1.0)
+    phase_detected: str | None = Field(default=None, max_length=64)
+    categories: list[str] = Field(default_factory=list)
+    pattern_ids: list[str] = Field(default_factory=list)
+    source_type: SourceType = "text"
+    region: str | None = Field(default=None, max_length=80)
+    llm_used: bool = False
+    override_triggered: bool = False
+
+
+class ContributionStats(BaseModel):
+    total_contributions: int
+    by_platform: dict[str, int]
+    by_phase: dict[str, int]
+    by_level: dict[str, int]
+    by_source: dict[str, int]
+    by_region: dict[str, int]
+    top_patterns: list[dict[str, object]]

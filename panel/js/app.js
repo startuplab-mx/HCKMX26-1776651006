@@ -261,10 +261,42 @@ function bindActions() {
   }
 }
 
+function renderKvList(elId, obj, formatter = (k, v) => `${k}: <strong>${v}</strong>`) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const entries = Object.entries(obj || {}).sort((a, b) => b[1] - a[1]);
+  if (entries.length === 0) {
+    el.innerHTML = '<span class="text-white/40 italic">sin datos</span>';
+    return;
+  }
+  el.innerHTML = entries.map(([k, v]) => formatter(esc(k), v)).join('<br/>');
+}
+
+async function refreshContributions() {
+  try {
+    const stats = await jget('/contributions/stats');
+    setText('contrib-total', stats.total_contributions);
+    renderKvList('contrib-by-level', stats.by_level);
+    renderKvList('contrib-by-platform', stats.by_platform);
+    renderKvList('contrib-by-source', stats.by_source);
+    renderKvList('contrib-by-region', stats.by_region);
+    const top = (stats.top_patterns || [])
+      .map((r) => `<code>${esc(r.pattern_id)}</code>: <strong>${r.count}</strong>`)
+      .join('<br/>') || '<span class="text-white/40 italic">aún no hay contribuciones</span>';
+    const el = document.getElementById('contrib-top-patterns');
+    if (el) el.innerHTML = top;
+  } catch (err) {
+    console.error('contributions refresh failed', err);
+  }
+}
+
 async function refresh() {
   try {
     const health = await jget('/health');
-    setText('health', `OK · LLM ${health.llm_enabled ? 'on' : 'off'}`);
+    setText(
+      'health',
+      `OK · LLM ${health.llm_enabled ? 'on' : 'off'} · STT ${health.groq_enabled ? 'on' : 'off'}`,
+    );
     const stats = await jget('/stats');
     setText('stat-total', stats.total_alerts);
     setText('stat-peligro', stats.by_level.PELIGRO || 0);
@@ -289,7 +321,7 @@ async function refresh() {
 }
 
 async function tick() {
-  await Promise.all([refresh(), refreshChart()]);
+  await Promise.all([refresh(), refreshChart(), refreshContributions()]);
 }
 
 bindActions();

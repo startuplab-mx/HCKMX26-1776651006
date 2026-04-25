@@ -78,6 +78,7 @@ class Pipeline:
         h = self.heuristic.classify(text)
         phase_scores: dict[str, float] = h["phase_scores"]
         categories: list[str] = h["categories"]
+        pattern_ids: list[str] = h.get("matched_pattern_ids", [])
 
         if (
             phase_scores["phase3"] >= OVERRIDE_THRESHOLD
@@ -92,6 +93,7 @@ class Pipeline:
                 risk_score=1.0,
                 phase_scores=phase_scores,
                 categories=categories,
+                pattern_ids=pattern_ids,
                 phase_detected=override_phase,
                 override=True,
                 llm_used=False,
@@ -126,6 +128,7 @@ class Pipeline:
             risk_score=final_score,
             phase_scores=phase_scores,
             categories=categories,
+            pattern_ids=pattern_ids,
             phase_detected=dominant_phase(phase_scores),
             override=False,
             llm_used=llm_used,
@@ -138,6 +141,7 @@ class Pipeline:
         risk_score: float,
         phase_scores: dict[str, float],
         categories: list[str],
+        pattern_ids: list[str],
         phase_detected: str,
         override: bool,
         llm_used: bool,
@@ -150,6 +154,7 @@ class Pipeline:
             "phase_detected": phase_detected,
             "phase_scores": {k: round(v, 4) for k, v in phase_scores.items()},
             "categories": categories,
+            "pattern_ids": pattern_ids,
             "override_triggered": override,
             "llm_used": llm_used,
             "llm_rationale": llm_rationale,

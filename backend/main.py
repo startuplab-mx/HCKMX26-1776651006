@@ -13,8 +13,11 @@ import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
+import base64
+
+import httpx
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
@@ -27,12 +30,15 @@ from database.models import (
     AlertUpdate,
     AnalyzeRequest,
     AnalyzeResponse,
+    ContributionCreate,
+    ContributionStats,
     EscalationRequest,
     PhaseScores,
     SessionState,
     SessionUpsert,
     StatsResponse,
     TimeseriesBucket,
+    TranscriptionResponse,
 )
 from reports import generate_report
 
@@ -131,7 +137,169 @@ def health():
         "status": "ok",
         "llm_enabled": app.state.pipeline.llm.enabled,
         "db_path": str(app.state.db.path),
+        "groq_enabled": bool(os.getenv("GROQ_API_KEY")),
     }
+
+
+# ---------------- STT / OCR (Phase 3) ----------------
+
+GROQ_TRANSCRIBE_URL = "https://api.groq.com/openai/v1/audio/transcriptions"
+ANTHROPIC_MESSAGES_URL = "https://api.anthropic.com/v1/messages"
+
+OCR_SYSTEM_PROMPT = (
+    "Extrae TODO el texto visible en esta imagen de una conversación de chat. "
+    "Incluye cada mensaje exactamente como aparece, incluyendo emojis. "
+    "Retorna SOLO el texto extraído, sin explicaciones ni formato adicional. "
+    "Si no hay texto legible, responde 'NO_TEXT'."
+)
+
+ALLOWED_AUDIO_MIME = {"audio/ogg", "audio/mpeg", "audio/mp4", "audio/wav", "audio/webm", "audio/x-m4a"}
+ALLOWED_IMAGE_MIME = {"image/png", "image/jpeg", "image/webp", "image/gif"}
+MAX_AUDIO_BYTES = 10 * 1024 * 1024   # 10 MB
+MAX_IMAGE_BYTES = 8 * 1024 * 1024    # 8 MB
+
+
+@app.post("/transcribe", response_model=TranscriptionResponse)
+async def transcribe_audio(file: UploadFile = File(...)):
+    """Receive an audio file, transcribe with Groq Whisper.
+
+    Privacy: the audio bytes are forwarded to Groq for transcription and
+    NOT persisted on the Nahual side. The returned text is fed back into
+    /alert by the bot (after user confirmation), where only its SHA-256
+    hash + summary are stored.
+    """
+    groq_key = os.getenv("GROQ_API_KEY")
+    if not groq_key:
+        raise HTTPException(503, "STT service unavailable (GROQ_API_KEY not configured)")
+
+    audio_bytes = await file.read()
+    if len(audio_bytes) == 0:
+        raise HTTPException(400, "empty audio file")
+    if len(audio_bytes) > MAX_AUDIO_BYTES:
+        raise HTTPException(413, f"audio exceeds {MAX_AUDIO_BYTES // (1024 * 1024)} MB")
+
+    mime = file.content_type or "audio/ogg"
+    timeout = float(os.getenv("STT_TIMEOUT_SECONDS", "15"))
+
+    try:
+        async with httpx.AsyncClient(timeout=timeout) as client:
+            resp = await client.post(
+                GROQ_TRANSCRIBE_URL,
+                headers={"Authorization": f"Bearer {groq_key}"},
+                files={"file": (file.filename or "audio.ogg", audio_bytes, mime)},
+                data={"model": "whisper-large-v3", "language": "es"},
+            )
+    except httpx.TimeoutException:
+        raise HTTPException(504, "STT upstream timed out")
+    except httpx.HTTPError as e:
+        raise HTTPException(502, f"STT upstream error: {e}")
+
+    if resp.status_code != 200:
+        raise HTTPException(502, f"STT upstream returned {resp.status_code}: {resp.text[:200]}")
+    text = (resp.json().get("text") or "").strip()
+    return TranscriptionResponse(text=text, source="groq_whisper")
+
+
+@app.post("/ocr", response_model=TranscriptionResponse)
+async def ocr_image(file: UploadFile = File(...)):
+    """Receive an image, extract text with Claude Vision.
+
+    Privacy: the image bytes are forwarded to Anthropic and not persisted
+    here. Same pipeline as /transcribe — extracted text is shown to the
+    user for confirmation before being analyzed.
+    """
+    api_key = os.getenv("ANTHROPIC_API_KEY")
+    if not api_key or api_key.startswith("sk-ant-xxxxx"):
+        raise HTTPException(503, "OCR service unavailable (ANTHROPIC_API_KEY not configured)")
+
+    image_bytes = await file.read()
+    if len(image_bytes) == 0:
+        raise HTTPException(400, "empty image file")
+    if len(image_bytes) > MAX_IMAGE_BYTES:
+        raise HTTPException(413, f"image exceeds {MAX_IMAGE_BYTES // (1024 * 1024)} MB")
+
+    media_type = file.content_type or "image/png"
+    if media_type not in ALLOWED_IMAGE_MIME:
+        raise HTTPException(415, f"unsupported image type {media_type!r}")
+
+    b64 = base64.b64encode(image_bytes).decode("ascii")
+    model = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-20250514")
+    timeout = float(os.getenv("OCR_TIMEOUT_SECONDS", "15"))
+
+    try:
+        async with httpx.AsyncClient(timeout=timeout) as client:
+            resp = await client.post(
+                ANTHROPIC_MESSAGES_URL,
+                headers={
+                    "x-api-key": api_key,
+                    "anthropic-version": "2023-06-01",
+                    "content-type": "application/json",
+                },
+                json={
+                    "model": model,
+                    "max_tokens": 2000,
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": [
+                                {
+                                    "type": "image",
+                                    "source": {
+                                        "type": "base64",
+                                        "media_type": media_type,
+                                        "data": b64,
+                                    },
+                                },
+                                {"type": "text", "text": OCR_SYSTEM_PROMPT},
+                            ],
+                        }
+                    ],
+                },
+            )
+    except httpx.TimeoutException:
+        raise HTTPException(504, "OCR upstream timed out")
+    except httpx.HTTPError as e:
+        raise HTTPException(502, f"OCR upstream error: {e}")
+
+    if resp.status_code != 200:
+        raise HTTPException(502, f"OCR upstream returned {resp.status_code}: {resp.text[:200]}")
+    body = resp.json()
+    text = (body.get("content", [{}])[0].get("text") or "").strip()
+    if text == "NO_TEXT":
+        text = ""
+    return TranscriptionResponse(text=text, source="claude_vision")
+
+
+# ---------------- Anonymous research contributions (Phase 3) ----------------
+
+@app.post("/contribute", status_code=status.HTTP_201_CREATED)
+def contribute(payload: ContributionCreate):
+    """Persist anonymized analysis metadata.
+
+    The Pydantic model has ``extra='forbid'`` so unknown fields (which
+    might smuggle PII) are rejected with 422. We never accept text, phone,
+    session id, or hash here — by construction, this dataset is the
+    anonymous research output of Nahual.
+    """
+    cid = app.state.db.insert_contribution(
+        platform=payload.platform,
+        risk_level=payload.risk_level,
+        risk_score=payload.risk_score,
+        phase_detected=payload.phase_detected,
+        categories=payload.categories,
+        pattern_ids=payload.pattern_ids,
+        source_type=payload.source_type,
+        region=payload.region,
+        llm_used=payload.llm_used,
+        override_triggered=payload.override_triggered,
+    )
+    return {"contributed": True, "id": cid}
+
+
+@app.get("/contributions/stats", response_model=ContributionStats)
+def contributions_stats():
+    """Public aggregate from the contributed-research dataset."""
+    return app.state.db.contribution_stats()
 
 
 @app.post("/analyze", response_model=AnalyzeResponse)
@@ -143,6 +311,7 @@ def analyze(req: AnalyzeRequest):
         phase_detected=result["phase_detected"],
         phase_scores=PhaseScores(**result["phase_scores"]),
         categories=result["categories"],
+        pattern_ids=result.get("pattern_ids", []),
         override_triggered=result["override_triggered"],
         llm_used=result["llm_used"],
         llm_rationale=result["llm_rationale"],
@@ -173,6 +342,8 @@ def create_alert(payload: AlertCreate):
         llm_used=result["llm_used"],
         override_triggered=result["override_triggered"],
         session_id=payload.session_id,
+        pattern_ids=result.get("pattern_ids", []),
+        source_type=payload.source_type,
     )
     response = {
         "id": alert_id,
@@ -181,9 +352,11 @@ def create_alert(payload: AlertCreate):
         "phase_detected": result["phase_detected"],
         "phase_scores": result["phase_scores"],
         "categories": result["categories"],
+        "pattern_ids": result.get("pattern_ids", []),
         "override_triggered": result["override_triggered"],
         "llm_used": result["llm_used"],
         "summary": result["summary"],
+        "source_type": payload.source_type,
     }
     # Auto-fire webhook on override (death threats, sextortion). External
     # consumers — e.g. SIPINNA bridge, Fiscalía intake — can listen here.

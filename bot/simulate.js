@@ -2,8 +2,12 @@
 // Pre-req: backend running (uvicorn main:app --reload --port 8000).
 //
 // Usage: BOT_BACKEND_URL=http://localhost:8000 node simulate.js
+//
+// Phase 3 additions: drives audio + image flows by injecting transcribed
+// text directly into the FSM (we don't need real audio bytes for the
+// offline path). The contribution flow is exercised at the end.
 import 'dotenv/config';
-import { advance } from './handlers/flowController.js';
+import { advance, startTranscriptionConfirmation } from './handlers/flowController.js';
 import { resetSession } from './utils/sessionManager.js';
 
 const FAKE_JID = 'demo-user@s.whatsapp.net';
@@ -29,25 +33,51 @@ async function userSays(text) {
   await advance(fakeSocket, FAKE_JID, text);
 }
 
+async function userSendsAudio(transcribedText) {
+  console.log(`\n[USER→BOT] [audio] (transcribed: "${transcribedText}")`);
+  await startTranscriptionConfirmation(fakeSocket, FAKE_JID, transcribedText, 'audio');
+}
+
+async function userSendsImage(extractedText) {
+  console.log(`\n[USER→BOT] [image] (OCR: "${extractedText}")`);
+  await startTranscriptionConfirmation(fakeSocket, FAKE_JID, extractedText, 'image');
+}
+
 async function main() {
   resetSession(FAKE_JID);
-  console.log('🛡️  NAHUAL BOT — OFFLINE SIMULATION\n');
+  console.log('🛡️  NAHUAL BOT — OFFLINE SIMULATION (Phase 3)\n');
 
-  // 1. First contact: greeting → only welcome
+  // ── Scenario A: text + DANGER + guardian + report + contribute ───────
+  console.log('\n=== A. Text → PELIGRO → notify → reporte → contribute ===');
   await userSays('hola');
-
-  // 2. Coercion message → triggers PELIGRO + override
   await userSays('si intentas escapar te descuartizo, sabemos donde vives');
+  await userSays('+525512345678'); // guardian
+  await userSays('reporte');       // PDF
+  await userSays('sí');            // contribute? yes
+  await userSays('Coahuila');      // region
 
-  // 3. User sends guardian phone → bot notifies (no content)
-  await userSays('+525512345678');
-
-  // 4. User asks for the PDF report → bot sends WhatsApp document
-  await userSays('reporte');
-
-  // 5. Substantive first paste in fresh session → analyzed inline
+  // ── Scenario B: audio with captacion → confirm → analyze ─────────────
+  console.log('\n\n=== B. Audio → confirm → ATENCION captación → contribute (no) ===');
   resetSession(FAKE_JID);
-  await userSays('yo quiero jale, te pago el viaje, $15,000 semanales 🍕');
+  await userSendsAudio('yo quiero jale, te pago el viaje, $15,000 semanales 🍕');
+  await userSays('sí');           // confirm transcription
+  await userSays('no');           // contribute? no
+
+  // ── Scenario C: image with sextortion → confirm → DANGER ─────────────
+  console.log('\n\n=== C. Image OCR → DANGER override → guardian → skip contribute ===');
+  resetSession(FAKE_JID);
+  await userSendsImage('si no pagas las fotos van a tu escuela. deposita 500 spei');
+  await userSays('sí');                 // confirm transcription
+  await userSays('+525587654321');      // guardian
+  await userSays('sí');                 // contribute
+  await userSays('paso');               // skip region
+
+  // ── Scenario D: user rejects transcription → returns to recibir_msg ──
+  console.log('\n\n=== D. Audio rejected → bot waits for text ===');
+  resetSession(FAKE_JID);
+  await userSendsAudio('mañana hay examen de bio');
+  await userSays('no');           // reject
+  await userSays('vienes al cumple el sabado'); // safe text
 
   console.log('\n✅ Simulación completa.');
 }

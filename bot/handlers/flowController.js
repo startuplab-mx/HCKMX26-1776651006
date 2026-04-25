@@ -1,11 +1,15 @@
 // State machine:
 //   inicio → bienvenida → recibir_msg → (analizando) → result_*
 //                                                   ↓ (PELIGRO)
-//                                                notify → (gen_report on demand)
+//                                                notify → ask_contribute
+//                                                              ↓ sí
+//                                                       ask_region → done → inicio
 //
-// One call per turn: /alert classifies + persists + returns the analysis.
-// Last alert id is stored in session so the user can ask for the PDF
-// afterwards by typing "reporte".
+//   audio/image → confirm_transcription → (sí) analyzeAndReply / (no) recibir_msg
+//
+// One call per turn for text: /alert classifies + persists + returns the
+// analysis. Last alert id + analysis kept in session for the "reporte"
+// command and for ASK_CONTRIBUTE.
 import { MESSAGES } from '../config/messages.js';
 import {
   ensureLoaded,
@@ -14,7 +18,11 @@ import {
   setSessionData,
   getSessionData,
 } from '../utils/sessionManager.js';
-import { registerAlert, fetchReportBytes } from './alertDispatcher.js';
+import {
+  registerAlert,
+  fetchReportBytes,
+  submitContribution,
+} from './alertDispatcher.js';
 
 const PHASE_LABEL = {
   captacion: 'Captación',
@@ -27,6 +35,9 @@ const PHASE_LABEL = {
 const GREETING_RE =
   /^(hola|hey|hi|buenas|qué onda|que onda|buenos dias|buenas tardes|buenas noches|holi|wenas|saludos|menu)[\s!.,?¿¡]*$/i;
 const REPORT_RE = /^\s*(reporte|report|pdf|descargar)\s*$/i;
+const YES_RE = /^\s*(s[ií]|si|sí|yes|y|confirmar|confirmo|ok|dale|adelante)\s*[!.]?\s*$/i;
+const NO_RE = /^\s*(no|nop|nope|nah|cancelar|nel)\s*[!.]?\s*$/i;
+const SKIP_RE = /^\s*(skip|saltar|omitir|n\/?a|prefiero no|paso)\s*$/i;
 
 function looksLikeGreeting(text) {
   return text.length < 30 && GREETING_RE.test(text.trim());
@@ -56,7 +67,7 @@ async function sendReport(sock, jid) {
   }
 }
 
-async function analyzeAndReply(sock, jid, text) {
+async function analyzeAndReply(sock, jid, text, sourceType = 'text') {
   await sock.sendMessage(jid, { text: MESSAGES.recibido });
   setStep(jid, 'analizando');
   try {
@@ -65,8 +76,23 @@ async function analyzeAndReply(sock, jid, text) {
       platform: 'whatsapp',
       source: 'bot',
       session_id: jid,
+      source_type: sourceType,
     });
-    setSessionData(jid, { lastAlertId: result.id });
+    // Stash the metadata we need later for ASK_CONTRIBUTE — never the raw text.
+    setSessionData(jid, {
+      lastAlertId: result.id,
+      lastAnalysis: {
+        platform: 'whatsapp',
+        risk_level: result.risk_level,
+        risk_score: result.risk_score,
+        phase_detected: result.phase_detected,
+        categories: result.categories || [],
+        pattern_ids: result.pattern_ids || [],
+        source_type: sourceType,
+        llm_used: !!result.llm_used,
+        override_triggered: !!result.override_triggered,
+      },
+    });
     const fase = PHASE_LABEL[result.phase_detected] || 'Sin fase dominante';
     let reply;
     if (result.risk_level === 'PELIGRO') {
@@ -74,24 +100,69 @@ async function analyzeAndReply(sock, jid, text) {
       setStep(jid, 'notify');
     } else if (result.risk_level === 'ATENCION') {
       reply = MESSAGES.resultadoAtencion(result.risk_score, fase);
-      setStep(jid, 'result');
+      setStep(jid, 'ask_contribute');
     } else {
       reply = MESSAGES.resultadoSeguro(result.risk_score);
-      setStep(jid, 'result');
+      setStep(jid, 'ask_contribute');
     }
     await sock.sendMessage(jid, { text: reply });
+    if (result.risk_level !== 'PELIGRO') {
+      // For SAFE / ATTENTION we go straight to the contribute prompt; for
+      // DANGER we ask after the guardian-notify flow completes.
+      await sock.sendMessage(jid, { text: MESSAGES.preguntarContribuir });
+    }
   } catch (err) {
     await sock.sendMessage(jid, { text: MESSAGES.errorBackend });
     setStep(jid, 'recibir_msg');
   }
 }
 
+async function handleConfirmTranscription(sock, jid, text) {
+  const pending = getSessionData(jid, 'pendingTranscription');
+  const sourceType = getSessionData(jid, 'pendingSourceType') || 'text';
+  if (YES_RE.test(text)) {
+    setSessionData(jid, { pendingTranscription: null, pendingSourceType: null });
+    await analyzeAndReply(sock, jid, pending, sourceType);
+    return;
+  }
+  if (NO_RE.test(text)) {
+    setSessionData(jid, { pendingTranscription: null, pendingSourceType: null });
+    await sock.sendMessage(jid, { text: MESSAGES.transcripcionRechazada });
+    setStep(jid, 'recibir_msg');
+    return;
+  }
+  await sock.sendMessage(jid, {
+    text: 'Responde *sí* para que lo analice o *no* para descartarlo.',
+  });
+}
+
+async function fireContribution(sock, jid, region = null) {
+  const analysis = getSessionData(jid, 'lastAnalysis');
+  if (!analysis) {
+    await sock.sendMessage(jid, { text: MESSAGES.contribucionGracias });
+    setStep(jid, 'inicio');
+    return;
+  }
+  try {
+    await submitContribution({ ...analysis, region });
+    await sock.sendMessage(jid, { text: MESSAGES.contribucionGracias });
+  } catch (err) {
+    await sock.sendMessage(jid, { text: MESSAGES.contribucionError });
+  } finally {
+    setSessionData(jid, { lastAnalysis: null });
+    setStep(jid, 'inicio');
+  }
+}
+
 export async function advance(sock, jid, text) {
-  // Hydrate from backend so a restarted bot picks up where each user left off.
   await ensureLoaded(jid);
-  // "reporte" is recognized in any post-analysis state.
   const session = getSession(jid);
-  if (REPORT_RE.test(text) && ['result', 'notify', 'inicio'].includes(session.current_step)) {
+
+  // "reporte" works in any post-analysis state.
+  if (
+    REPORT_RE.test(text) &&
+    ['result', 'notify', 'ask_contribute', 'inicio'].includes(session.current_step)
+  ) {
     await sendReport(sock, jid);
     return;
   }
@@ -110,6 +181,10 @@ export async function advance(sock, jid, text) {
     case 'recibir_msg':
     case 'result':
       await analyzeAndReply(sock, jid, text);
+      return;
+
+    case 'confirm_transcription':
+      await handleConfirmTranscription(sock, jid, text);
       return;
 
     case 'notify': {
@@ -132,7 +207,31 @@ export async function advance(sock, jid, text) {
           text: `No pude enviar el aviso (${err.message}). Llama 088 directamente.`,
         });
       }
-      setStep(jid, 'result');
+      setStep(jid, 'ask_contribute');
+      await sock.sendMessage(jid, { text: MESSAGES.preguntarContribuir });
+      return;
+    }
+
+    case 'ask_contribute':
+      if (YES_RE.test(text)) {
+        setStep(jid, 'ask_region');
+        await sock.sendMessage(jid, { text: MESSAGES.preguntarRegion });
+        return;
+      }
+      if (NO_RE.test(text)) {
+        await sock.sendMessage(jid, { text: MESSAGES.contribucionRechazada });
+        setSessionData(jid, { lastAnalysis: null });
+        setStep(jid, 'inicio');
+        return;
+      }
+      await sock.sendMessage(jid, {
+        text: 'Responde *sí* para contribuir anónimamente o *no* para terminar.',
+      });
+      return;
+
+    case 'ask_region': {
+      const region = SKIP_RE.test(text) ? null : text.trim().slice(0, 80) || null;
+      await fireContribution(sock, jid, region);
       return;
     }
 
@@ -140,4 +239,16 @@ export async function advance(sock, jid, text) {
       setStep(jid, 'inicio');
       await sock.sendMessage(jid, { text: MESSAGES.bienvenida });
   }
+}
+
+// Entry point used by audio/image handlers in messageHandler.js. They
+// stash the transcription on the session and bounce the user into the
+// confirm_transcription state so they always see the text before analysis.
+export async function startTranscriptionConfirmation(sock, jid, text, sourceType) {
+  setSessionData(jid, {
+    pendingTranscription: text,
+    pendingSourceType: sourceType,
+  });
+  setStep(jid, 'confirm_transcription');
+  await sock.sendMessage(jid, { text: MESSAGES.confirmarTranscripcion(text) });
 }

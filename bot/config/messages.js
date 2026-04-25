@@ -9,16 +9,50 @@ export const MESSAGES = {
     '🛡️ Hola, soy Nahual.',
     'Estoy aquí para ayudarte a entender si un mensaje que recibiste es seguro o sospechoso.',
     '',
-    'Pégame el mensaje que te llegó (sólo texto, por ahora) y lo analizo en segundos.',
+    'Puedes mandarme:',
+    '• 📝 Texto (pega el mensaje)',
+    '• 🎙️ Un audio (lo transcribo y analizo)',
+    '• 📸 Una captura de pantalla (extraigo el texto)',
     '',
     '🔒 No guardo el mensaje original, sólo un resumen anónimo. Tu privacidad es prioridad.',
   ].join('\n'),
 
   recibido: 'Recibido. Esto requiere un análisis detallado, dame unos segundos... 🔍',
 
-  rechazoMultimedia:
-    'Aún estoy entrenando mis ojos y oídos 🙈. Por ahora, por favor envíame tu reporte en texto o cópiame lo que te escribieron para poder ayudarte.',
+  // Multimedia ----------------------------------------------------------
+  audioRecibido: '🎙️ Recibí tu audio. Transcribiendo… esto puede tardar unos segundos.',
+  audioVacio: 'No pude entender el audio. ¿Puedes enviarlo como texto?',
+  audioNoConfigurado:
+    'Por ahora no puedo procesar audios (falta configurar el servicio de transcripción). Mándame el texto, por favor.',
+  audioError:
+    'No pude procesar el audio en este momento. Por favor, envíame el mensaje como texto.',
 
+  imagenRecibida: '📸 Recibí tu imagen. Extrayendo el texto…',
+  imagenSinTexto:
+    'No pude leer texto en la imagen. ¿Puedes copiarlo y pegarlo como texto?',
+  imagenNoConfigurada:
+    'Por ahora no puedo procesar imágenes (falta configurar el servicio de OCR). Cópiame el texto, por favor.',
+  imagenError:
+    'No pude procesar la imagen. Intenta enviarme el texto copiado directamente.',
+
+  rechazoMultimedia:
+    'Por ahora sólo puedo analizar texto, audios y capturas. Stickers y videos los estoy aprendiendo todavía 🙈.',
+
+  confirmarTranscripcion: (text) => {
+    const preview = text.length > 500 ? `${text.slice(0, 500)}…` : text;
+    return [
+      '📝 *Esto fue lo que entendí:*',
+      '',
+      `"${preview}"`,
+      '',
+      '¿Quieres que analice este texto? Responde *SÍ* o *NO*.',
+    ].join('\n');
+  },
+
+  transcripcionRechazada:
+    'OK, no analicé ese mensaje. Mándame texto o intenta de nuevo cuando quieras.',
+
+  // Resultados ---------------------------------------------------------
   resultadoSeguro: (score) =>
     [
       '✅ *Mensaje SEGURO*',
@@ -73,6 +107,37 @@ export const MESSAGES = {
 
   reporteListo: (folio) =>
     `📄 Tu reporte fue generado con folio *${folio}*. Puedes descargarlo desde el panel o pedirlo aquí.`,
+
+  // Contribuciones (Phase 3) -------------------------------------------
+  preguntarContribuir: [
+    '🔬 *Última pregunta*',
+    '',
+    '¿Te gustaría compartir los datos de este análisis de forma completamente anónima?',
+    '',
+    'No se guarda tu número, nombre, ni el contenido del mensaje — sólo el tipo de riesgo detectado y la plataforma. Esto ayuda a entender mejor cómo operan los reclutadores y a proteger a más jóvenes.',
+    '',
+    'Responde *SÍ* para contribuir o *NO* para terminar.',
+  ].join('\n'),
+
+  preguntarRegion: [
+    'Gracias 🙏. Si te animas, ¿de qué estado o región eres? Nos ayuda a saber dónde están ocurriendo más casos.',
+    '',
+    'Ejemplo: "Coahuila", "CDMX", "Nuevo León". O escribe *paso* para omitir.',
+  ].join('\n'),
+
+  contribucionGracias: [
+    '🙏 *Gracias.*',
+    '',
+    'Tu aportación anónima ayuda a construir el primer mapa de reclutamiento criminal digital en México. Cada dato cuenta.',
+    '',
+    '¿Hay algo más que quieras analizar?',
+  ].join('\n'),
+
+  contribucionRechazada:
+    'Sin problema. Tu privacidad es lo primero. Cuando quieras analizar otro mensaje, sólo escríbeme. 🛡️',
+
+  contribucionError:
+    'No pude registrar la contribución, pero tu análisis sigue en pie. Intenta más tarde si quieres aportar.',
 
   errorBackend:
     'Tuve un problema al analizar tu mensaje. Inténtalo de nuevo en un momento. Si urge: 088 (Policía Cibernética).',
