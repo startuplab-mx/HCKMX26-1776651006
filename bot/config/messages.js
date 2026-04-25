@@ -273,6 +273,31 @@ export const MESSAGES = {
     'Para borrar tus datos de sesión escribe *reset*.',
   ].join('\n'),
 
+  distress: [
+    '🛡️ Te escucho. Lo que sientes es real y tiene sentido.',
+    '',
+    'Estoy aquí para ayudarte. Si lo prefieres, podemos ir paso a paso:',
+    '',
+    '1️⃣ Si recibiste un mensaje que te asusta, *pégamelo aquí* (texto o captura) y lo analizo contigo.',
+    '2️⃣ Si necesitas hablar con alguien YA: *Línea de la Vida* 📞 *800-911-2000* (24/7, gratis, anónimo)',
+    '3️⃣ Si hay peligro inmediato: *088* Policía Cibernética',
+    '',
+    'No tienes que decidir solo/a. Cuéntame qué pasa cuando puedas. 🙏',
+  ].join('\n'),
+
+  soporte: [
+    '🛡️ Aquí estoy.',
+    '',
+    'Soy un bot, así que no puedo platicar como una persona — pero sí puedo:',
+    '• Analizar mensajes sospechosos que recibiste',
+    '• Conectarte con líneas de ayuda reales',
+    '• Generar un reporte para autoridades si hace falta',
+    '',
+    'Si quieres hablar con una persona ahorita: *Línea de la Vida* 📞 *800-911-2000* (24/7, gratis, anónimo, sin juicio).',
+    '',
+    'Si quieres que analice un mensaje, mándamelo cuando estés list@.',
+  ].join('\n'),
+
   estadoLabels: {
     inicio: 'esperando un mensaje para analizar',
     recibir_msg: 'esperando que me pegues el texto sospechoso',

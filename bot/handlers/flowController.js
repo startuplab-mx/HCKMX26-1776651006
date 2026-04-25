@@ -35,7 +35,18 @@ const PHASE_LABEL = {
 };
 
 const GREETING_RE =
-  /^(hola|hey|hi|buenas|qué onda|que onda|buenos dias|buenas tardes|buenas noches|holi|wenas|saludos)[\s!.,?¿¡]*$/i;
+  /^(hola|hey|hi|buenas|qué onda|que onda|qué pex|que pex|qu[eé] tal|buenos dias|buenas tardes|buenas noches|holi|wenas|saludos|ola|holiwis|holuli|hi5|hu|aki|aqui|hello)[\s!.,?¿¡]*$/i;
+
+// Emotional/distress states — fire empathy first, analysis second.
+// User typing "tengo miedo" / "no se que hacer" before sending the message
+// is reaching out for help. The bot acknowledges before asking for content.
+const DISTRESS_RE =
+  /\b(tengo\s+miedo|estoy\s+(asustad[oa]|nervios[oa]|preocupad[oa]|amenazad[oa])|no\s+s[eé]\s+(qu[eé]|que)\s+hacer|me\s+siento\s+(mal|terrible|horrible|atrapad[oa])|necesito\s+ayuda|ay[uú]dame|please\s+help|estoy\s+en\s+peligro|me\s+quiero\s+morir)\b/i;
+
+// "Solo quería platicar" / "quiero hablar con alguien" — emotional support
+// not analysis. Acknowledge and offer to either listen or analyze.
+const SUPPORT_RE =
+  /\b(quiero\s+(hablar|platicar|desahogarme)|necesito\s+platicar|me\s+puedes\s+escuchar|alguien\s+me\s+escucha)\b/i;
 const REPORT_RE = /^\s*\/?\s*(reporte|report|pdf|descargar)\s*$/i;
 const YES_RE = /^\s*(s[ií]|si|sí|yes|y|confirmar|confirmo|ok|dale|adelante)\s*[!.]?\s*$/i;
 const NO_RE = /^\s*(no|nop|nope|nah|cancelar|nel)\s*[!.]?\s*$/i;
@@ -253,6 +264,19 @@ export async function advance(sock, jid, text) {
     await sock.sendMessage(jid, {
       text: '¿"Sí" a qué? 🙂  Mándame el mensaje sospechoso (texto, audio o captura) y lo analizo. O escribe *menu* para ver opciones.',
     });
+    return;
+  }
+
+  // Distress / SOS — empathy first, then offer a path.
+  if (DISTRESS_RE.test(text) && ['inicio', 'recibir_msg'].includes(session.current_step)) {
+    await sock.sendMessage(jid, { text: MESSAGES.distress });
+    setStep(jid, 'recibir_msg'); // ready for the actual sus message
+    return;
+  }
+  // "Quiero platicar / desahogarme" — acknowledge + offer.
+  if (SUPPORT_RE.test(text) && session.current_step === 'inicio') {
+    await sock.sendMessage(jid, { text: MESSAGES.soporte });
+    setStep(jid, 'recibir_msg');
     return;
   }
 
