@@ -1,5 +1,6 @@
 import { ArchitectureSection } from "@/components/sections/architecture-section";
 import { ClassifierSection } from "@/components/sections/classifier-section";
+import { AdvancedFeaturesSection } from "@/components/sections/advanced-features-section";
 import { FlowSection } from "@/components/sections/flow-section";
 import { FooterSection } from "@/components/sections/footer-section";
 import { HeroSection } from "@/components/sections/hero-section";
@@ -19,6 +20,7 @@ export default function HomePage() {
       <ValidationSection />
       <ArchitectureSection />
       <ClassifierSection />
+      <AdvancedFeaturesSection />
       <FlowSection />
       <OutputsSection />
       <RoadmapTeamSection />

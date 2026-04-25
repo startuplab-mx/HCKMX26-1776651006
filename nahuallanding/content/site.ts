@@ -44,6 +44,13 @@ export type ArchitectureEdge = {
   to: string;
 };
 
+export type AdvancedFeature = {
+  id: string;
+  title: string;
+  icon: "mic" | "activity" | "shield" | "scale";
+  description: string;
+};
+
 export const site = {
   name: "Nahual",
   repoUrl: "https://github.com/cocopsn/nahual-landing",
@@ -458,5 +465,31 @@ export const site = {
       note:
         "Recepción en el Senado de la minuta sobre sanciones de 10 a 20 años cuando menores sean involucrados en delincuencia organizada."
     }
-  ] satisfies SourceLink[]
+  ] satisfies SourceLink[],
+  advancedFeatures: [
+    {
+      id: "privacy",
+      title: "Data Anónima by Design",
+      icon: "shield",
+      description: "Construido bajo el Art. 16 de la Constitución. El analizador procesa los bytes de imágenes y audios extrayendo el texto y descartando el archivo original. Únicamente se almacena el Hash SHA-256 de los mensajes junto con telemetría no rastreable, bloqueando PII mediante validación estricta."
+    },
+    {
+      id: "multimedia",
+      title: "Procesamiento OCR & Audio Extendido",
+      icon: "mic",
+      description: "El reclutamiento raramente ocurre en texto plano. Nahual incluye un pipeline para extraer intenciones ocultas de notas de voz (Groq Whisper) y capturas de pantalla de Roblox o Instagram (Claude Vision), interpretando el engaño incluso en imágenes."
+    },
+    {
+      id: "trayectory",
+      title: "Trayectory Override & Memoria",
+      icon: "activity",
+      description: "El abuso criminal es progresivo. El EscalationDetector rastrea la velocidad y desviación del riesgo a través del ciclo de vida de una sesión. Si el perpetrador transita gradualmente de \"captación\" a \"enganche\", el sistema detona preventivamente un Peligro por trayectoria."
+    },
+    {
+      id: "legal",
+      title: "Trazabilidad Forense Automática",
+      icon: "scale",
+      description: "No solo predice riesgo; lo mapea. Las heurísticas referencian en tiempo real la Ley Olimpia, la LGDNNA y las reformas pendientes al Código Penal Federal (Art. 201), compilando un reporte PDF validado para abrir carpeta directa en Policía Cibernética."
+    }
+  ] satisfies AdvancedFeature[]
 };
