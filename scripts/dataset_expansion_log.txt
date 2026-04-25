@@ -1,0 +1,159 @@
+======================================================================
+NAHUAL — RESUMEN FINAL DE EXPANSIÓN DE DATASET
+Agente Nocturno de Ampliación de Dataset
+Fecha: 2026-04-25
+======================================================================
+
+DATASET ORIGINAL:     374 patrones
+PATRONES NUEVOS:      629
+TOTAL FINAL:          1003
+META:                 1000
+EXCEDENTE:            +3
+
+----------------------------------------------------------------------
+DISTRIBUCIÓN POR FASE
+----------------------------------------------------------------------
+  Fase1                 Original:  100  Nuevos:  215  Total:  315
+  Fase2                 Original:   90  Nuevos:  166  Total:  256
+  Fase3                 Original:   84  Nuevos:  118  Total:  202
+  Fase4                 Original:  100  Nuevos:  130  Total:  230
+  TOTAL                 Original:  374  Nuevos:  629  Total: 1003
+
+----------------------------------------------------------------------
+DISTRIBUCIÓN POR CONFIABILIDAD
+----------------------------------------------------------------------
+  alta         189 patrones  (30.0%)
+  media        213 patrones  (33.9%)
+  baja         227 patrones  (36.1%)
+
+----------------------------------------------------------------------
+DISTRIBUCIÓN POR TIPO
+----------------------------------------------------------------------
+  funcional         122 patrones  (19.4%)
+  operativo         104 patrones  (16.5%)
+  coercion           88 patrones  (14.0%)
+  económica          77 patrones  (12.2%)
+  frase              62 patrones  (9.9%)
+  sociocultural      55 patrones  (8.7%)
+  emocional          50 patrones  (7.9%)
+  simbólica          30 patrones  (4.8%)
+  hashtag            23 patrones  (3.7%)
+  táctica             7 patrones  (1.1%)
+  financiero          3 patrones  (0.5%)
+  emoji               3 patrones  (0.5%)
+  leet                3 patrones  (0.5%)
+  dato                2 patrones  (0.3%)
+
+----------------------------------------------------------------------
+DISTRIBUCIÓN POR FUENTE (Top 15)
+----------------------------------------------------------------------
+  Derivado                                        344
+  Infobae                                          49
+  derivado                                         32
+  AFP                                              14
+  CSIS 2025                                        14
+  Colmex                                           10
+  Derecho de la Red                                10
+  Xataka                                           10
+  Proceso                                           8
+  Colmex/Infobae                                    7
+  Vice/Univision                                    6
+  Univision                                         6
+  Animal Político                                   5
+  La Mente es Maravillosa                           5
+  Colmex/Milenio                                    4
+  ... y 64 fuentes adicionales
+
+----------------------------------------------------------------------
+TOP 10 PATRONES DE MAYOR PESO/RELEVANCIA
+----------------------------------------------------------------------
+   1. [1.0] Fase3 | voy a levantarte a ti y a toda tu familia la voy a matar
+      Intención: amenaza_familiar
+      Fuente: Infobae | Confiabilidad: alta
+
+   2. [1.0] Fase3 | la única forma de salir es con los pies por delante
+      Intención: amenaza_muerte
+      Fuente: Infobae | Confiabilidad: alta
+
+   3. [1.0] Fase3 | ya pusimos precio a tu cabeza
+      Intención: amenaza_muerte
+      Fuente: Derivado | Confiabilidad: media
+
+   4. [0.95] Fase3 | tengo tus fotos íntimas y las voy a publicar
+      Intención: amenaza_sextorsión
+      Fuente: REDIM/Consejo Ciudadano | Confiabilidad: alta
+
+   5. [0.95] Fase3 | mándame dinero o publico todo
+      Intención: extorsión_financiera
+      Fuente: FinCEN/REDIM | Confiabilidad: alta
+
+   6. [0.95] Fase3 | si te quieres ir te va mal
+      Intención: amenaza_deserción
+      Fuente: Proceso | Confiabilidad: alta
+
+   7. [0.95] Fase3 | tú vas para la escuela de sicarios
+      Intención: reclutamiento_forzado
+      Fuente: Infobae | Confiabilidad: alta
+
+   8. [0.95] Fase3 | aquí vienes a ser sicario
+      Intención: imposición
+      Fuente: Infobae | Confiabilidad: alta
+
+   9. [0.95] Fase3 | maté a mi mejor amigo por lealtad al cartel
+      Intención: prueba_lealtad
+      Fuente: Hora Cero | Confiabilidad: alta
+
+  10. [0.95] Fase3 | sabemos dónde vive tu familia
+      Intención: amenaza_familiar
+      Fuente: Derivado | Confiabilidad: media
+
+----------------------------------------------------------------------
+BRECHAS IDENTIFICADAS
+----------------------------------------------------------------------
+
+  1. FASE 3 (Coerción) sigue siendo la fase con menos patrones relativos.
+     Se recomienda buscar más testimonios judiciales de víctimas sobre
+     tácticas de control y amenaza.
+
+  2. Fuentes judiciales directas (expedientes, sentencias) son escasas.
+     La mayoría de patrones provienen de fuentes periodísticas y derivadas.
+     Se recomienda acceder a bases de datos del poder judicial.
+
+  3. Patrones de plataformas emergentes (BeReal, Threads, BlueSky) no
+     están representados. Los carteles migran rápido a nuevas plataformas.
+
+  4. Variantes regionales (dialecto, jerga local) están subrepresentadas.
+     Patrones de Guerrero, Michoacán, Tamaulipas y Chiapas necesitan
+     más especificidad lingüística.
+
+  5. Patrones de audio/voz (notas de voz en WhatsApp, mensajes de voz
+     en Telegram) no están cubiertos ya que el dataset es textual.
+
+  6. Patrones en lenguas indígenas (náhuatl, maya, mixteco) utilizados
+     en regiones con alta presencia de reclutamiento forzado no están
+     representados.
+
+  7. Indicadores de reclutamiento de menores migrantes centroamericanos
+     en tránsito por México tienen poca representación.
+
+  8. Patrones de deepfake y manipulación de imagen/video con IA para
+     sextorsión y amenazas son un vector emergente poco documentado.
+
+----------------------------------------------------------------------
+METODOLOGÍA
+----------------------------------------------------------------------
+
+  - 7 lotes (batches) de expansión ejecutados secuencialmente
+  - Deduplicación contra 374 señales originales + acumulado entre lotes
+  - Búsqueda web en 4 rondas: periodísticas, académicas, ciberseguridad, testimonios
+  - Fuentes consultadas: CSIS, Infobae, Milenio, CNN, ADN40, REDIM, UNICEF,
+    LatinTimes, Publimetro, INAI, CNDH, OECD, Vanguardia, El Español,
+    Prensa Libre, Animal Político, Proceso, Vice, UNODC, FinCEN, AFP,
+    Xataka, WeLiveSecurity, Derecho de la Red, y más de 30 fuentes adicionales
+  - Clasificación de confiabilidad: alta (judicial/periodística verificada),
+    media (documentada pero indirecta), baja (derivada/sintética)
+  - IDs secuenciales por fase: f1_xxx, f2_xxx, f3_xxx, f4_xxx
+
+======================================================================
+FIN DEL REPORTE
+======================================================================

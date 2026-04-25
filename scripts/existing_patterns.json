@@ -1,0 +1,3742 @@
+[
+  {
+    "id": "f1_001",
+    "fase": "1",
+    "señal_base": "🐓",
+    "variantes": "nemecio, mencho, el gallo, gallito, the rooster",
+    "intención": "imposicion",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_002",
+    "fase": "1",
+    "señal_base": "🐓🐓🐓",
+    "variantes": "tres gallos, gallos en serie, fila de gallos",
+    "intención": "imposicion",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_003",
+    "fase": "1",
+    "señal_base": "NG",
+    "variantes": "CJNG, cuatro letras, las 4 letras, c.j.n.g.",
+    "intención": "imposicion",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_004",
+    "fase": "1",
+    "señal_base": "las cuatro letras",
+    "variantes": "4 letras, jaliscas, los de jalisco, jaliquillos",
+    "intención": "imposicion",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_005",
+    "fase": "1",
+    "señal_base": "el señor de los gallos",
+    "variantes": "señor mencho, el de jalisco, patron jalisco",
+    "intención": "imposicion",
+    "fuente": "Derivado",
+    "tipo": "sociocultural",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_006",
+    "fase": "1",
+    "señal_base": "🍕",
+    "variantes": "pizza, chapiza, chapizza, chapos pizza, los de la pizza",
+    "intención": "imposicion",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_007",
+    "fase": "1",
+    "señal_base": "🤠",
+    "variantes": "el sombrero, sombrerudo, mayo, el mayito",
+    "intención": "imposicion",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_008",
+    "fase": "1",
+    "señal_base": "los chapitos",
+    "variantes": "chapitos, hijos del chapo, los menores",
+    "intención": "imposicion",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_009",
+    "fase": "1",
+    "señal_base": "CDS",
+    "variantes": "cartel de sinaloa, sinaloas, los del pacífico",
+    "intención": "imposicion",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_010",
+    "fase": "1",
+    "señal_base": "🐺",
+    "variantes": "lobos, los lobos del pacífico, manada",
+    "intención": "imposicion",
+    "fuente": "Derivado",
+    "tipo": "sociocultural",
+    "peso": "0.5"
+  },
+  {
+    "id": "f1_011",
+    "fase": "1",
+    "señal_base": "CDN",
+    "variantes": "cartel del noreste, los del noreste, zetas viejos",
+    "intención": "imposicion",
+    "fuente": "InsightCrime",
+    "tipo": "sociocultural",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_012",
+    "fase": "1",
+    "señal_base": "CDG",
+    "variantes": "cartel del golfo, los del golfo, golfas",
+    "intención": "imposicion",
+    "fuente": "Derivado",
+    "tipo": "sociocultural",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_013",
+    "fase": "1",
+    "señal_base": "Z",
+    "variantes": "zetas, las zetas, escuadrón Z, zetaz vieja escuela",
+    "intención": "imposicion",
+    "fuente": "InsightCrime",
+    "tipo": "sociocultural",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_014",
+    "fase": "1",
+    "señal_base": "FM",
+    "variantes": "familia michoacana, los michoacanos, la familia",
+    "intención": "imposicion",
+    "fuente": "Derivado",
+    "tipo": "sociocultural",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_015",
+    "fase": "1",
+    "señal_base": "templarios",
+    "variantes": "caballeros templarios, los caballeros, t.k.t.",
+    "intención": "imposicion",
+    "fuente": "Derivado",
+    "tipo": "sociocultural",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_016",
+    "fase": "1",
+    "señal_base": "los rojos",
+    "variantes": "rojos, los R, escuadron rojo",
+    "intención": "imposicion",
+    "fuente": "Derivado",
+    "tipo": "sociocultural",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_017",
+    "fase": "1",
+    "señal_base": "🔫",
+    "variantes": "cuerno de chivo, cuerno, fierro, R-15, AK, AR, juguete",
+    "intención": "imposicion",
+    "fuente": "CSIS",
+    "tipo": "sociocultural",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_018",
+    "fase": "1",
+    "señal_base": "🔫🔫",
+    "variantes": "doble fierro, dos cuernos, armado",
+    "intención": "imposicion",
+    "fuente": "Derivado",
+    "tipo": "sociocultural",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_019",
+    "fase": "1",
+    "señal_base": "🦅",
+    "variantes": "águila escudo, plebes del águila, escuadron águila",
+    "intención": "imposicion",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_020",
+    "fase": "1",
+    "señal_base": "🐐",
+    "variantes": "la chiva, los de la chiva, chivo de oro",
+    "intención": "imposicion",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_021",
+    "fase": "1",
+    "señal_base": "🏴‍☠️",
+    "variantes": "calavera negra, los meros meros, jolly",
+    "intención": "imposicion",
+    "fuente": "Derivado",
+    "tipo": "sociocultural",
+    "peso": "0.4"
+  },
+  {
+    "id": "f1_022",
+    "fase": "1",
+    "señal_base": "💀",
+    "variantes": "calaca, santa muerte, niña blanca, la flaca",
+    "intención": "imposicion",
+    "fuente": "Derivado",
+    "tipo": "sociocultural",
+    "peso": "0.4"
+  },
+  {
+    "id": "f1_023",
+    "fase": "1",
+    "señal_base": "👑",
+    "variantes": "corona, rey, el patrón, jefe, capo",
+    "intención": "aspiracional",
+    "fuente": "Derivado",
+    "tipo": "sociocultural",
+    "peso": "0.4"
+  },
+  {
+    "id": "f1_024",
+    "fase": "1",
+    "señal_base": "🥷",
+    "variantes": "ninja, sicario stealth, el callado",
+    "intención": "imposicion",
+    "fuente": "Derivado",
+    "tipo": "sociocultural",
+    "peso": "0.5"
+  },
+  {
+    "id": "f1_025",
+    "fase": "1",
+    "señal_base": "💰",
+    "variantes": "lana, billetes, fajos, varo, money",
+    "intención": "incentivo",
+    "fuente": "CSIS",
+    "tipo": "sociocultural",
+    "peso": "0.3"
+  },
+  {
+    "id": "f1_026",
+    "fase": "1",
+    "señal_base": "💵",
+    "variantes": "verdes, dólares, dlls, green, biden",
+    "intención": "incentivo",
+    "fuente": "CSIS",
+    "tipo": "sociocultural",
+    "peso": "0.3"
+  },
+  {
+    "id": "f1_027",
+    "fase": "1",
+    "señal_base": "💸",
+    "variantes": "billete volando, lana fácil, dinero rápido",
+    "intención": "incentivo",
+    "fuente": "CSIS",
+    "tipo": "sociocultural",
+    "peso": "0.4"
+  },
+  {
+    "id": "f1_028",
+    "fase": "1",
+    "señal_base": "💎",
+    "variantes": "brillos, joyas, diamante, hielo, ice",
+    "intención": "aspiracional",
+    "fuente": "CSIS",
+    "tipo": "sociocultural",
+    "peso": "0.3"
+  },
+  {
+    "id": "f1_029",
+    "fase": "1",
+    "señal_base": "🤑",
+    "variantes": "cara de dinero, ricos, millonarios",
+    "intención": "aspiracional",
+    "fuente": "CSIS",
+    "tipo": "sociocultural",
+    "peso": "0.3"
+  },
+  {
+    "id": "f1_030",
+    "fase": "1",
+    "señal_base": "🚗💨",
+    "variantes": "trocas, trocones, camionetonas, troca del año",
+    "intención": "aspiracional",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.4"
+  },
+  {
+    "id": "f1_031",
+    "fase": "1",
+    "señal_base": "⛓️",
+    "variantes": "cadenas de oro, cadenotas, oro macizo, pecho de oro",
+    "intención": "aspiracional",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.3"
+  },
+  {
+    "id": "f1_032",
+    "fase": "1",
+    "señal_base": "🔥💀💰",
+    "variantes": "combo narcocultura, fuego muerte dinero",
+    "intención": "aspiracional",
+    "fuente": "Derivado",
+    "tipo": "sociocultural",
+    "peso": "0.5"
+  },
+  {
+    "id": "f1_033",
+    "fase": "1",
+    "señal_base": "se busca personal de seguridad",
+    "variantes": "guardia, vigilante, guarura, custodio, escolta privada",
+    "intención": "incentivo",
+    "fuente": "El Pais",
+    "tipo": "economica",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_034",
+    "fase": "1",
+    "señal_base": "guardia para finca privada",
+    "variantes": "rancho privado, finca, propiedad privada, casa de campo",
+    "intención": "incentivo",
+    "fuente": "El Pais",
+    "tipo": "economica",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_035",
+    "fase": "1",
+    "señal_base": "se solicitan jornaleros",
+    "variantes": "jornaleros, peones, trabajadores rurales, gente de campo",
+    "intención": "incentivo",
+    "fuente": "El Pais",
+    "tipo": "economica",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_036",
+    "fase": "1",
+    "señal_base": "trabajo cortando agave",
+    "variantes": "jimadores, corte de agave, campo agavero, jimar",
+    "intención": "incentivo",
+    "fuente": "El Pais",
+    "tipo": "economica",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_037",
+    "fase": "1",
+    "señal_base": "instalación de cámaras de vigilancia",
+    "variantes": "instalar cámaras, técnicos seguridad, monitoreo cctv",
+    "intención": "incentivo",
+    "fuente": "El Pais",
+    "tipo": "economica",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_038",
+    "fase": "1",
+    "señal_base": "se busca chofer",
+    "variantes": "chofer privado, manejar, conductor, repartidor, driver",
+    "intención": "incentivo",
+    "fuente": "El Pais",
+    "tipo": "economica",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_039",
+    "fase": "1",
+    "señal_base": "se busca personal para rancho",
+    "variantes": "trabajo en finca, jale en rancho, peón de rancho",
+    "intención": "incentivo",
+    "fuente": "El Pais",
+    "tipo": "economica",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_040",
+    "fase": "1",
+    "señal_base": "viajes pagados al norte",
+    "variantes": "viaje incluido, te mandamos al norte, ruta norte pagada",
+    "intención": "incentivo",
+    "fuente": "El Pais",
+    "tipo": "economica",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_041",
+    "fase": "1",
+    "señal_base": "trabajo sin papeles ni antecedentes",
+    "variantes": "no pedimos papeles, sin requisitos, ficha limpia o no",
+    "intención": "incentivo",
+    "fuente": "El Pais",
+    "tipo": "economica",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_042",
+    "fase": "1",
+    "señal_base": "se busca gente joven 18-25",
+    "variantes": "buscamos chavos, jóvenes, plebes jóvenes, pubertos",
+    "intención": "incentivo",
+    "fuente": "El Pais",
+    "tipo": "economica",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_043",
+    "fase": "1",
+    "señal_base": "trabajo rápido bien pagado",
+    "variantes": "jale rápido, chamba rápida con varo, chamba que paga",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_044",
+    "fase": "1",
+    "señal_base": "vacante urgente",
+    "variantes": "vacante inmediata, urge gente, contratamos hoy",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.5"
+  },
+  {
+    "id": "f1_045",
+    "fase": "1",
+    "señal_base": "trabajo de bodeguero",
+    "variantes": "almacenista, cuidar bodega, encargado de almacén privado",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_046",
+    "fase": "1",
+    "señal_base": "se busca cocinero",
+    "variantes": "cocinar, prep cook, ayudante de cocina industrial",
+    "intención": "incentivo",
+    "fuente": "NYT",
+    "tipo": "economica",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_047",
+    "fase": "1",
+    "señal_base": "yo quiero jale",
+    "variantes": "necesito jale, busco jale, ¿quién da jale?, dame jale",
+    "intención": "incentivo",
+    "fuente": "Swissinfo",
+    "tipo": "economica",
+    "peso": "0.9"
+  },
+  {
+    "id": "f1_048",
+    "fase": "1",
+    "señal_base": "$2,500 semanales",
+    "variantes": "dos mil quinientos sem, 2.5k week, dosmil quinientos",
+    "intención": "incentivo",
+    "fuente": "El Universal",
+    "tipo": "economica",
+    "peso": "0.85"
+  },
+  {
+    "id": "f1_049",
+    "fase": "1",
+    "señal_base": "$3,000 a la semana",
+    "variantes": "tres mil sem, 3k week, tresmil semanales",
+    "intención": "incentivo",
+    "fuente": "El Universal",
+    "tipo": "economica",
+    "peso": "0.85"
+  },
+  {
+    "id": "f1_050",
+    "fase": "1",
+    "señal_base": "$5,000 semanales",
+    "variantes": "cinco mil sem, 5k week, cincomil semana",
+    "intención": "incentivo",
+    "fuente": "Colmex",
+    "tipo": "economica",
+    "peso": "0.85"
+  },
+  {
+    "id": "f1_051",
+    "fase": "1",
+    "señal_base": "$8,000 quincenales",
+    "variantes": "ocho mil quincena, 8k quincenal, sueldo de halcon",
+    "intención": "incentivo",
+    "fuente": "Expansion",
+    "tipo": "economica",
+    "peso": "0.85"
+  },
+  {
+    "id": "f1_052",
+    "fase": "1",
+    "señal_base": "$10,000 a la semana",
+    "variantes": "diez mil sem, 10k week, diezmil semanales",
+    "intención": "incentivo",
+    "fuente": "Colmex",
+    "tipo": "economica",
+    "peso": "0.9"
+  },
+  {
+    "id": "f1_053",
+    "fase": "1",
+    "señal_base": "$15,000 semanales",
+    "variantes": "quince mil, 15k week, quincemil sem, $15k/sem",
+    "intención": "incentivo",
+    "fuente": "Colmex",
+    "tipo": "economica",
+    "peso": "0.9"
+  },
+  {
+    "id": "f1_054",
+    "fase": "1",
+    "señal_base": "$16,000 mensuales",
+    "variantes": "dieciseis mil mes, 16k al mes, sueldo halcón mensual",
+    "intención": "incentivo",
+    "fuente": "Expansion",
+    "tipo": "economica",
+    "peso": "0.85"
+  },
+  {
+    "id": "f1_055",
+    "fase": "1",
+    "señal_base": "te llevas buena lana",
+    "variantes": "buena feria, mucha lana, billete largo, varo del bueno",
+    "intención": "incentivo",
+    "fuente": "Colmex",
+    "tipo": "economica",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_056",
+    "fase": "1",
+    "señal_base": "pago diario",
+    "variantes": "diario te pago, paga al día, cash diario, daily pay",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.65"
+  },
+  {
+    "id": "f1_057",
+    "fase": "1",
+    "señal_base": "ganas más que con un patrón",
+    "variantes": "más que tu jefe, más que en cualquier chamba",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_058",
+    "fase": "1",
+    "señal_base": "se busca halcón",
+    "variantes": "halconear, vigía, ojos en la calle, h4lcon, halc0n",
+    "intención": "incentivo",
+    "fuente": "Colmex",
+    "tipo": "economica",
+    "peso": "0.9"
+  },
+  {
+    "id": "f1_059",
+    "fase": "1",
+    "señal_base": "se necesitan punteros",
+    "variantes": "punto, puntear, vigilar el punto, puntiar",
+    "intención": "incentivo",
+    "fuente": "Colmex",
+    "tipo": "economica",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_060",
+    "fase": "1",
+    "señal_base": "trabajo de cuidador de casa",
+    "variantes": "casa de seguridad, cuidar la casa, casero, casa segura",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_061",
+    "fase": "1",
+    "señal_base": "se buscan plebes",
+    "variantes": "plebada, los plebes, plebes con ganas, plebones",
+    "intención": "incentivo",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_062",
+    "fase": "1",
+    "señal_base": "se busca raza con ganas",
+    "variantes": "raza fierro, raza pesada, raza brava, raza fina",
+    "intención": "incentivo",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_063",
+    "fase": "1",
+    "señal_base": "el movimiento",
+    "variantes": "andar en el movimiento, jalar al movimiento, en la moviendo",
+    "intención": "incentivo",
+    "fuente": "Colmex",
+    "tipo": "economica",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_064",
+    "fase": "1",
+    "señal_base": "andar en la maña",
+    "variantes": "la maña, gente de la maña, jalar con la maña",
+    "intención": "imposicion",
+    "fuente": "Colmex",
+    "tipo": "economica",
+    "peso": "0.8"
+  },
+  {
+    "id": "f1_065",
+    "fase": "1",
+    "señal_base": "el jale pesado",
+    "variantes": "jale fuerte, chamba pesada, jale del bueno, jale serio",
+    "intención": "incentivo",
+    "fuente": "Swissinfo",
+    "tipo": "economica",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_066",
+    "fase": "1",
+    "señal_base": "se busca gente fierro",
+    "variantes": "fierro pariente, gente brava, sin miedo, gente machín",
+    "intención": "incentivo",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_067",
+    "fase": "1",
+    "señal_base": "se busca gente sin miedo",
+    "variantes": "los que no se rajan, sin miedo a nada, valientes, machín",
+    "intención": "incentivo",
+    "fuente": "Sintetico",
+    "tipo": "sociocultural",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_068",
+    "fase": "1",
+    "señal_base": "se busca raza de pega",
+    "variantes": "raza de pega, gente recia, gente que aguante",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "sociocultural",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_069",
+    "fase": "1",
+    "señal_base": "vida de jefe",
+    "variantes": "vida de patrón, como rey, vivir como capo",
+    "intención": "aspiracional",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.4"
+  },
+  {
+    "id": "f1_070",
+    "fase": "1",
+    "señal_base": "buchones / buchonas",
+    "variantes": "vida buchona, andar buchón, estilo buchón, buchón de oro",
+    "intención": "aspiracional",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.5"
+  },
+  {
+    "id": "f1_071",
+    "fase": "1",
+    "señal_base": "corridos tumbados aspiracionales",
+    "variantes": "rolas pesadas, corridos bélicos, corridos del movimiento",
+    "intención": "aspiracional",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.3"
+  },
+  {
+    "id": "f1_072",
+    "fase": "1",
+    "señal_base": "narcocorrido dedicado",
+    "variantes": "corrido pa' los plebes, corrido de la raza",
+    "intención": "aspiracional",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.4"
+  },
+  {
+    "id": "f1_073",
+    "fase": "1",
+    "señal_base": "vivir rápido morir joven",
+    "variantes": "fast life, live fast, vida loca, vida al máximo",
+    "intención": "aspiracional",
+    "fuente": "CSIS",
+    "tipo": "sociocultural",
+    "peso": "0.4"
+  },
+  {
+    "id": "f1_074",
+    "fase": "1",
+    "señal_base": "casting de modelaje",
+    "variantes": "agencia de modelos, fotos profesionales, modelaje, modelo",
+    "intención": "incentivo",
+    "fuente": "FinCEN",
+    "tipo": "economica",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_075",
+    "fase": "1",
+    "señal_base": "se buscan edecanes / meseras VIP",
+    "variantes": "edecán, anfitriona, mesera de antro, eventos privados",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_076",
+    "fase": "1",
+    "señal_base": "ganaste un concurso",
+    "variantes": "fuiste seleccionado, premio, audición exclusiva, fuiste elegido",
+    "intención": "incentivo",
+    "fuente": "FinCEN",
+    "tipo": "economica",
+    "peso": "0.5"
+  },
+  {
+    "id": "f1_077",
+    "fase": "1",
+    "señal_base": "viaje todo pagado a la playa",
+    "variantes": "viaje gratis, tour pagado, playa todo incluido",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_078",
+    "fase": "1",
+    "señal_base": "trabajo de gamer profesional",
+    "variantes": "team de gaming, equipo profesional, esports pro",
+    "intención": "incentivo",
+    "fuente": "Xataka",
+    "tipo": "economica",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_079",
+    "fase": "1",
+    "señal_base": "patrocinio de creador de contenido",
+    "variantes": "te patrocinamos, sponsor, contrato de creador",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.5"
+  },
+  {
+    "id": "f1_080",
+    "fase": "1",
+    "señal_base": "j4l3",
+    "variantes": "ja1e, j@le, jal3, j-a-l-e, ¡4!3",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_081",
+    "fase": "1",
+    "señal_base": "l4n4",
+    "variantes": "1ana, l@na, lan4, l4n4 f4cil",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_082",
+    "fase": "1",
+    "señal_base": "ch4mb4",
+    "variantes": "cha_mba, chmba, ch4mb1ta",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.5"
+  },
+  {
+    "id": "f1_083",
+    "fase": "1",
+    "señal_base": "h4lc0n",
+    "variantes": "ha1con, halc0n, h-a-l-c-o-n, h@lcon",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.85"
+  },
+  {
+    "id": "f1_084",
+    "fase": "1",
+    "señal_base": "5ic4r10",
+    "variantes": "sic@rio, sic4rio, s1c4r10, $icario",
+    "intención": "incentivo",
+    "fuente": "El Universal",
+    "tipo": "economica",
+    "peso": "0.85"
+  },
+  {
+    "id": "f1_085",
+    "fase": "1",
+    "señal_base": "c4rt3l",
+    "variantes": "c@rtel, k4rtel, kart3l",
+    "intención": "imposicion",
+    "fuente": "El Universal",
+    "tipo": "sociocultural",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_086",
+    "fase": "1",
+    "señal_base": "$$$ semanales",
+    "variantes": "$$ weekly, varos $$, $5k, $10k, $15k, $$$/sem",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_087",
+    "fase": "1",
+    "señal_base": "#jale #trabajo #lana",
+    "variantes": "#chamba #plebada #movimiento #gentefierro #yoquierojale",
+    "intención": "incentivo",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_088",
+    "fase": "1",
+    "señal_base": "#corridos #plebes #buchones",
+    "variantes": "#tumbado #belico #morrostumbados #plebada",
+    "intención": "aspiracional",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.4"
+  },
+  {
+    "id": "f1_089",
+    "fase": "1",
+    "señal_base": "DM para info",
+    "variantes": "inbox para info, privado para detalles, dm only, escríbeme al privado",
+    "intención": "incentivo",
+    "fuente": "Colmex",
+    "tipo": "economica",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_090",
+    "fase": "1",
+    "señal_base": "respondan en privado",
+    "variantes": "al inbox, hablamos en privado, dm only, mp para info",
+    "intención": "incentivo",
+    "fuente": "Colmex",
+    "tipo": "economica",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_091",
+    "fase": "1",
+    "señal_base": "comenten 'INFO' para detalles",
+    "variantes": "deja INFO, escribe INFO, INFO+1",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.7"
+  },
+  {
+    "id": "f1_092",
+    "fase": "1",
+    "señal_base": "RECLUTAMIENTO ABIERTO en sala",
+    "variantes": "lobby de reclutamiento, sala oficial, room oficial CDN",
+    "intención": "incentivo",
+    "fuente": "InsightCrime",
+    "tipo": "economica",
+    "peso": "0.95"
+  },
+  {
+    "id": "f1_093",
+    "fase": "1",
+    "señal_base": "únete al clan oficial",
+    "variantes": "clan oficial, equipo oficial, escuadrón oficial CJNG/CDN",
+    "intención": "incentivo",
+    "fuente": "Milenio",
+    "tipo": "sociocultural",
+    "peso": "0.85"
+  },
+  {
+    "id": "f1_094",
+    "fase": "1",
+    "señal_base": "viste mi nick? KIL0Z CDN",
+    "variantes": "nick con sigla cártel, gamertag con NG/CDS/CDN",
+    "intención": "imposicion",
+    "fuente": "El Universal",
+    "tipo": "sociocultural",
+    "peso": "0.85"
+  },
+  {
+    "id": "f1_095",
+    "fase": "1",
+    "señal_base": "skin del Mencho / del Chapo",
+    "variantes": "outfit narco, vestimenta de capo, custom skin de capo",
+    "intención": "aspiracional",
+    "fuente": "Milenio",
+    "tipo": "sociocultural",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_096",
+    "fase": "1",
+    "señal_base": "evento privado del cártel en el juego",
+    "variantes": "evento del clan, raid privado, torneo del cártel",
+    "intención": "incentivo",
+    "fuente": "Milenio",
+    "tipo": "sociocultural",
+    "peso": "0.85"
+  },
+  {
+    "id": "f1_097",
+    "fase": "1",
+    "señal_base": "andar en chinga con la raza",
+    "variantes": "andar fierro, traer cuerno, andar pesado",
+    "intención": "imposicion",
+    "fuente": "Sintetico",
+    "tipo": "sociocultural",
+    "peso": "0.5"
+  },
+  {
+    "id": "f1_098",
+    "fase": "1",
+    "señal_base": "los meros chingones del barrio",
+    "variantes": "los pesados, los meros meros, los grandes",
+    "intención": "aspiracional",
+    "fuente": "Sintetico",
+    "tipo": "sociocultural",
+    "peso": "0.4"
+  },
+  {
+    "id": "f1_099",
+    "fase": "1",
+    "señal_base": "hay jale del bueno aquí",
+    "variantes": "aquí hay del bueno, en mi zona hay, en mi pueblo se mueve",
+    "intención": "incentivo",
+    "fuente": "Derivado",
+    "tipo": "economica",
+    "peso": "0.6"
+  },
+  {
+    "id": "f1_100",
+    "fase": "1",
+    "señal_base": "sin escuela también se gana",
+    "variantes": "no necesitas escuela, prepa no sirve, sin estudios se gana más",
+    "intención": "aspiracional",
+    "fuente": "Colmex",
+    "tipo": "sociocultural",
+    "peso": "0.6"
+  },
+  {
+    "id": "f2_001",
+    "fase": "2",
+    "señal_base": "pásate a Signal",
+    "variantes": "pásate a Signal, vamos a Signal, mejor Signal",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.8"
+  },
+  {
+    "id": "f2_002",
+    "fase": "2",
+    "señal_base": "pásate a Telegram",
+    "variantes": "vamos a Telegram, TG, t.me/, mejor por TG",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_003",
+    "fase": "2",
+    "señal_base": "pásate a WhatsApp",
+    "variantes": "vamos al wa, pásame al whats, mejor por wa",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_004",
+    "fase": "2",
+    "señal_base": "abre Snapchat",
+    "variantes": "agrégame en snap, mejor por snap, snap se borra",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.7"
+  },
+  {
+    "id": "f2_005",
+    "fase": "2",
+    "señal_base": "agrégame en Discord",
+    "variantes": "mi discord es, dame tu discord, server privado",
+    "intención": "aislamiento",
+    "fuente": "Milenio",
+    "tipo": "funcional",
+    "peso": "0.65"
+  },
+  {
+    "id": "f2_006",
+    "fase": "2",
+    "señal_base": "vamos a chat de voz del juego",
+    "variantes": "voice chat, vc privado, party chat, custom voice",
+    "intención": "aislamiento",
+    "fuente": "Infobae",
+    "tipo": "funcional",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_007",
+    "fase": "2",
+    "señal_base": "hablemos en privado del juego",
+    "variantes": "DM del juego, mensaje privado in-game, whisper",
+    "intención": "aislamiento",
+    "fuente": "InsightCrime",
+    "tipo": "funcional",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_008",
+    "fase": "2",
+    "señal_base": "mejor por Wickr / Session",
+    "variantes": "Wickr, Session, app cifrada, app que se borra",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.85"
+  },
+  {
+    "id": "f2_009",
+    "fase": "2",
+    "señal_base": "vamos a una sala privada",
+    "variantes": "lobby privado, sala custom, room privado, party privada",
+    "intención": "aislamiento",
+    "fuente": "Infobae",
+    "tipo": "funcional",
+    "peso": "0.8"
+  },
+  {
+    "id": "f2_010",
+    "fase": "2",
+    "señal_base": "no le digas a nadie",
+    "variantes": "esto es entre nosotros, secreto entre tú y yo",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_011",
+    "fase": "2",
+    "señal_base": "mantenlo en secreto",
+    "variantes": "chitón, en silencio, ssshh, calladito",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_012",
+    "fase": "2",
+    "señal_base": "no le digas ni a tu mamá",
+    "variantes": "ni a tus papás, ni a tu familia, ni a nadie de tu casa",
+    "intención": "aislamiento",
+    "fuente": "Sintetico",
+    "tipo": "emocional",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_013",
+    "fase": "2",
+    "señal_base": "borra el chat después",
+    "variantes": "bórralo todo, no dejes rastro, limpia el historial",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.85"
+  },
+  {
+    "id": "f2_014",
+    "fase": "2",
+    "señal_base": "usa mensajes que se borren solos",
+    "variantes": "modo desaparecido, mensajes temporales, modo fantasma",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.8"
+  },
+  {
+    "id": "f2_015",
+    "fase": "2",
+    "señal_base": "no tomes screenshot",
+    "variantes": "no captures, sin screenshots, no guardes capturas",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_016",
+    "fase": "2",
+    "señal_base": "si alguien pregunta no me conoces",
+    "variantes": "ni me conoces, nunca hablamos, niégalo todo",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.85"
+  },
+  {
+    "id": "f2_017",
+    "fase": "2",
+    "señal_base": "esto es tema nuestro",
+    "variantes": "asunto entre nosotros, queda en familia, secreto compartido",
+    "intención": "aislamiento",
+    "fuente": "Sintetico",
+    "tipo": "emocional",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_018",
+    "fase": "2",
+    "señal_base": "ábrete una cuenta nueva",
+    "variantes": "cuenta secundaria, cuenta alterna, fake account",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_019",
+    "fase": "2",
+    "señal_base": "usa un correo desechable",
+    "variantes": "temp mail, correo temporal, mail anónimo",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_020",
+    "fase": "2",
+    "señal_base": "instala una VPN",
+    "variantes": "VPN, mejor con VPN, oculta tu IP",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.7"
+  },
+  {
+    "id": "f2_021",
+    "fase": "2",
+    "señal_base": "mándame tu ubicación",
+    "variantes": "ubicación, tu ubi, share location",
+    "intención": "persuasion",
+    "fuente": "Colmex",
+    "tipo": "funcional",
+    "peso": "0.85"
+  },
+  {
+    "id": "f2_022",
+    "fase": "2",
+    "señal_base": "compárteme ubicación en vivo",
+    "variantes": "ubicación en tiempo real, live location, ubi en vivo",
+    "intención": "persuasion",
+    "fuente": "Colmex",
+    "tipo": "funcional",
+    "peso": "0.95"
+  },
+  {
+    "id": "f2_023",
+    "fase": "2",
+    "señal_base": "mándame tu dirección exacta",
+    "variantes": "tu domicilio, calle y número, dónde vives exacto",
+    "intención": "persuasion",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.85"
+  },
+  {
+    "id": "f2_024",
+    "fase": "2",
+    "señal_base": "pásame tu número",
+    "variantes": "tu cel, tu whats, tu número privado",
+    "intención": "persuasion",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.55"
+  },
+  {
+    "id": "f2_025",
+    "fase": "2",
+    "señal_base": "mándame foto tuya",
+    "variantes": "selfie, foto de cuerpo completo, una foto, pic",
+    "intención": "persuasion",
+    "fuente": "FinCEN",
+    "tipo": "funcional",
+    "peso": "0.55"
+  },
+  {
+    "id": "f2_026",
+    "fase": "2",
+    "señal_base": "mándame foto de tu credencial",
+    "variantes": "INE, ID, identificación, credencial escolar",
+    "intención": "persuasion",
+    "fuente": "FinCEN",
+    "tipo": "funcional",
+    "peso": "0.95"
+  },
+  {
+    "id": "f2_027",
+    "fase": "2",
+    "señal_base": "necesito tu CURP / acta",
+    "variantes": "datos completos, acta nacimiento, RFC",
+    "intención": "persuasion",
+    "fuente": "FinCEN",
+    "tipo": "funcional",
+    "peso": "0.85"
+  },
+  {
+    "id": "f2_028",
+    "fase": "2",
+    "señal_base": "dame tu nombre completo",
+    "variantes": "nombre real, apellidos, nombre como en papeles",
+    "intención": "persuasion",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.55"
+  },
+  {
+    "id": "f2_029",
+    "fase": "2",
+    "señal_base": "dime tu edad real",
+    "variantes": "tu edad real, no mientas, edad de papeles",
+    "intención": "persuasion",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.6"
+  },
+  {
+    "id": "f2_030",
+    "fase": "2",
+    "señal_base": "verifica con foto sosteniendo papel",
+    "variantes": "selfie con papel escrito, prueba de identidad, verificación",
+    "intención": "persuasion",
+    "fuente": "FinCEN",
+    "tipo": "funcional",
+    "peso": "0.85"
+  },
+  {
+    "id": "f2_031",
+    "fase": "2",
+    "señal_base": "¿en qué escuela estás?",
+    "variantes": "tu prepa, tu secu, dónde estudias, qué grado",
+    "intención": "perfilamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.55"
+  },
+  {
+    "id": "f2_032",
+    "fase": "2",
+    "señal_base": "¿con quién vives?",
+    "variantes": "vives solo, hay alguien más en casa, tu familia vive contigo",
+    "intención": "perfilamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_033",
+    "fase": "2",
+    "señal_base": "¿tus papás están?",
+    "variantes": "están tus jefes, hay adultos, estás solo en casa",
+    "intención": "perfilamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_034",
+    "fase": "2",
+    "señal_base": "¿cuándo no hay nadie en tu casa?",
+    "variantes": "horarios sin gente, cuándo te quedas solo, ventana sin adultos",
+    "intención": "perfilamiento",
+    "fuente": "Sintetico",
+    "tipo": "funcional",
+    "peso": "0.9"
+  },
+  {
+    "id": "f2_035",
+    "fase": "2",
+    "señal_base": "¿qué hacen tus papás?",
+    "variantes": "trabajo de tus jefes, profesión papás, horario de trabajo familiar",
+    "intención": "perfilamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_036",
+    "fase": "2",
+    "señal_base": "¿tienes hermanos?",
+    "variantes": "carnales, tus hermanitos, edad de tus hermanos",
+    "intención": "perfilamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.45"
+  },
+  {
+    "id": "f2_037",
+    "fase": "2",
+    "señal_base": "¿tienes novia/novio?",
+    "variantes": "morra, chavo, pareja, tu media naranja",
+    "intención": "perfilamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.4"
+  },
+  {
+    "id": "f2_038",
+    "fase": "2",
+    "señal_base": "¿qué horario tienes?",
+    "variantes": "qué horarios manejas, rutina diaria, cuándo sales",
+    "intención": "perfilamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_039",
+    "fase": "2",
+    "señal_base": "¿sabes manejar?",
+    "variantes": "tienes licencia, manejas, sabes troca",
+    "intención": "perfilamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_040",
+    "fase": "2",
+    "señal_base": "¿sabes disparar?",
+    "variantes": "conoces armas, has tirado, sabes de fierros",
+    "intención": "perfilamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.9"
+  },
+  {
+    "id": "f2_041",
+    "fase": "2",
+    "señal_base": "¿tienes ficha?",
+    "variantes": "antecedentes, has caído, has estado en el bote",
+    "intención": "perfilamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.7"
+  },
+  {
+    "id": "f2_042",
+    "fase": "2",
+    "señal_base": "yo te paso por ti",
+    "variantes": "te recojo, te voy a buscar, paso por ti a tu casa",
+    "intención": "acercamiento",
+    "fuente": "El Pais",
+    "tipo": "economico",
+    "peso": "0.8"
+  },
+  {
+    "id": "f2_043",
+    "fase": "2",
+    "señal_base": "yo te pago el autobús",
+    "variantes": "boleto incluido, pago tu camión, viaje pagado",
+    "intención": "acercamiento",
+    "fuente": "Colmex",
+    "tipo": "economico",
+    "peso": "0.7"
+  },
+  {
+    "id": "f2_044",
+    "fase": "2",
+    "señal_base": "te mando un Uber/Didi",
+    "variantes": "te pido el viaje, yo pago el Uber, te llamo taxi",
+    "intención": "acercamiento",
+    "fuente": "Derivado",
+    "tipo": "economico",
+    "peso": "0.7"
+  },
+  {
+    "id": "f2_045",
+    "fase": "2",
+    "señal_base": "te mando una recarga",
+    "variantes": "saldo, recarga al cel, te paso saldo",
+    "intención": "acercamiento",
+    "fuente": "Derivado",
+    "tipo": "economico",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_046",
+    "fase": "2",
+    "señal_base": "te mando para datos / internet",
+    "variantes": "internet pagado, datos para el mes, plan pagado",
+    "intención": "acercamiento",
+    "fuente": "Derivado",
+    "tipo": "economico",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_047",
+    "fase": "2",
+    "señal_base": "te mando un adelanto",
+    "variantes": "anticipo, adelanto, te paso algo por adelantado",
+    "intención": "acercamiento",
+    "fuente": "Derivado",
+    "tipo": "economico",
+    "peso": "0.7"
+  },
+  {
+    "id": "f2_048",
+    "fase": "2",
+    "señal_base": "te paso unos billetes para que veas",
+    "variantes": "te demuestro con lana, depósito de prueba",
+    "intención": "acercamiento",
+    "fuente": "Sintetico",
+    "tipo": "economico",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_049",
+    "fase": "2",
+    "señal_base": "te invito a comer",
+    "variantes": "vamos a comer, yo invito, te invito chelas",
+    "intención": "acercamiento",
+    "fuente": "Derivado",
+    "tipo": "economico",
+    "peso": "0.4"
+  },
+  {
+    "id": "f2_050",
+    "fase": "2",
+    "señal_base": "yo cubro los gastos",
+    "variantes": "todo va por mi cuenta, no gastas nada, todo pagado",
+    "intención": "acercamiento",
+    "fuente": "El Pais",
+    "tipo": "economico",
+    "peso": "0.6"
+  },
+  {
+    "id": "f2_051",
+    "fase": "2",
+    "señal_base": "te regalo skins / V-Bucks / dinero del juego",
+    "variantes": "skins gratis, robux, V-Bucks, recargas del juego",
+    "intención": "acercamiento",
+    "fuente": "Xataka",
+    "tipo": "economico",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_052",
+    "fase": "2",
+    "señal_base": "te paso una cuenta de tu juego favorito",
+    "variantes": "cuenta premium, cuenta con skins raras, cuenta con todo",
+    "intención": "acercamiento",
+    "fuente": "Derivado",
+    "tipo": "economico",
+    "peso": "0.7"
+  },
+  {
+    "id": "f2_053",
+    "fase": "2",
+    "señal_base": "no es nada del otro mundo",
+    "variantes": "es fácil, está suave, no es gran cosa, simple",
+    "intención": "ligereza",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.4"
+  },
+  {
+    "id": "f2_054",
+    "fase": "2",
+    "señal_base": "está en corto",
+    "variantes": "rapidito, en chinga, breve, dos minutos",
+    "intención": "ligereza",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.45"
+  },
+  {
+    "id": "f2_055",
+    "fase": "2",
+    "señal_base": "no va a pasar nada",
+    "variantes": "sin pedo, sin riesgo, todo tranquilo",
+    "intención": "ligereza",
+    "fuente": "Derivado",
+    "tipo": "emocional",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_056",
+    "fase": "2",
+    "señal_base": "ya muchos lo han hecho",
+    "variantes": "todos lo hacen, no eres el primero, mucha raza jala",
+    "intención": "ligereza",
+    "fuente": "Derivado",
+    "tipo": "emocional",
+    "peso": "0.4"
+  },
+  {
+    "id": "f2_057",
+    "fase": "2",
+    "señal_base": "tú no haces nada raro",
+    "variantes": "tú solo recibes, tú solo cuidas, no es ilegal",
+    "intención": "ligereza",
+    "fuente": "Sintetico",
+    "tipo": "funcional",
+    "peso": "0.7"
+  },
+  {
+    "id": "f2_058",
+    "fase": "2",
+    "señal_base": "estás cubierto",
+    "variantes": "tienes respaldo, te respaldamos, nada te pasa",
+    "intención": "ligereza",
+    "fuente": "Sintetico",
+    "tipo": "emocional",
+    "peso": "0.6"
+  },
+  {
+    "id": "f2_059",
+    "fase": "2",
+    "señal_base": "si algo sale mal yo respondo",
+    "variantes": "yo doy la cara, yo me hago cargo, yo respondo",
+    "intención": "ligereza",
+    "fuente": "Sintetico",
+    "tipo": "emocional",
+    "peso": "0.6"
+  },
+  {
+    "id": "f2_060",
+    "fase": "2",
+    "señal_base": "es un favor entre amigos",
+    "variantes": "favorcito, ayudita entre carnales, una mano",
+    "intención": "ligereza",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_061",
+    "fase": "2",
+    "señal_base": "te entiendo, yo pasé por lo mismo",
+    "variantes": "yo también la pasé mal, te comprendo, sé qué sientes",
+    "intención": "acercamiento",
+    "fuente": "Sintetico",
+    "tipo": "emocional",
+    "peso": "0.4"
+  },
+  {
+    "id": "f2_062",
+    "fase": "2",
+    "señal_base": "ya somos como hermanos",
+    "variantes": "carnal, somos familia, hermandad",
+    "intención": "acercamiento",
+    "fuente": "Derivado",
+    "tipo": "emocional",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_063",
+    "fase": "2",
+    "señal_base": "yo soy tu familia ahora",
+    "variantes": "yo te cuido más que tu familia, soy lo que necesitas",
+    "intención": "acercamiento",
+    "fuente": "Sintetico",
+    "tipo": "emocional",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_064",
+    "fase": "2",
+    "señal_base": "tu familia no te valora",
+    "variantes": "no te entienden, no te merecen, vales más que ellos",
+    "intención": "acercamiento",
+    "fuente": "Sintetico",
+    "tipo": "emocional",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_065",
+    "fase": "2",
+    "señal_base": "se nota que necesitas dinero",
+    "variantes": "te falta lana, andas apretado, sé que la libras a duras",
+    "intención": "acercamiento",
+    "fuente": "Derivado",
+    "tipo": "emocional",
+    "peso": "0.6"
+  },
+  {
+    "id": "f2_066",
+    "fase": "2",
+    "señal_base": "se nota que estás solo",
+    "variantes": "no tienes a nadie, te ves solitario, te falta compa",
+    "intención": "acercamiento",
+    "fuente": "Sintetico",
+    "tipo": "emocional",
+    "peso": "0.6"
+  },
+  {
+    "id": "f2_067",
+    "fase": "2",
+    "señal_base": "tú vales mucho",
+    "variantes": "eres especial, tienes algo distinto, no eres como los demás",
+    "intención": "acercamiento",
+    "fuente": "Sintetico",
+    "tipo": "emocional",
+    "peso": "0.4"
+  },
+  {
+    "id": "f2_068",
+    "fase": "2",
+    "señal_base": "yo te doy lo que en tu casa no",
+    "variantes": "lo que no te dan, lo que mereces y no tienes",
+    "intención": "acercamiento",
+    "fuente": "Sintetico",
+    "tipo": "emocional",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_069",
+    "fase": "2",
+    "señal_base": "aquí nadie te juzga",
+    "variantes": "aquí no te miran feo, sin prejuicios, libre de juicio",
+    "intención": "acercamiento",
+    "fuente": "Derivado",
+    "tipo": "emocional",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_070",
+    "fase": "2",
+    "señal_base": "puedes ser quien quieras aquí",
+    "variantes": "aquí eres libre, sé tú mismo, sin máscaras",
+    "intención": "acercamiento",
+    "fuente": "Sintetico",
+    "tipo": "emocional",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_071",
+    "fase": "2",
+    "señal_base": "te paso un encarguito",
+    "variantes": "encarguito, favorcito, una ayudita rápida",
+    "intención": "persuasion",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.7"
+  },
+  {
+    "id": "f2_072",
+    "fase": "2",
+    "señal_base": "vamos a vernos en persona",
+    "variantes": "nos vemos al rato, juntada, vernos cara a cara",
+    "intención": "persuasion",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.6"
+  },
+  {
+    "id": "f2_073",
+    "fase": "2",
+    "señal_base": "ven solo, no traigas a nadie",
+    "variantes": "vente sin compañía, tú solito, sin chaperón",
+    "intención": "persuasion",
+    "fuente": "El Pais",
+    "tipo": "funcional",
+    "peso": "0.9"
+  },
+  {
+    "id": "f2_074",
+    "fase": "2",
+    "señal_base": "no traigas tu celular",
+    "variantes": "deja el cel, ven sin teléfono, apaga el GPS",
+    "intención": "persuasion",
+    "fuente": "El Pais",
+    "tipo": "funcional",
+    "peso": "0.9"
+  },
+  {
+    "id": "f2_075",
+    "fase": "2",
+    "señal_base": "no traigas mochila",
+    "variantes": "ven ligero, sin nada, solo tú",
+    "intención": "persuasion",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.8"
+  },
+  {
+    "id": "f2_076",
+    "fase": "2",
+    "señal_base": "preséntame a tus amigos que jalan",
+    "variantes": "tráeme a tus compas, raza con ganas, plebada con hambre",
+    "intención": "persuasion",
+    "fuente": "Colmex",
+    "tipo": "funcional",
+    "peso": "0.7"
+  },
+  {
+    "id": "f2_077",
+    "fase": "2",
+    "señal_base": "trae a tus carnales del juego",
+    "variantes": "team del juego, escuadra del juego, tus mates",
+    "intención": "persuasion",
+    "fuente": "Infobae",
+    "tipo": "funcional",
+    "peso": "0.75"
+  },
+  {
+    "id": "f2_078",
+    "fase": "2",
+    "señal_base": "platiquemos en la madrugada",
+    "variantes": "después de medianoche, cuando duerman tus papás, late night",
+    "intención": "aislamiento",
+    "fuente": "El Universal",
+    "tipo": "funcional",
+    "peso": "0.85"
+  },
+  {
+    "id": "f2_079",
+    "fase": "2",
+    "señal_base": "te escribo a las 2 am",
+    "variantes": "2am, 3am, drugada, when nobody's watching",
+    "intención": "aislamiento",
+    "fuente": "El Universal",
+    "tipo": "funcional",
+    "peso": "0.85"
+  },
+  {
+    "id": "f2_080",
+    "fase": "2",
+    "señal_base": "cuando estés solito conectate",
+    "variantes": "cuando nadie esté, sin supervisión, solo tú",
+    "intención": "aislamiento",
+    "fuente": "Sintetico",
+    "tipo": "funcional",
+    "peso": "0.85"
+  },
+  {
+    "id": "f2_081",
+    "fase": "2",
+    "señal_base": "ub1c4ci0n",
+    "variantes": "ubic@cion, ubicacn, ub1, ubi",
+    "intención": "persuasion",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.85"
+  },
+  {
+    "id": "f2_082",
+    "fase": "2",
+    "señal_base": "s3cr3t0",
+    "variantes": "secret-o, $ecreto, secr3to",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.5"
+  },
+  {
+    "id": "f2_083",
+    "fase": "2",
+    "señal_base": "tg / sg / signl",
+    "variantes": "telegram abreviado, signal abreviado, sgl",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.65"
+  },
+  {
+    "id": "f2_084",
+    "fase": "2",
+    "señal_base": "snp / sc / snapchat abreviado",
+    "variantes": "snp, snpchat, snc",
+    "intención": "aislamiento",
+    "fuente": "Derivado",
+    "tipo": "funcional",
+    "peso": "0.6"
+  },
+  {
+    "id": "f2_085",
+    "fase": "2",
+    "señal_base": "sigue mis instrucciones en el juego",
+    "variantes": "haz lo que te diga in-game, sígueme en el juego",
+    "intención": "persuasion",
+    "fuente": "Telediario",
+    "tipo": "funcional",
+    "peso": "0.7"
+  },
+  {
+    "id": "f2_086",
+    "fase": "2",
+    "señal_base": "te invito a un torneo privado",
+    "variantes": "torneo privado, evento custom, competencia secreta",
+    "intención": "acercamiento",
+    "fuente": "Milenio",
+    "tipo": "funcional",
+    "peso": "0.7"
+  },
+  {
+    "id": "f2_087",
+    "fase": "2",
+    "señal_base": "te muevo de rango si haces algo",
+    "variantes": "te subo de rango, te paso a master, te impulso",
+    "intención": "acercamiento",
+    "fuente": "Sintetico",
+    "tipo": "funcional",
+    "peso": "0.6"
+  },
+  {
+    "id": "f2_088",
+    "fase": "2",
+    "señal_base": "vamos a hablar fuera del juego",
+    "variantes": "salgamos del lobby, fuera del game, en otra app",
+    "intención": "aislamiento",
+    "fuente": "Infobae",
+    "tipo": "funcional",
+    "peso": "0.8"
+  },
+  {
+    "id": "f2_089",
+    "fase": "2",
+    "señal_base": "no le digas a tus compas del juego",
+    "variantes": "no le digas al squad, secreto del team, ni a tu clan",
+    "intención": "aislamiento",
+    "fuente": "Sintetico",
+    "tipo": "funcional",
+    "peso": "0.7"
+  },
+  {
+    "id": "f2_090",
+    "fase": "2",
+    "señal_base": "cuéntame un secreto",
+    "variantes": "dime algo personal, ¿qué te avergüenza?, tu trauma",
+    "intención": "perfilamiento",
+    "fuente": "Consejo Ciudadano",
+    "tipo": "emocional",
+    "peso": "0.7"
+  },
+  {
+    "id": "f3_001",
+    "fase": "3",
+    "señal_base": "te voy a matar",
+    "variantes": "te mueres, te voy a tronar, te quemo, te trueno",
+    "intención": "amenaza",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_002",
+    "fase": "3",
+    "señal_base": "si no vienes te descuartizo",
+    "variantes": "te macheteo, te fileteo, te desmiembro, picadillo",
+    "intención": "amenaza",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_003",
+    "fase": "3",
+    "señal_base": "te mato si desobedeces",
+    "variantes": "te disparo, te baleo, te acuchillo, te trueno",
+    "intención": "amenaza",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_004",
+    "fase": "3",
+    "señal_base": "te voy a dar piso",
+    "variantes": "darte piso, ponerte tierra, te entierran, piso",
+    "intención": "amenaza",
+    "fuente": "Colmex",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_005",
+    "fase": "3",
+    "señal_base": "te ponemos en bolsa negra",
+    "variantes": "embolsado, encobijado, encajuelado, bolsa",
+    "intención": "amenaza",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_006",
+    "fase": "3",
+    "señal_base": "te vas en pedazos",
+    "variantes": "saldrás en pedazos, en partes, sin cabeza",
+    "intención": "amenaza",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_007",
+    "fase": "3",
+    "señal_base": "vas a aparecer en una fosa",
+    "variantes": "fosa clandestina, en la fosa, monte tirado, tirado en lote",
+    "intención": "amenaza",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_008",
+    "fase": "3",
+    "señal_base": "te voy a quemar",
+    "variantes": "te incinero, vas al horno, al crematorio",
+    "intención": "amenaza",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_009",
+    "fase": "3",
+    "señal_base": "te van a torturar primero",
+    "variantes": "te haremos sufrir, hacerte cantar, te vamos a romper",
+    "intención": "amenaza",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_010",
+    "fase": "3",
+    "señal_base": "salir por los pies por delante",
+    "variantes": "solo se sale muerto, salida de pies, en bolsa",
+    "intención": "amenaza",
+    "fuente": "Reforma",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_011",
+    "fase": "3",
+    "señal_base": "te encañono",
+    "variantes": "te apunto con un fierro, traigo cuerno, te tengo en la mira",
+    "intención": "amenaza",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_012",
+    "fase": "3",
+    "señal_base": "ya tienes los días contados",
+    "variantes": "no llegas a la semana, te quedan horas, ya estás muerto",
+    "intención": "amenaza",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_013",
+    "fase": "3",
+    "señal_base": "vas a ver de lo que somos capaces",
+    "variantes": "no sabes lo que podemos, te vamos a enseñar, te vas a arrepentir",
+    "intención": "amenaza",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.8"
+  },
+  {
+    "id": "f3_014",
+    "fase": "3",
+    "señal_base": "te van a volar la cabeza",
+    "variantes": "tiro en la cabeza, plomazo en la frente, headshot real",
+    "intención": "amenaza",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_015",
+    "fase": "3",
+    "señal_base": "te van a desollar",
+    "variantes": "desollado, sin piel, te quito la piel",
+    "intención": "amenaza",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_016",
+    "fase": "3",
+    "señal_base": "a toda tu familia la voy a matar",
+    "variantes": "voy por tu familia, mato a tu jefa, a tus hermanos",
+    "intención": "amenaza_familia",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_017",
+    "fase": "3",
+    "señal_base": "ya sé dónde vive tu mamá",
+    "variantes": "tengo la dirección de tu jefa, conocemos a tu familia",
+    "intención": "amenaza_familia",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_018",
+    "fase": "3",
+    "señal_base": "tu hermana sale de la prepa a las 3",
+    "variantes": "ya la vimos, sabemos sus horarios, le seguimos los pasos",
+    "intención": "amenaza_familia",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_019",
+    "fase": "3",
+    "señal_base": "vamos a ir por tus hermanitos",
+    "variantes": "tus carnales pequeños, los chiquitos, vamos a buscarlos",
+    "intención": "amenaza_familia",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_020",
+    "fase": "3",
+    "señal_base": "tu novia ya está identificada",
+    "variantes": "tu morra, tu chava, tu pareja ya ubicada",
+    "intención": "amenaza_familia",
+    "fuente": "Sintetico",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_021",
+    "fase": "3",
+    "señal_base": "si dices algo, le pasa a tu familia",
+    "variantes": "abres la boca y pagan ellos, callas o pagan ellos",
+    "intención": "amenaza_familia",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_022",
+    "fase": "3",
+    "señal_base": "no quieres que les pase nada",
+    "variantes": "depende de ti que estén bien, no quieres lastimarlos",
+    "intención": "amenaza_familia",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_023",
+    "fase": "3",
+    "señal_base": "tu mascota también puede pagar",
+    "variantes": "tu perro, tu gato, lo que más quieres",
+    "intención": "amenaza_familia",
+    "fuente": "Sintetico",
+    "tipo": "coercion",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_024",
+    "fase": "3",
+    "señal_base": "tu papá trabaja en X y sale a Y",
+    "variantes": "perfilamos a tus papás, sabemos sus rutinas",
+    "intención": "amenaza_familia",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "0.95"
+  },
+  {
+    "id": "f3_025",
+    "fase": "3",
+    "señal_base": "levantón",
+    "variantes": "te vamos a levantar, levantón, tronar, dar piso",
+    "intención": "amenaza",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_026",
+    "fase": "3",
+    "señal_base": "te vamos a buscar",
+    "variantes": "vamos por ti, te encontramos, no te escondas",
+    "intención": "intimidación",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.8"
+  },
+  {
+    "id": "f3_027",
+    "fase": "3",
+    "señal_base": "ya sabemos dónde vives",
+    "variantes": "tu domicilio lo tenemos, sabemos tu casa, colonia identificada",
+    "intención": "intimidación",
+    "fuente": "El Pais",
+    "tipo": "intimidación",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_028",
+    "fase": "3",
+    "señal_base": "tenemos tu ubicación en tiempo real",
+    "variantes": "te ubicamos, te seguimos, te tenemos vigilado",
+    "intención": "intimidación",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.95"
+  },
+  {
+    "id": "f3_029",
+    "fase": "3",
+    "señal_base": "te vamos a tronar",
+    "variantes": "tronarte, ponerte madriza, partirte la madre",
+    "intención": "amenaza",
+    "fuente": "Colmex",
+    "tipo": "coercion",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_030",
+    "fase": "3",
+    "señal_base": "te vamos a recoger",
+    "variantes": "vamos por ti, te subimos a la troca, vente a fuerzas",
+    "intención": "amenaza",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_031",
+    "fase": "3",
+    "señal_base": "ya te vimos",
+    "variantes": "te tengo ubicado, te traigo en la mira, ojos en ti",
+    "intención": "intimidación",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.8"
+  },
+  {
+    "id": "f3_032",
+    "fase": "3",
+    "señal_base": "te seguimos desde ayer",
+    "variantes": "te traigo seguido, te traigo cola, te tenemos en sabueso",
+    "intención": "intimidación",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_033",
+    "fase": "3",
+    "señal_base": "estás vigilado",
+    "variantes": "te vigilamos, hay ojos en ti, sabemos cada paso",
+    "intención": "intimidación",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_034",
+    "fase": "3",
+    "señal_base": "vas a ser sicario",
+    "variantes": "matón, asesino, gatillero, tronar gente",
+    "intención": "reclutamiento_forzado",
+    "fuente": "El Pais",
+    "tipo": "autoritario",
+    "peso": "0.8"
+  },
+  {
+    "id": "f3_035",
+    "fase": "3",
+    "señal_base": "vas para la escuela de sicarios",
+    "variantes": "te llevamos a la escuelita, vas a aprender a matar, escuela de tiro",
+    "intención": "reclutamiento_forzado",
+    "fuente": "El Pais",
+    "tipo": "autoritario",
+    "peso": "0.95"
+  },
+  {
+    "id": "f3_036",
+    "fase": "3",
+    "señal_base": "ahora eres del CJNG",
+    "variantes": "ya eres de las cuatro letras, perteneces a NG, eres de los nuestros",
+    "intención": "reclutamiento_forzado",
+    "fuente": "El Pais",
+    "tipo": "autoritario",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_037",
+    "fase": "3",
+    "señal_base": "vas a ser halcón quieras o no",
+    "variantes": "vas a halconear, ahora eres puntero, te toca vigilar",
+    "intención": "reclutamiento_forzado",
+    "fuente": "Colmex",
+    "tipo": "autoritario",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_038",
+    "fase": "3",
+    "señal_base": "ahora trabajas para nosotros",
+    "variantes": "ahora jalas con nosotros, eres parte de la organización",
+    "intención": "reclutamiento_forzado",
+    "fuente": "El Pais",
+    "tipo": "autoritario",
+    "peso": "0.75"
+  },
+  {
+    "id": "f3_039",
+    "fase": "3",
+    "señal_base": "te toca darle piso a alguien",
+    "variantes": "vas a tronarte a uno, te toca jalar el gatillo, prueba de fuego",
+    "intención": "reclutamiento_forzado",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_040",
+    "fase": "3",
+    "señal_base": "súbete a la troca",
+    "variantes": "súbete a fuerzas, vente, no preguntes, ya súbete",
+    "intención": "reclutamiento_forzado",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_041",
+    "fase": "3",
+    "señal_base": "a huevo te vas",
+    "variantes": "a fuerzas, quieras o no, sin opción",
+    "intención": "reclutamiento_forzado",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_042",
+    "fase": "3",
+    "señal_base": "trabajas para mí ahora",
+    "variantes": "me sirves, eres mío, bajo mis órdenes",
+    "intención": "reclutamiento_forzado",
+    "fuente": "Derivado",
+    "tipo": "autoritario",
+    "peso": "0.65"
+  },
+  {
+    "id": "f3_043",
+    "fase": "3",
+    "señal_base": "te quedas con nosotros",
+    "variantes": "ya no vas a tu casa, te quedas, ya vives aquí",
+    "intención": "reclutamiento_forzado",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_044",
+    "fase": "3",
+    "señal_base": "ya estás adentro",
+    "variantes": "ya entraste, ya no hay vuelta atrás, estás dentro",
+    "intención": "aislamiento_irreversible",
+    "fuente": "El Pais",
+    "tipo": "intimidación",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_045",
+    "fase": "3",
+    "señal_base": "no hay vuelta atrás",
+    "variantes": "ya no puedes salir, esto es para siempre, ya te metiste",
+    "intención": "aislamiento_irreversible",
+    "fuente": "El Pais",
+    "tipo": "intimidación",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_046",
+    "fase": "3",
+    "señal_base": "ya viste mi cara",
+    "variantes": "ya me conociste, ya sabes quién soy, ya nos viste",
+    "intención": "aislamiento_irreversible",
+    "fuente": "El Pais",
+    "tipo": "intimidación",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_047",
+    "fase": "3",
+    "señal_base": "la única salida es muerto",
+    "variantes": "solo sales muerto, no se sale vivo, salida en bolsa",
+    "intención": "aislamiento_irreversible",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_048",
+    "fase": "3",
+    "señal_base": "ya te metiste, ya te jodiste",
+    "variantes": "ya valió, ya estás cogido, ya no la libras",
+    "intención": "aislamiento_irreversible",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.75"
+  },
+  {
+    "id": "f3_049",
+    "fase": "3",
+    "señal_base": "ya cobraste, ya nos debes",
+    "variantes": "ya recibiste lana, tienes deuda, ya no te puedes ir",
+    "intención": "aislamiento_irreversible",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_050",
+    "fase": "3",
+    "señal_base": "sabes demasiado",
+    "variantes": "ya sabes mucho, no te puedes ir, ya estás metido",
+    "intención": "aislamiento_irreversible",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.75"
+  },
+  {
+    "id": "f3_051",
+    "fase": "3",
+    "señal_base": "esto es de por vida",
+    "variantes": "para toda la vida, hasta morir, sin opción de salida",
+    "intención": "aislamiento_irreversible",
+    "fuente": "Sintetico",
+    "tipo": "intimidación",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_052",
+    "fase": "3",
+    "señal_base": "tengo tus fotos",
+    "variantes": "tengo tus nudes, tengo el video, tengo tus desnudos",
+    "intención": "amenaza_digital",
+    "fuente": "FinCEN",
+    "tipo": "coercion",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_053",
+    "fase": "3",
+    "señal_base": "se las mando a tu mamá",
+    "variantes": "se las paso a tu jefa, le llegan a tu familia, las ve tu papá",
+    "intención": "amenaza_digital",
+    "fuente": "FinCEN",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_054",
+    "fase": "3",
+    "señal_base": "las subo a internet",
+    "variantes": "las publico, las viralizo, las pongo en grupos",
+    "intención": "amenaza_digital",
+    "fuente": "FinCEN",
+    "tipo": "coercion",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_055",
+    "fase": "3",
+    "señal_base": "se las mando a tu escuela",
+    "variantes": "a tus compas, las riego en tu prepa, todos en tu escuela",
+    "intención": "amenaza_digital",
+    "fuente": "FinCEN",
+    "tipo": "coercion",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_056",
+    "fase": "3",
+    "señal_base": "deposita o difundo",
+    "variantes": "paga o publico, transfiere o las subo, lana o se enteran",
+    "intención": "exigencia_coercitiva",
+    "fuente": "FinCEN",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_057",
+    "fase": "3",
+    "señal_base": "tienes 24 horas para depositar",
+    "variantes": "te doy un día, plazo, contador, antes de medianoche",
+    "intención": "exigencia_coercitiva",
+    "fuente": "FinCEN",
+    "tipo": "coercion",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_058",
+    "fase": "3",
+    "señal_base": "manda más fotos o difundo las que tengo",
+    "variantes": "más material o salen las viejas, más nudes o publico",
+    "intención": "exigencia_coercitiva",
+    "fuente": "FinCEN",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_059",
+    "fase": "3",
+    "señal_base": "tengo tus contactos",
+    "variantes": "tengo tu lista whats, tengo tu insta, sé a quién mandárselas",
+    "intención": "amenaza_digital",
+    "fuente": "FinCEN",
+    "tipo": "intimidación",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_060",
+    "fase": "3",
+    "señal_base": "voy a hacer un deepfake tuyo",
+    "variantes": "te hago fake, IA con tu cara, video falso tuyo",
+    "intención": "amenaza_digital",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_061",
+    "fase": "3",
+    "señal_base": "voy a hacerme pasar por ti",
+    "variantes": "suplanto tu cuenta, tomo tu identidad, robo tu perfil",
+    "intención": "amenaza_digital",
+    "fuente": "Ley Olimpia",
+    "tipo": "coercion",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_062",
+    "fase": "3",
+    "señal_base": "te voy a exhibir",
+    "variantes": "te quemo en redes, video exponiéndote, denuncia pública",
+    "intención": "amenaza_digital",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.7"
+  },
+  {
+    "id": "f3_063",
+    "fase": "3",
+    "señal_base": "voy a publicar tu dirección",
+    "variantes": "doxxing, dirección al público, tu casa expuesta",
+    "intención": "amenaza_digital",
+    "fuente": "Ley Olimpia",
+    "tipo": "coercion",
+    "peso": "0.9"
+  },
+  {
+    "id": "f3_064",
+    "fase": "3",
+    "señal_base": "voy a inventar algo grave de ti",
+    "variantes": "pongo que robaste, te invento delito, falso testimonio",
+    "intención": "amenaza_digital",
+    "fuente": "Ley Olimpia",
+    "tipo": "coercion",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_065",
+    "fase": "3",
+    "señal_base": "voy a banearte de todos lados",
+    "variantes": "reporto tus cuentas, te tumbo redes, te elimino de plataformas",
+    "intención": "amenaza_digital",
+    "fuente": "Sintetico",
+    "tipo": "intimidación",
+    "peso": "0.6"
+  },
+  {
+    "id": "f3_066",
+    "fase": "3",
+    "señal_base": "te voy a reportar para que te baneen",
+    "variantes": "denuncia masiva al juego, raid de reportes, ban tactical",
+    "intención": "amenaza_digital",
+    "fuente": "Sintetico",
+    "tipo": "intimidación",
+    "peso": "0.55"
+  },
+  {
+    "id": "f3_067",
+    "fase": "3",
+    "señal_base": "te van a hackear la cuenta del juego",
+    "variantes": "perdiste tu skin, perdiste tu cuenta, te robo todo lo del juego",
+    "intención": "amenaza_digital",
+    "fuente": "Sintetico",
+    "tipo": "intimidación",
+    "peso": "0.65"
+  },
+  {
+    "id": "f3_068",
+    "fase": "3",
+    "señal_base": "te van a swat",
+    "variantes": "swatting, mando policía a tu casa, te denuncio falso",
+    "intención": "amenaza_digital",
+    "fuente": "InsightCrime",
+    "tipo": "coercion",
+    "peso": "0.95"
+  },
+  {
+    "id": "f3_069",
+    "fase": "3",
+    "señal_base": "ya tengo tu IP",
+    "variantes": "tengo tu IP, te ubiqué por la IP, conozco tu red",
+    "intención": "amenaza_digital",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_070",
+    "fase": "3",
+    "señal_base": "haz lo que digo o atente",
+    "variantes": "obedece o te friegas, jala o pagas, hazle como dije",
+    "intención": "exigencia_coercitiva",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "0.8"
+  },
+  {
+    "id": "f3_071",
+    "fase": "3",
+    "señal_base": "ya te di lana, ahora me debes",
+    "variantes": "tienes deuda, me debes el favor, ya cobraste",
+    "intención": "exigencia_coercitiva",
+    "fuente": "El Pais",
+    "tipo": "coercion",
+    "peso": "0.8"
+  },
+  {
+    "id": "f3_072",
+    "fase": "3",
+    "señal_base": "no me vas a quedar mal",
+    "variantes": "no te eches para atrás, no me falles, no me dejes botado",
+    "intención": "intimidación",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.6"
+  },
+  {
+    "id": "f3_073",
+    "fase": "3",
+    "señal_base": "última oportunidad",
+    "variantes": "última vez, última chance, no hay más",
+    "intención": "intimidación",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.55"
+  },
+  {
+    "id": "f3_074",
+    "fase": "3",
+    "señal_base": "atente a las consecuencias",
+    "variantes": "asume lo que viene, te toca pagar, ya verás",
+    "intención": "intimidación",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.7"
+  },
+  {
+    "id": "f3_075",
+    "fase": "3",
+    "señal_base": "l3v4nt0n",
+    "variantes": "l3vanton, leva.nton, lvtn, lev4nton",
+    "intención": "amenaza",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_076",
+    "fase": "3",
+    "señal_base": "t3 m4t0",
+    "variantes": "te m@to, t3.mato, t-e-m-a-t-o",
+    "intención": "amenaza",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "1"
+  },
+  {
+    "id": "f3_077",
+    "fase": "3",
+    "señal_base": "5ic4r10",
+    "variantes": "sic@rio, sic4rio, s1c4r10",
+    "intención": "reclutamiento_forzado",
+    "fuente": "Derivado",
+    "tipo": "autoritario",
+    "peso": "0.75"
+  },
+  {
+    "id": "f3_078",
+    "fase": "3",
+    "señal_base": "p1s0",
+    "variantes": "darte p1so, p150, piso de tierra",
+    "intención": "amenaza",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_079",
+    "fase": "3",
+    "señal_base": "f053 / f0sa",
+    "variantes": "fo$a, f053 clandestina, fosa común",
+    "intención": "amenaza",
+    "fuente": "Derivado",
+    "tipo": "coercion",
+    "peso": "0.95"
+  },
+  {
+    "id": "f3_080",
+    "fase": "3",
+    "señal_base": "🔪⚰️",
+    "variantes": "🔫💀, 🔪💀, 🪦☠️, 💀🪦",
+    "intención": "amenaza",
+    "fuente": "Derivado",
+    "tipo": "intimidación",
+    "peso": "0.7"
+  },
+  {
+    "id": "f3_081",
+    "fase": "3",
+    "señal_base": "🪦 con tu nombre",
+    "variantes": "lápida con nombre, mensaje de tumba, RIP nombre",
+    "intención": "amenaza",
+    "fuente": "Sintetico",
+    "tipo": "intimidación",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_082",
+    "fase": "3",
+    "señal_base": "🔫➡️👤",
+    "variantes": "pistola apuntando a persona, emoji secuencia amenaza",
+    "intención": "amenaza",
+    "fuente": "Sintetico",
+    "tipo": "coercion",
+    "peso": "0.85"
+  },
+  {
+    "id": "f3_083",
+    "fase": "3",
+    "señal_base": "📍tu casa🔥",
+    "variantes": "ubicación + fuego, emojis de doxxing visual",
+    "intención": "amenaza_digital",
+    "fuente": "Sintetico",
+    "tipo": "coercion",
+    "peso": "0.95"
+  },
+  {
+    "id": "f3_084",
+    "fase": "3",
+    "señal_base": "💀⏰",
+    "variantes": "calavera + reloj, te quedan horas, countdown muerte",
+    "intención": "amenaza",
+    "fuente": "Sintetico",
+    "tipo": "intimidación",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_001",
+    "fase": "4",
+    "señal_base": "ya muévete",
+    "variantes": "jálale, córrele, vente, ahorita, ya",
+    "intención": "orden_directa",
+    "fuente": "Derivado",
+    "tipo": "comandancia",
+    "peso": "0.5"
+  },
+  {
+    "id": "f4_002",
+    "fase": "4",
+    "señal_base": "haz lo que te dije",
+    "variantes": "ya sabes qué hacer, ejecútalo, hazlo ya",
+    "intención": "orden_directa",
+    "fuente": "Derivado",
+    "tipo": "comandancia",
+    "peso": "0.5"
+  },
+  {
+    "id": "f4_003",
+    "fase": "4",
+    "señal_base": "no preguntes, jala",
+    "variantes": "sin preguntas, sin dudas, obedece y ya",
+    "intención": "orden_directa",
+    "fuente": "Derivado",
+    "tipo": "comandancia",
+    "peso": "0.7"
+  },
+  {
+    "id": "f4_004",
+    "fase": "4",
+    "señal_base": "te toca",
+    "variantes": "tu turno, ahora tú, va de tu cuenta",
+    "intención": "orden_directa",
+    "fuente": "Derivado",
+    "tipo": "comandancia",
+    "peso": "0.5"
+  },
+  {
+    "id": "f4_005",
+    "fase": "4",
+    "señal_base": "te quiero bien abusado",
+    "variantes": "ojo de águila, no te duermas, atento, alerta",
+    "intención": "orden_directa",
+    "fuente": "Derivado",
+    "tipo": "comandancia",
+    "peso": "0.65"
+  },
+  {
+    "id": "f4_006",
+    "fase": "4",
+    "señal_base": "ve al punto",
+    "variantes": "recoge esto, echas aguas, vigilas el punto",
+    "intención": "operación_vigilancia",
+    "fuente": "Derivado",
+    "tipo": "comandancia",
+    "peso": "0.65"
+  },
+  {
+    "id": "f4_007",
+    "fase": "4",
+    "señal_base": "es a esta hora exacta",
+    "variantes": "punto en punto, no llegues tarde, sé puntual",
+    "intención": "logística",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.55"
+  },
+  {
+    "id": "f4_008",
+    "fase": "4",
+    "señal_base": "vente cargando",
+    "variantes": "ven con el paquete, traes la carga, viene cargado",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_009",
+    "fase": "4",
+    "señal_base": "ve armado",
+    "variantes": "fuzca, fusca, con pistola, con fierro, con cuerno",
+    "intención": "orden_directa",
+    "fuente": "El Universal",
+    "tipo": "operativo",
+    "peso": "0.95"
+  },
+  {
+    "id": "f4_010",
+    "fase": "4",
+    "señal_base": "no lleves nada encima",
+    "variantes": "sin mochila, sin nada, llega limpio",
+    "intención": "logística",
+    "fuente": "Derivado",
+    "tipo": "comandancia",
+    "peso": "0.7"
+  },
+  {
+    "id": "f4_011",
+    "fase": "4",
+    "señal_base": "vas a vender en el punto",
+    "variantes": "atender el punto, parado en la esquina, ofrecer en la zona",
+    "intención": "operación_droga",
+    "fuente": "Colmex",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_012",
+    "fase": "4",
+    "señal_base": "vas a entregar el paquete",
+    "variantes": "lleva el paquete, entrega la mercancía, mover producto",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.85"
+  },
+  {
+    "id": "f4_013",
+    "fase": "4",
+    "señal_base": "trae las grapitas",
+    "variantes": "grapas, papelitos, dosis, papelitos chicos, sobres",
+    "intención": "operación_droga",
+    "fuente": "Colmex",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_014",
+    "fase": "4",
+    "señal_base": "te toca cargar piedra",
+    "variantes": "piedra, cristal, crico, foco, pase, cris",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_015",
+    "fase": "4",
+    "señal_base": "lleva la mota",
+    "variantes": "mota, hierba, cripa, mois, marihuana, weed, ganja",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_016",
+    "fase": "4",
+    "señal_base": "trae fenta",
+    "variantes": "fentanilo, fenta, foco, blue, blues, fentas",
+    "intención": "operación_droga",
+    "fuente": "DEA",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_017",
+    "fase": "4",
+    "señal_base": "trae la coca",
+    "variantes": "coca, perica, polvo, polvito, blanca",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.95"
+  },
+  {
+    "id": "f4_018",
+    "fase": "4",
+    "señal_base": "trae las pastillas",
+    "variantes": "tachas, mota, éxtasis, M, pepas",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.95"
+  },
+  {
+    "id": "f4_019",
+    "fase": "4",
+    "señal_base": "trae la H",
+    "variantes": "heroína, chiva, h, brown",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_020",
+    "fase": "4",
+    "señal_base": "el cliente está esperando",
+    "variantes": "el man espera, ahí está parado, ya llegó por su pedido",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.7"
+  },
+  {
+    "id": "f4_021",
+    "fase": "4",
+    "señal_base": "guarda la merca en la casa",
+    "variantes": "esconde mercancía, ponla en bodega, casa de seguridad",
+    "intención": "operación_droga",
+    "fuente": "El Pais",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_022",
+    "fase": "4",
+    "señal_base": "vamos a partir el material",
+    "variantes": "cortar la droga, partir producto, dosificar, hacer dosis",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_023",
+    "fase": "4",
+    "señal_base": "el punto está caliente",
+    "variantes": "punto pesado, hay tira en la zona, fierro cerca",
+    "intención": "operación_vigilancia",
+    "fuente": "Colmex",
+    "tipo": "operativo",
+    "peso": "0.85"
+  },
+  {
+    "id": "f4_024",
+    "fase": "4",
+    "señal_base": "lleva las dosis al cliente",
+    "variantes": "delivery de dosis, entrega al consumidor, cliente directo",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.95"
+  },
+  {
+    "id": "f4_025",
+    "fase": "4",
+    "señal_base": "cocinar el producto",
+    "variantes": "cocer la cristal, sintetizar, laboratorio, cook",
+    "intención": "operación_droga",
+    "fuente": "NYT",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_026",
+    "fase": "4",
+    "señal_base": "avísame si pasa la patrulla",
+    "variantes": "tira, perros, julia, narcs, manta, fierros del gobierno",
+    "intención": "operación_vigilancia",
+    "fuente": "Colmex",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_027",
+    "fase": "4",
+    "señal_base": "reporta cualquier movimiento raro",
+    "variantes": "alguien sospechoso, vehículo desconocido, gente nueva",
+    "intención": "operación_vigilancia",
+    "fuente": "Colmex",
+    "tipo": "operativo",
+    "peso": "0.8"
+  },
+  {
+    "id": "f4_028",
+    "fase": "4",
+    "señal_base": "te quedas vigilando 6 horas",
+    "variantes": "turno de 6, jornada de halcón, guardia de vigilancia",
+    "intención": "operación_vigilancia",
+    "fuente": "Colmex",
+    "tipo": "operativo",
+    "peso": "0.7"
+  },
+  {
+    "id": "f4_029",
+    "fase": "4",
+    "señal_base": "$2,500 a la semana por halconear",
+    "variantes": "tres mil sem, lana de halcón, sueldo de vigía",
+    "intención": "operación_vigilancia",
+    "fuente": "El Universal",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_030",
+    "fase": "4",
+    "señal_base": "$4,000 semana de pistolero",
+    "variantes": "muchacho de choke, pistolero, sueldo de gatillero",
+    "intención": "operación_violencia",
+    "fuente": "El Universal",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_031",
+    "fase": "4",
+    "señal_base": "$6,000 semanales de comandante",
+    "variantes": "sueldo de mando, comandante, líder de célula",
+    "intención": "operación_violencia",
+    "fuente": "El Universal",
+    "tipo": "operativo",
+    "peso": "0.95"
+  },
+  {
+    "id": "f4_032",
+    "fase": "4",
+    "señal_base": "ojos en la entrada",
+    "variantes": "ojo en la salida, watcheas la zona, monitor del acceso",
+    "intención": "operación_vigilancia",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.7"
+  },
+  {
+    "id": "f4_033",
+    "fase": "4",
+    "señal_base": "si se acerca tira tronar",
+    "variantes": "si llega la julia tronar, alarma si veo tira",
+    "intención": "operación_vigilancia",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_034",
+    "fase": "4",
+    "señal_base": "reporta frecuencias de radio",
+    "variantes": "frecuencias policía, escáner, banda policial",
+    "intención": "operación_vigilancia",
+    "fuente": "Expansion",
+    "tipo": "operativo",
+    "peso": "0.95"
+  },
+  {
+    "id": "f4_035",
+    "fase": "4",
+    "señal_base": "manda foto del que llegó",
+    "variantes": "foto del cliente, foto del intruso, evidencia visual",
+    "intención": "operación_vigilancia",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.7"
+  },
+  {
+    "id": "f4_036",
+    "fase": "4",
+    "señal_base": "te toca dar piso",
+    "variantes": "darle piso, tronarlo, ponerle tierra, ejecutarlo",
+    "intención": "operación_violencia",
+    "fuente": "El Pais",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_037",
+    "fase": "4",
+    "señal_base": "tienes que levantar a alguien",
+    "variantes": "levanton, levantar, recoger por la fuerza, subir a troca",
+    "intención": "operación_violencia",
+    "fuente": "El Pais",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_038",
+    "fase": "4",
+    "señal_base": "cárgate a este tipo",
+    "variantes": "este wey, este cabrón, este individuo, dale",
+    "intención": "operación_violencia",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_039",
+    "fase": "4",
+    "señal_base": "el objetivo es",
+    "variantes": "el blanco, el target, el man, el mensaje",
+    "intención": "operación_violencia",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_040",
+    "fase": "4",
+    "señal_base": "su rutina es esta",
+    "variantes": "sale a las X, regresa a las Y, ruta del objetivo",
+    "intención": "operación_violencia",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_041",
+    "fase": "4",
+    "señal_base": "trae dos cargadores",
+    "variantes": "munición extra, balas extra, cargadores de respaldo",
+    "intención": "operación_violencia",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_042",
+    "fase": "4",
+    "señal_base": "deja el cuerpo donde te dije",
+    "variantes": "tirar el cuerpo, dejar el muerto, donde acordamos",
+    "intención": "operación_violencia",
+    "fuente": "El Pais",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_043",
+    "fase": "4",
+    "señal_base": "ponle una manta",
+    "variantes": "narcomensaje, lona con mensaje, mensaje al rival",
+    "intención": "operación_violencia",
+    "fuente": "Colmex",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_044",
+    "fase": "4",
+    "señal_base": "graba el mensaje",
+    "variantes": "video del mensaje, prueba en video, evidencia para la pública",
+    "intención": "operación_violencia",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.95"
+  },
+  {
+    "id": "f4_045",
+    "fase": "4",
+    "señal_base": "déjale prendida la troca",
+    "variantes": "incendiar el carro, prender el vehículo, fuego al carro",
+    "intención": "operación_violencia",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.95"
+  },
+  {
+    "id": "f4_046",
+    "fase": "4",
+    "señal_base": "le rompes las patas",
+    "variantes": "golpear piernas, paliza, calentadita fuerte",
+    "intención": "operación_violencia",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_047",
+    "fase": "4",
+    "señal_base": "deposita en este OXXO",
+    "variantes": "OXXO Pay, depósito en tienda, ficha de OXXO",
+    "intención": "operación_dinero",
+    "fuente": "FinCEN",
+    "tipo": "operativo",
+    "peso": "0.7"
+  },
+  {
+    "id": "f4_048",
+    "fase": "4",
+    "señal_base": "transfiere por SPEI",
+    "variantes": "SPEI, CLABE, BBVA, BANAMEX, Banorte cuenta destino",
+    "intención": "operación_dinero",
+    "fuente": "FinCEN",
+    "tipo": "operativo",
+    "peso": "0.7"
+  },
+  {
+    "id": "f4_049",
+    "fase": "4",
+    "señal_base": "guarda esta lana",
+    "variantes": "esconde el efectivo, ponlo a buen recaudo, no lo gastes",
+    "intención": "operación_dinero",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.8"
+  },
+  {
+    "id": "f4_050",
+    "fase": "4",
+    "señal_base": "manda gift cards de Amazon",
+    "variantes": "Apple Card, Steam, gift card, tarjeta de regalo",
+    "intención": "operación_dinero",
+    "fuente": "FinCEN",
+    "tipo": "operativo",
+    "peso": "0.75"
+  },
+  {
+    "id": "f4_051",
+    "fase": "4",
+    "señal_base": "manda screenshot del depósito",
+    "variantes": "ficha del depósito, comprobante, captura de transferencia",
+    "intención": "operación_dinero",
+    "fuente": "FinCEN",
+    "tipo": "disciplinario",
+    "peso": "0.7"
+  },
+  {
+    "id": "f4_052",
+    "fase": "4",
+    "señal_base": "fracciona en 3 pagos",
+    "variantes": "que no sean montos parejos, divide la lana, varios depósitos",
+    "intención": "operación_dinero",
+    "fuente": "FinCEN",
+    "tipo": "operativo",
+    "peso": "0.85"
+  },
+  {
+    "id": "f4_053",
+    "fase": "4",
+    "señal_base": "pásame USDT",
+    "variantes": "bitcoin, BTC, cripto, ETH, billetera, wallet, USDC",
+    "intención": "operación_dinero",
+    "fuente": "FinCEN",
+    "tipo": "operativo",
+    "peso": "0.75"
+  },
+  {
+    "id": "f4_054",
+    "fase": "4",
+    "señal_base": "cobra la cuota de la semana",
+    "variantes": "derecho de piso, mochada, pago semanal, cuota del comerciante",
+    "intención": "operación_dinero",
+    "fuente": "El Pais",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_055",
+    "fase": "4",
+    "señal_base": "deposita en este 7-Eleven",
+    "variantes": "7-Eleven, Telecomm, tiendita, paquete express",
+    "intención": "operación_dinero",
+    "fuente": "FinCEN",
+    "tipo": "operativo",
+    "peso": "0.75"
+  },
+  {
+    "id": "f4_056",
+    "fase": "4",
+    "señal_base": "manda billete por Western Union",
+    "variantes": "WU, MoneyGram, giro, envío internacional",
+    "intención": "operación_dinero",
+    "fuente": "FinCEN",
+    "tipo": "operativo",
+    "peso": "0.75"
+  },
+  {
+    "id": "f4_057",
+    "fase": "4",
+    "señal_base": "lava por casa de cambio",
+    "variantes": "casa de cambio, exchange, cambia y deposita",
+    "intención": "operación_dinero",
+    "fuente": "FinCEN",
+    "tipo": "operativo",
+    "peso": "0.8"
+  },
+  {
+    "id": "f4_058",
+    "fase": "4",
+    "señal_base": "compra recargas por la lana",
+    "variantes": "lavar con recargas, comprar tiempo aire, recargas masivas",
+    "intención": "operación_dinero",
+    "fuente": "FinCEN",
+    "tipo": "operativo",
+    "peso": "0.75"
+  },
+  {
+    "id": "f4_059",
+    "fase": "4",
+    "señal_base": "manda otra foto desnuda",
+    "variantes": "más nudes, otra sin ropa, foto íntima, video desnudo",
+    "intención": "operación_sextorsión",
+    "fuente": "FinCEN",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_060",
+    "fase": "4",
+    "señal_base": "haz un video tuyo en vivo",
+    "variantes": "live para mí, videollamada con la cámara, transmisión en vivo",
+    "intención": "operación_sextorsión",
+    "fuente": "Consejo Ciudadano",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_061",
+    "fase": "4",
+    "señal_base": "haz lo que digo en cámara",
+    "variantes": "obedece frente a la cámara, lo grabas, hazlo en video",
+    "intención": "operación_sextorsión",
+    "fuente": "Consejo Ciudadano",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_062",
+    "fase": "4",
+    "señal_base": "muéstrame lo que te dije",
+    "variantes": "enséñame, ahora me lo enseñas, demuéstralo en cámara",
+    "intención": "operación_sextorsión",
+    "fuente": "Consejo Ciudadano",
+    "tipo": "operativo",
+    "peso": "0.95"
+  },
+  {
+    "id": "f4_063",
+    "fase": "4",
+    "señal_base": "graba video con tu cara visible",
+    "variantes": "que se vea tu cara, sin filtros, identificable",
+    "intención": "operación_sextorsión",
+    "fuente": "FinCEN",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_064",
+    "fase": "4",
+    "señal_base": "si no mandas más, las envío",
+    "variantes": "más material o se publican, plazo para más fotos",
+    "intención": "operación_sextorsión",
+    "fuente": "FinCEN",
+    "tipo": "operativo",
+    "peso": "1"
+  },
+  {
+    "id": "f4_065",
+    "fase": "4",
+    "señal_base": "tráeme a tres compas más",
+    "variantes": "mete a tu raza, jálame a tu plebada, recluta a tus carnales",
+    "intención": "reclutamiento_secundario",
+    "fuente": "Onprenna",
+    "tipo": "comandancia",
+    "peso": "0.85"
+  },
+  {
+    "id": "f4_066",
+    "fase": "4",
+    "señal_base": "que tu hermano se meta",
+    "variantes": "tu carnal, tu primo, tu cuate de la prepa",
+    "intención": "reclutamiento_secundario",
+    "fuente": "Derivado",
+    "tipo": "comandancia",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_067",
+    "fase": "4",
+    "señal_base": "te doy comisión por cada uno",
+    "variantes": "$1,000 por cada plebe, te toca por cada nuevo, comisión por enganche",
+    "intención": "reclutamiento_secundario",
+    "fuente": "El Universal",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_068",
+    "fase": "4",
+    "señal_base": "preséntales el jale en tu escuela",
+    "variantes": "ofrece el jale en la prepa, recluta entre tus compas de salón",
+    "intención": "reclutamiento_secundario",
+    "fuente": "Onprenna",
+    "tipo": "operativo",
+    "peso": "0.95"
+  },
+  {
+    "id": "f4_069",
+    "fase": "4",
+    "señal_base": "comparte mi contacto en tu equipo",
+    "variantes": "pásame en tu clan, recomiéndame en tu squad",
+    "intención": "reclutamiento_secundario",
+    "fuente": "Sintetico",
+    "tipo": "operativo",
+    "peso": "0.85"
+  },
+  {
+    "id": "f4_070",
+    "fase": "4",
+    "señal_base": "haz un video reclutando",
+    "variantes": "graba contenido para captar, tutorial de reclutamiento",
+    "intención": "reclutamiento_secundario",
+    "fuente": "Sintetico",
+    "tipo": "operativo",
+    "peso": "0.95"
+  },
+  {
+    "id": "f4_071",
+    "fase": "4",
+    "señal_base": "es esta noche a las 11",
+    "variantes": "10pm, medianoche, madrugada, hora del jale",
+    "intención": "logística",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.5"
+  },
+  {
+    "id": "f4_072",
+    "fase": "4",
+    "señal_base": "es en esta dirección",
+    "variantes": "calle X número Y, esta ubicación, esta colonia, este punto",
+    "intención": "logística",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.5"
+  },
+  {
+    "id": "f4_073",
+    "fase": "4",
+    "señal_base": "sin uniforme escolar",
+    "variantes": "ropa normal, civil, ropa que no llame atención, sin emblemas",
+    "intención": "logística",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.7"
+  },
+  {
+    "id": "f4_074",
+    "fase": "4",
+    "señal_base": "ven en troca prestada",
+    "variantes": "carro robado, vehículo no registrado, troca de la organización",
+    "intención": "logística",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_075",
+    "fase": "4",
+    "señal_base": "apaga el GPS y modo avión",
+    "variantes": "celular en avión, sin ubicación, sin red",
+    "intención": "logística",
+    "fuente": "El Pais",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_076",
+    "fase": "4",
+    "señal_base": "usa un cel desechable",
+    "variantes": "burner, fonecito, cel quemado, line nueva",
+    "intención": "logística",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_077",
+    "fase": "4",
+    "señal_base": "te van a recoger",
+    "variantes": "van a estar esperando, caele al punto acordado",
+    "intención": "logística",
+    "fuente": "El Pais",
+    "tipo": "comandancia",
+    "peso": "0.85"
+  },
+  {
+    "id": "f4_078",
+    "fase": "4",
+    "señal_base": "llega 15 min antes",
+    "variantes": "anticípate, llega temprano, presencia anticipada",
+    "intención": "logística",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.5"
+  },
+  {
+    "id": "f4_079",
+    "fase": "4",
+    "señal_base": "memoriza la ruta, no uses Google Maps",
+    "variantes": "no apps de navegación, memoriza, ruta sin GPS",
+    "intención": "logística",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.85"
+  },
+  {
+    "id": "f4_080",
+    "fase": "4",
+    "señal_base": "reporta cuando termines",
+    "variantes": "avísame cuando esté hecho, confirmar misión, ya está done",
+    "intención": "reporte_obligatorio",
+    "fuente": "Derivado",
+    "tipo": "disciplinario",
+    "peso": "0.6"
+  },
+  {
+    "id": "f4_081",
+    "fase": "4",
+    "señal_base": "manda foto del trabajo terminado",
+    "variantes": "prueba del muerto, foto del paquete, evidencia entrega",
+    "intención": "reporte_obligatorio",
+    "fuente": "Derivado",
+    "tipo": "disciplinario",
+    "peso": "0.95"
+  },
+  {
+    "id": "f4_082",
+    "fase": "4",
+    "señal_base": "no falles porque ya sabes",
+    "variantes": "fallar tiene consecuencias, recuerda, atente",
+    "intención": "reporte_obligatorio",
+    "fuente": "Derivado",
+    "tipo": "disciplinario",
+    "peso": "0.8"
+  },
+  {
+    "id": "f4_083",
+    "fase": "4",
+    "señal_base": "manda audio confirmando",
+    "variantes": "nota de voz, audio de confirmación, mensaje hablado",
+    "intención": "reporte_obligatorio",
+    "fuente": "Derivado",
+    "tipo": "disciplinario",
+    "peso": "0.55"
+  },
+  {
+    "id": "f4_084",
+    "fase": "4",
+    "señal_base": "comprobante con hora visible",
+    "variantes": "captura con timestamp, foto con hora, evidencia con tiempo",
+    "intención": "reporte_obligatorio",
+    "fuente": "Derivado",
+    "tipo": "disciplinario",
+    "peso": "0.7"
+  },
+  {
+    "id": "f4_085",
+    "fase": "4",
+    "señal_base": "te invito a sala privada en Free Fire",
+    "variantes": "lobby privado FF, custom room, sala secreta",
+    "intención": "logística",
+    "fuente": "Infobae",
+    "tipo": "operativo",
+    "peso": "0.65"
+  },
+  {
+    "id": "f4_086",
+    "fase": "4",
+    "señal_base": "vamos a hablar por proximity chat",
+    "variantes": "chat de voz, voice chat de proximidad, vc privado",
+    "intención": "logística",
+    "fuente": "Infobae",
+    "tipo": "operativo",
+    "peso": "0.65"
+  },
+  {
+    "id": "f4_087",
+    "fase": "4",
+    "señal_base": "únete al servidor de Roblox",
+    "variantes": "discord del juego, server privado, mira mi perfil",
+    "intención": "logística",
+    "fuente": "Milenio",
+    "tipo": "operativo",
+    "peso": "0.65"
+  },
+  {
+    "id": "f4_088",
+    "fase": "4",
+    "señal_base": "te paso el invite a las 2 am",
+    "variantes": "te mando link de madrugada, conéctate cuando duerman tus papás",
+    "intención": "logística",
+    "fuente": "El Universal",
+    "tipo": "operativo",
+    "peso": "0.95"
+  },
+  {
+    "id": "f4_089",
+    "fase": "4",
+    "señal_base": "entra al lobby con clave",
+    "variantes": "lobby con password, sala privada con clave, room cerrado",
+    "intención": "logística",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.75"
+  },
+  {
+    "id": "f4_090",
+    "fase": "4",
+    "señal_base": "haz el jale dentro del juego como práctica",
+    "variantes": "simulación in-game, práctica con avatar, ensayo virtual",
+    "intención": "operación_violencia",
+    "fuente": "Sintetico",
+    "tipo": "operativo",
+    "peso": "0.85"
+  },
+  {
+    "id": "f4_091",
+    "fase": "4",
+    "señal_base": "vente al server de Discord oficial",
+    "variantes": "Discord oficial del cártel, server con verificación, comunidad cerrada",
+    "intención": "logística",
+    "fuente": "Milenio",
+    "tipo": "operativo",
+    "peso": "0.85"
+  },
+  {
+    "id": "f4_092",
+    "fase": "4",
+    "señal_base": "te conectas en GTA Online",
+    "variantes": "GTA RP, server de RP narco, lobby narco",
+    "intención": "logística",
+    "fuente": "Expansion",
+    "tipo": "operativo",
+    "peso": "0.75"
+  },
+  {
+    "id": "f4_093",
+    "fase": "4",
+    "señal_base": "📦",
+    "variantes": "📦💊, 📦🔫, 📦💰",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.7"
+  },
+  {
+    "id": "f4_094",
+    "fase": "4",
+    "señal_base": "🚚 entrega",
+    "variantes": "🚐 mover, 🛻 cargar, 🚙 trasladar, 🚛",
+    "intención": "logística",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.5"
+  },
+  {
+    "id": "f4_095",
+    "fase": "4",
+    "señal_base": "h4lc0n3ar",
+    "variantes": "h4lconear, halc0nar, vigilar 1234",
+    "intención": "operación_vigilancia",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.85"
+  },
+  {
+    "id": "f4_096",
+    "fase": "4",
+    "señal_base": "p15t0l4 / fu5c4",
+    "variantes": "p1stola, f.u.s.c.a, fierr0",
+    "intención": "operación_violencia",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.9"
+  },
+  {
+    "id": "f4_097",
+    "fase": "4",
+    "señal_base": "❄️ piedra/cris",
+    "variantes": "🧊 ice, ❄ blanca, ❄️ cris",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.75"
+  },
+  {
+    "id": "f4_098",
+    "fase": "4",
+    "señal_base": "🍃 mota",
+    "variantes": "🌿 weed, 🍁 mois, 🌱 hierba",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.6"
+  },
+  {
+    "id": "f4_099",
+    "fase": "4",
+    "señal_base": "💉 fenta/H",
+    "variantes": "💉 fentanilo, 💊 pastillas, 💎 cristal código",
+    "intención": "operación_droga",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.85"
+  },
+  {
+    "id": "f4_100",
+    "fase": "4",
+    "señal_base": "👀 punto",
+    "variantes": "👀 vigilar, 👁️ ojo, 👁️‍🗨️ punto vigilado",
+    "intención": "operación_vigilancia",
+    "fuente": "Derivado",
+    "tipo": "operativo",
+    "peso": "0.65"
+  }
+]
