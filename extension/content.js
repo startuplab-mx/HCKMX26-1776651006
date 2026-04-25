@@ -102,7 +102,14 @@ function nodeIsInsideChat(node, containers) {
 }
 
 const ACTIVE_PLATFORM = detectPlatform();
-const PLATFORM_ACTIVE = platformActive(ACTIVE_PLATFORM);
+// Re-evaluated on every scan because SPA navigation (React Router) doesn't
+// re-inject content scripts. Without this, navigating from /channels to
+// /store on Discord, or from a game chat to /giftcards on Roblox, kept
+// the scanner active in the wrong context (Armando caught the Roblox
+// gift-card-store false positive Apr 25 ~15:17).
+function platformIsActive() {
+  return platformActive(ACTIVE_PLATFORM);
+}
 
 // Phase 3 (Coerción) — direct threats received. The extension scans messages
 // the user is *receiving* in chat, so both aggressor-speech ("te voy a
@@ -139,10 +146,15 @@ const PHASE4_REGEX = [
   /trae (la coca|la mota|las grapitas|la merca|la mercanc(í|i)a)/i,
   /vas a (vender en el punto|halconear)/i,
   /tienes que (dar piso|tronar)/i,
-  // Platform-pivot + grooming traps (Roblox / Discord / IG)
-  /(gift\s?card|tarjeta de regalo|robux gratis)/i,
-  /(p(á|a)sate a|pasamos a|m(é|e)tete a) (discord|wpp|whatsapp|telegram|signal)/i,
-  /(p(á|a)same|d(á|a)me) tu (user(name)?|cuenta|tag)/i,
+  // Platform-pivot + grooming traps (Roblox / Discord / IG).
+  // CRITICAL: these patterns require a VERB OF PROPOSITION before the
+  // grooming term, otherwise the Roblox catalog page text "Buy Giftcards"
+  // / "Robux Gift Card" matches as a false positive (caught Apr 25 by
+  // Armando in the catalog page).
+  /(te\s+(paso|regalo|doy|mando|env[ií]o)|tengo|consigues?)\s+(\$\d+|\d+\s*robux|robux|gift\s?card|tarjeta\s+de\s+regalo)/i,
+  /(robux\s+gratis|robux\s+free)\s+(si|por|a\s+cambio)/i,
+  /(p(á|a)sate a|pasamos a|m(é|e)tete a|vamos a)\s+(discord|wpp|whatsapp|telegram|signal|snapchat)/i,
+  /(p(á|a)same|d(á|a)me)\s+tu\s+(user(name)?|cuenta|tag|@|user|n[uú]mero)/i,
 ];
 
 const COOLDOWN_MS = 5 * 60 * 1000;
@@ -306,7 +318,7 @@ function getChatContainers() {
 }
 
 function scanNode(node) {
-  if (!PLATFORM_ACTIVE) return; // whole site is on the URL blocklist
+  if (!platformIsActive()) return; // whole site is on the URL blocklist
   if (!node || SEEN_NODES.has(node)) return;
   if (node.nodeType === Node.TEXT_NODE) {
     SEEN_NODES.add(node);
@@ -346,25 +358,32 @@ observer.observe(document.body, { childList: true, subtree: true });
 for (const child of document.body.childNodes) scanNode(child);
 
 // React-heavy chat clients (Discord, IG) mount the conversation pane AFTER
-// our content script runs. Re-sweep once the chat container appears so we
-// don't miss messages already on screen.
-const _mountWatcher = setInterval(() => {
-  if (!PLATFORM_ACTIVE) { clearInterval(_mountWatcher); return; }
+// our content script runs, AND swap it on URL navigation without reloading.
+// We keep watching forever (cheap querySelector) so chat re-renders are
+// always covered. If the page is on a non-chat URL, platformIsActive()
+// gates the actual overlay — the watcher just keeps the container cache
+// fresh.
+let _lastUrl = location.href;
+setInterval(() => {
+  // SPA URL change: clear container cache so the next scanNode re-detects.
+  if (location.href !== _lastUrl) {
+    _lastUrl = location.href;
+    CHAT_CONTAINERS = [];
+    CONTAINERS_LAST_REFRESH = 0;
+  }
+  if (!platformIsActive()) return;
   const containers = findChatContainers(ACTIVE_PLATFORM);
   if (containers.length) {
+    const newOnes = containers.filter((c) => !CHAT_CONTAINERS.includes(c));
     CHAT_CONTAINERS = containers;
     CONTAINERS_LAST_REFRESH = Date.now();
-    // Re-walk the chat container only.
-    SEEN_NODES.delete && containers.forEach((c) => SEEN_NODES.delete(c));
-    containers.forEach((c) => {
+    // Sweep only newly-mounted containers — avoids re-scanning everything
+    // every second.
+    newOnes.forEach((c) => {
       for (const child of c.childNodes) scanNode(child);
     });
-    clearInterval(_mountWatcher);
   }
-}, 1000);
-// Stop trying after 30s — if the user navigates away from chat, this is
-// fine; URL changes don't trigger content-script re-injection.
-setTimeout(() => clearInterval(_mountWatcher), 30000);
+}, 1500);
 
 // Privacy by design: no console output that reveals the extension is running.
 // (Earlier versions logged the active platform, which let host pages detect

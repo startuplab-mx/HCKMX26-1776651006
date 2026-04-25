@@ -65,7 +65,12 @@ const PRIVACY_RE = /^\s*\/?\s*(privacidad|datos|qu[eé]\s+guardas|borra\s*mis\s*
 // of these arrive, we acknowledge with a friendly close and reset to inicio
 // WITHOUT triggering /analyze. Without this, the bot was re-classifying
 // every "gracias" as a fresh message (Marco surfaced this Apr 25).
-const CLOSE_RE = /^\s*(gracias|grax|thx|thanks|ok|okay|listo|chido|sale|sale\s+pues|bye|adi[oó]s|hasta\s+luego|fin|ya|ya\s+est[áa]|nos\s+vemos|cu[ií]date|cu[ií]dale)\s*[!.😊🙏👍]*\s*$/i;
+//
+// Includes "no" / "ya no" / "no gracias" / "estoy bien" — caught Apr 25
+// 15:17: after the contribution flow (¿Hay algo más que quieras analizar?)
+// the user typed "No" and the bot ran /analyze on the literal "No",
+// returning SEGURO 0% AND re-prompting for contribution. Now closes cleanly.
+const CLOSE_RE = /^\s*(no|nop|nope|nel|nada|nada\s+m[aá]s|ya\s+no|nada\s+m[aá]s\s+por\s+hoy|gracias|grax|thx|thanks|no\s+gracias|estoy\s+bien|todo\s+bien|todo\s+bien\s+gracias|ok|okay|listo|chido|sale|sale\s+pues|bye|adi[oó]s|hasta\s+luego|fin|ya|ya\s+est[áa]|nos\s+vemos|cu[ií]date|cu[ií]dale)\s*[!.\s😊🙏👍]*\s*$/i;
 // Affirmation-as-command — "si", "claro", "obvio" without context — also
 // shouldn't trigger /analyze in inicio state. We treat them as friendly
 // acknowledgements and prompt the user for what they actually want.
