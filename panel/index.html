@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nahual · Panel de Alertas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+      :root { --carbon: #2F353A; --cobre: #C16A4C; }
+      body { background: var(--carbon); color: #fff; }
+      .accent { color: var(--cobre); }
+      .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+      .pill-SEGURO { background: #22C55E; color: #04210b; }
+      .pill-ATENCION { background: #EAB308; color: #1f2326; }
+      .pill-PELIGRO { background: #EF4444; color: #fff; }
+      .status-pending { background: rgba(255,255,255,0.1); color: #fff; }
+      .status-reviewed { background: #0ea5e9; color: #fff; }
+      .status-dismissed { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); text-decoration: line-through; }
+      .status-escalated { background: #C16A4C; color: #fff; }
+      .btn-sm { font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; }
+      .btn-sm:hover { background: rgba(255,255,255,0.12); }
+      .btn-sm.primary { background: #C16A4C; border-color: #C16A4C; }
+      .btn-sm.primary:hover { background: #a85a3f; }
+      .history-row { background: rgba(0,0,0,0.25); font-size: 12px; }
+      .filter-chip { padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; background: transparent; color: #fff; }
+      .filter-chip.active { background: #C16A4C; border-color: #C16A4C; }
+    </style>
+  </head>
+  <body class="min-h-screen">
+    <header class="px-8 py-6 border-b border-white/10 flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold">🛡️ Nahual <span class="accent">/ Panel</span></h1>
+        <p class="text-sm text-white/60">Detección de reclutamiento criminal digital · auto-refresh cada 5 s</p>
+      </div>
+      <div class="text-right">
+        <div class="text-xs text-white/50">Backend</div>
+        <div id="health" class="text-sm font-semibold">…</div>
+      </div>
+    </header>
+
+    <main class="p-8 space-y-8">
+      <section class="card rounded-lg p-5">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <h2 class="text-lg font-semibold">Actividad reciente</h2>
+          <div class="flex gap-2 items-center">
+            <span class="text-xs text-white/50">Rango:</span>
+            <select id="ts-range" class="bg-white/5 border border-white/10 rounded px-2 py-1 text-xs">
+              <option value="hour:24" selected>24 h · por hora</option>
+              <option value="hour:6">6 h · por hora</option>
+              <option value="hour:72">72 h · por hora</option>
+              <option value="day:7">7 días · por día</option>
+              <option value="day:30">30 días · por día</option>
+            </select>
+          </div>
+        </div>
+        <div style="height: 220px"><canvas id="ts-chart"></canvas></div>
+      </section>
+
+      <section class="grid grid-cols-2 md:grid-cols-6 gap-4">
+        <div class="card rounded-lg p-4"><div class="text-xs text-white/60">Total</div><div id="stat-total" class="text-3xl font-bold mt-1">—</div></div>
+        <div class="card rounded-lg p-4"><div class="text-xs text-white/60">PELIGRO</div><div id="stat-peligro" class="text-3xl font-bold mt-1 text-red-400">—</div></div>
+        <div class="card rounded-lg p-4"><div class="text-xs text-white/60">ATENCIÓN</div><div id="stat-atencion" class="text-3xl font-bold mt-1 text-yellow-400">—</div></div>
+        <div class="card rounded-lg p-4"><div class="text-xs text-white/60">SEGURO</div><div id="stat-seguro" class="text-3xl font-bold mt-1 text-green-400">—</div></div>
+        <div class="card rounded-lg p-4"><div class="text-xs text-white/60">Pendientes</div><div id="stat-pending" class="text-3xl font-bold mt-1">—</div></div>
+        <div class="card rounded-lg p-4"><div class="text-xs text-white/60">Escaladas</div><div id="stat-escalated" class="text-3xl font-bold mt-1 accent">—</div></div>
+      </section>
+
+      <section>
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-3">
+          <h2 class="text-lg font-semibold">Alertas recientes</h2>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs text-white/50">Filtrar:</span>
+            <button class="filter-chip active" data-status="">Todas</button>
+            <button class="filter-chip" data-status="pending">Pendientes</button>
+            <button class="filter-chip" data-status="reviewed">Revisadas</button>
+            <button class="filter-chip" data-status="escalated">Escaladas</button>
+            <button class="filter-chip" data-status="dismissed">Descartadas</button>
+          </div>
+        </div>
+
+        <div class="card rounded-lg overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="text-left text-white/60 text-xs uppercase tracking-wider">
+              <tr>
+                <th class="px-4 py-3">Folio</th>
+                <th class="px-4 py-3">Fecha</th>
+                <th class="px-4 py-3">Plataforma</th>
+                <th class="px-4 py-3">Nivel</th>
+                <th class="px-4 py-3">Score</th>
+                <th class="px-4 py-3">Fase</th>
+                <th class="px-4 py-3">Override</th>
+                <th class="px-4 py-3">Status</th>
+                <th class="px-4 py-3 text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="alerts-body" class="divide-y divide-white/5"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
