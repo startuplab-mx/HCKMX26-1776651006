@@ -93,16 +93,26 @@ export const MESSAGES = {
 
   notificacionTutor: (nivel, plataforma) =>
     [
-      '🛡️ *Aviso Nahual*',
+      '🛡️ *Aviso Nahual — alguien necesita tu apoyo*',
       '',
-      `Un menor está usando Nahual y detectamos un mensaje con nivel: *${nivel}* en ${plataforma}.`,
+      `Un/a joven que confía en ti acaba de pedir ayuda a través de Nahual.`,
+      `Detectamos en su conversación de *${plataforma}* un patrón con nivel *${nivel}*.`,
       '',
-      'Por privacidad NO incluimos el contenido. Recomendamos:',
-      '• Buscar al menor con calma, sin juicio',
-      '• Marcar 088 (Policía Cibernética)',
-      '• SIPINNA: https://sipinna.gob.mx',
+      '*Por privacidad NO te enviamos el contenido del mensaje.*',
+      'Sólo el nivel de riesgo, la plataforma y este reporte oficial sin PII.',
       '',
-      'Línea de la Vida (crisis): 800-911-2000',
+      '*Qué te recomendamos:*',
+      '1. Acércate con calma, sin juicio. Pregúntale cómo se siente.',
+      '2. Escucha primero. No interrogues — ofrece presencia.',
+      '3. Si confirma una amenaza directa, marquen juntos al *088* (Policía Cibernética, 24/7).',
+      '4. Conserven capturas como evidencia. NO borren la conversación.',
+      '',
+      '*Recursos:*',
+      '• Policía Cibernética: *088*',
+      '• Línea de la Vida (crisis emocional): *800-911-2000*',
+      '• SIPINNA (protección a menores): https://sipinna.gob.mx',
+      '',
+      '_Este aviso lo envió un sistema automatizado por petición del/de la joven. No respondas a este mensaje — el bot no lo lee._',
     ].join('\n'),
 
   reporteListo: (folio) =>
