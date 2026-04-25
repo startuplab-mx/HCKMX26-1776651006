@@ -649,6 +649,35 @@ function bindTestBox() {
 
 // ---------------- Pause toggle ----------------
 
+async function runDeepHealthcheck() {
+  const btn = document.getElementById('deep-check');
+  if (!btn) return;
+  btn.disabled = true;
+  btn.textContent = '🔬 Probando…';
+  try {
+    const info = await jget('/admin/healthcheck-deep');
+    const lines = ['DEEP HEALTHCHECK:'];
+    for (const [k, v] of Object.entries(info.checks || {})) {
+      const icon = v.ok ? '✓' : '✗';
+      const detail = v.error || v.reason || (v.status ? `status=${v.status}` : 'ok');
+      lines.push(`  ${icon} ${k.padEnd(10)} — ${detail}`);
+    }
+    lines.push('');
+    lines.push(info.all_ok ? '  ✅ Todos los servicios responden.' : '  ⚠️ Algún servicio falló.');
+    alert(lines.join('\n'));
+  } catch (e) {
+    alert(`Deep healthcheck falló: ${e.message}`);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔬 Deep check';
+  }
+}
+
+function bindDeepCheck() {
+  const btn = document.getElementById('deep-check');
+  if (btn) btn.addEventListener('click', runDeepHealthcheck);
+}
+
 function bindPauseToggle() {
   const btn = document.getElementById('pause-toggle');
   if (!btn) return;
@@ -669,6 +698,7 @@ async function tick() {
 bindActions();
 bindTestBox();
 bindPauseToggle();
+bindDeepCheck();
 refreshDatasetStats(); // one-shot; dataset is immutable at runtime
 tick();
 TIMER_HANDLE = setInterval(tick, REFRESH_MS);
