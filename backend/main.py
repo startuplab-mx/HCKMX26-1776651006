@@ -23,6 +23,7 @@ from fastapi.responses import FileResponse, JSONResponse
 
 from classifier import Pipeline
 from classifier.escalation import EscalationDetector
+from classifier.pipeline import build_why_from_ids
 from database import get_db
 from legal import get_legal_context, get_privacy_disclaimer, serialize_context
 import webhooks
@@ -556,6 +557,28 @@ def alert_history(alert_id: int):
     if app.state.db.get_alert(alert_id) is None:
         raise HTTPException(404, f"Alert {alert_id} not found")
     return app.state.db.list_actions(alert_id)
+
+
+@app.get("/alerts/{alert_id}/why")
+def alert_why(alert_id: int):
+    """Reconstruct the human-readable "¿Por qué?" view for a stored alert.
+
+    Re-derives explanations from the alert's persisted pattern_ids using
+    the live heuristic, so the panel can show why the alert fired even
+    weeks later without retaining the original text.
+    """
+    alert = app.state.db.get_alert(alert_id)
+    if alert is None:
+        raise HTTPException(404, f"Alert {alert_id} not found")
+    pattern_ids = alert.get("pattern_ids") or []
+    why = build_why_from_ids(app.state.pipeline.heuristic, pattern_ids, limit=12)
+    return {
+        "alert_id": alert_id,
+        "phase_detected": alert.get("phase_detected"),
+        "risk_level": alert.get("risk_level"),
+        "pattern_ids": pattern_ids,
+        "why": why,
+    }
 
 
 @app.get("/alerts/{alert_id}/legal")

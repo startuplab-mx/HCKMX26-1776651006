@@ -78,6 +78,8 @@ def main() -> None:
             created_at=ts,
             status=status,
             reviewer=reviewer,
+            pattern_ids=r.get("pattern_ids", []),
+            source_type="text",
         )
         print(
             f"  [{alert_id:>3}] {ts} · {r['risk_level']:<8} score={r['risk_score']:.2f} "

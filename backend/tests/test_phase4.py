@@ -252,3 +252,40 @@ def test_alert_response_legal_still_present(tmp_path):
         assert "legal" in r
         assert r["legal"]["urgency"] == "inmediata"
         assert r["why"]
+
+
+# ---------------- /alerts/{id}/why endpoint ----------------
+
+
+def test_alert_why_endpoint_recovers_specific_explanations(tmp_path):
+    with _client(tmp_path) as c:
+        aid = c.post(
+            "/alert",
+            json={"text": "yo quiero jale, te pago el viaje, $15,000 semanales 🍕"},
+        ).json()["id"]
+        r = c.get(f"/alerts/{aid}/why")
+        body = r.json()
+        assert r.status_code == 200
+        assert body["alert_id"] == aid
+        # Per-pattern explanations should surface concrete language now.
+        joined = " ".join(body["why"]).lower()
+        assert "narco" in joined or "jerga" in joined
+        assert "captación" in joined.lower() or "captacion" in joined.lower()
+        assert len(body["pattern_ids"]) > 0
+
+
+def test_alert_why_endpoint_404_for_missing_alert(tmp_path):
+    with _client(tmp_path) as c:
+        r = c.get("/alerts/99999/why")
+        assert r.status_code == 404
+
+
+def test_explanations_from_ids_returns_specific_text():
+    from classifier.heuristic import HeuristicClassifier
+
+    h = HeuristicClassifier()
+    # First pattern in phase3 is "vas a ser sicario" → phase3.000
+    explanations = h.explanations_from_ids(["phase3.000"])
+    assert len(explanations) == 1
+    assert "rol criminal" in explanations[0]["what"]
+    assert explanations[0]["type"] == "Coerción"

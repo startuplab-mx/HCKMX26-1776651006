@@ -117,26 +117,35 @@ Soporta **WhatsApp Web · Instagram · Discord · Roblox**.
 ### Análisis
 | Método | Ruta | Descripción |
 |--------|------|------------|
-| `POST` | `/analyze` | Analiza texto → risk_score, fases, categorías, pattern_ids |
+| `POST` | `/analyze` | Analiza texto → risk_score, fases, categorías, pattern_ids, **why**, **escalation**, **legal** |
 | `POST` | `/transcribe` | 🎙️ Audio → texto (Groq Whisper) |
 | `POST` | `/ocr` | 📸 Imagen → texto (Claude Vision) |
 
 ### Alertas + Triage
 | Método | Ruta | Descripción |
 |--------|------|------------|
-| `POST` | `/alert` | Registra alerta (webhook bot/extensión) |
+| `POST` | `/alert` | Registra alerta (webhook bot/extensión) — incluye `why` + `escalation` + `legal` |
 | `GET` | `/alerts` | Lista (filtrable por status / risk_level) |
 | `GET` | `/alerts/{id}` | Detalle |
 | `PATCH` | `/alerts/{id}` | Actualiza status / notes / reviewer |
 | `POST` | `/alerts/{id}/escalate` | Escala a 088 / SIPINNA / Fiscalía |
 | `GET` | `/alerts/{id}/history` | Audit trail |
-| `POST` | `/report/{id}` | Genera PDF |
+| `GET` | `/alerts/{id}/legal` | Marco legal aplicable (recomputado desde DB) |
+| `GET` | `/alerts/{id}/why` | 🧠 Reconstruye explicaciones humanas desde pattern_ids persistidos |
+| `POST` | `/report/{id}` | Genera PDF dinámico con marco legal |
 
 ### Investigación anónima
 | Método | Ruta | Descripción |
 |--------|------|------------|
-| `POST` | `/contribute` | Aporta metadata anónima (sin PII) |
+| `POST` | `/contribute` | Aporta metadata anónima (sin PII, `extra="forbid"`) |
 | `GET` | `/contributions/stats` | Stats agregados (top patterns, regiones) |
+
+### Escalamiento + perfil de riesgo (Phase 4)
+| Método | Ruta | Descripción |
+|--------|------|------------|
+| `GET` | `/profile/{session_id}` | Perfil acumulativo: trend, avg, max, dominant phase, score timeline |
+| `GET` | `/risk-history/{session_id}` | Historial cronológico de scores |
+| `DELETE` | `/risk-history/{session_id}` | Reset (usado por demo_live.py) |
 
 ### Stats + sesiones + sistema
 | Método | Ruta | Descripción |
@@ -168,6 +177,22 @@ curl -X POST http://localhost:8000/analyze \
 ```
 
 ---
+
+## Diferenciadores clave (Phase 4)
+
+Lo que ningún otro detector hace:
+
+### 📈 Detección de escalamiento
+Cada análisis con `session_id` se persiste en `risk_history`. El `EscalationDetector` calcula tendencia (creciente/estable/decreciente), velocidad (Δ promedio entre mensajes), y progresión de fase (captación → enganche → coerción). Cuando ATENCION + historial ≥ 3 + (velocity ≥ 0.20 OR progresión de fase) → **trayectory override** automático que sube a PELIGRO antes de que el menor sea captado.
+
+### 🧠 Explicabilidad humana ("¿Por qué?")
+Cada patrón en los JSON de keywords incluye campo `explanation` en español natural. La API surface el `why[]` array en `/analyze` y `/alert`, y `/alerts/{id}/why` lo reconstruye desde los `pattern_ids` persistidos — sin necesidad de re-clasificar (lo que sería imposible porque nunca se guarda el texto). El bot manda 🧠 *¿Por qué?* después del veredicto y el panel lo muestra al expandir cada alerta.
+
+### 🛡️ Marco legal programático
+Cada fase / categoría se mapea a artículos mexicanos vigentes (CPEUM 4 & 16, LGDNNA 47-VII / 48, CPF 209 Quáter / 282 / 199 Octies-Decies, LGAMVLV 20 Quáter, LGPSEDMTP 10, LFPDPPP 5-8) + autoridades (088, FEVIMTRA, Comisión de Búsqueda, etc.) + acciones recomendadas + derechos de la víctima. Surface en API, PDF dinámico, bot WhatsApp y panel.
+
+### 🎬 Demo en vivo
+`scripts/demo_live.py` proyecta en terminal una secuencia de 5 mensajes (contacto → captación → enganche → coerción → explotación) con barras de progreso ANSI, why list, trayectoria visual, y diferenciación entre override estático y override por trayectoria. Press ENTER para avanzar.
 
 ## Capacidades multimedia (Phase 3)
 

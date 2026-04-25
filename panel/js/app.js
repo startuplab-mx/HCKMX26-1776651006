@@ -7,6 +7,8 @@ const state = {
   history: new Map(),
   legalExpanded: new Set(),
   legal: new Map(),
+  whyExpanded: new Set(),
+  why: new Map(),
   tsRange: { interval: 'hour', hours: 24 },
   chart: null,
 };
@@ -61,11 +63,13 @@ function row(a) {
   const hist = isExpanded ? state.history.get(a.id) || [] : [];
 
   const isLegalExpanded = state.legalExpanded.has(a.id);
+  const isWhyExpanded = state.whyExpanded.has(a.id);
   const actions = `
     <div class="flex gap-1 justify-end flex-wrap">
       <button class="btn-sm" data-act="reviewed" data-id="${a.id}">✓ Revisar</button>
       <button class="btn-sm" data-act="escalate" data-id="${a.id}">⚠️ Escalar</button>
       <button class="btn-sm" data-act="dismissed" data-id="${a.id}">✗ Descartar</button>
+      <button class="btn-sm" data-act="why" data-id="${a.id}">🧠 ${isWhyExpanded ? 'Ocultar por qué' : '¿Por qué?'}</button>
       <button class="btn-sm" data-act="legal" data-id="${a.id}">📜 ${isLegalExpanded ? 'Ocultar legal' : 'Legal'}</button>
       <button class="btn-sm" data-act="history" data-id="${a.id}">🕑 ${isExpanded ? 'Ocultar' : 'Historial'}</button>
       <a class="btn-sm primary" href="${API}/report/${a.id}" target="_blank" rel="noopener">PDF</a>
@@ -114,7 +118,32 @@ function row(a) {
     }
   }
 
+  if (isWhyExpanded) {
+    const why = state.why.get(a.id);
+    if (!why) {
+      extraRows += '<tr class="history-row"><td colspan="9" class="px-8 py-2 text-white/50 italic">Reconstruyendo explicaciones…</td></tr>';
+    } else {
+      extraRows += renderWhyRow(why);
+    }
+  }
+
   return mainRow + extraRows;
+}
+
+function renderWhyRow(payload) {
+  const lines = (payload.why || []);
+  const body = lines.length === 0
+    ? '<div class="text-white/40 italic">Sin patrones específicos registrados (alerta seguro o histórica anterior a Phase 3).</div>'
+    : `<ol class="list-decimal list-inside space-y-1">${lines.map((w) => `<li>${esc(w)}</li>`).join('')}</ol>`;
+  const ids = (payload.pattern_ids || []).map((p) => `<code class="text-white/50">${esc(p)}</code>`).join(' ') || '<span class="text-white/40 italic">ninguno</span>';
+  return `
+    <tr class="history-row">
+      <td colspan="9" class="px-8 py-3 text-xs">
+        <div class="font-semibold accent mb-2">🧠 ¿Por qué se levantó la alerta?</div>
+        ${body}
+        <div class="text-white/40 mt-3">Pattern IDs: ${ids}</div>
+      </td>
+    </tr>`;
 }
 
 function renderLegalRow(legal) {
@@ -194,6 +223,17 @@ async function toggleLegal(id) {
   } else {
     state.legalExpanded.add(id);
     state.legal.set(id, await jget(`/alerts/${id}/legal`));
+  }
+  await refresh();
+}
+
+async function toggleWhy(id) {
+  if (state.whyExpanded.has(id)) {
+    state.whyExpanded.delete(id);
+    state.why.delete(id);
+  } else {
+    state.whyExpanded.add(id);
+    state.why.set(id, await jget(`/alerts/${id}/why`));
   }
   await refresh();
 }
@@ -303,6 +343,7 @@ function bindActions() {
     try {
       if (act === 'history') await toggleHistory(id);
       else if (act === 'legal') await toggleLegal(id);
+      else if (act === 'why') await toggleWhy(id);
       else if (act === 'escalate') {
         await escalate(id);
         await refresh();

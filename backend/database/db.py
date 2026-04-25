@@ -262,6 +262,8 @@ class Database:
         status: str = "pending",
         reviewer: str | None = None,
         notes: str | None = None,
+        pattern_ids: list[str] | None = None,
+        source_type: str = "text",
     ) -> int:
         """Seed-only insert that allows overriding created_at/status.
 
@@ -277,8 +279,8 @@ class Database:
                 created_at, updated_at, platform, source, risk_score, risk_level,
                 phase_detected, categories, summary, original_text_hash,
                 contact_phone, llm_used, override_triggered, session_id,
-                status, reviewer, notes
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                status, reviewer, notes, pattern_ids, source_type
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 created_at,
@@ -298,6 +300,8 @@ class Database:
                 status,
                 reviewer,
                 notes,
+                json.dumps(pattern_ids or [], ensure_ascii=False),
+                source_type,
             ),
         )
         return int(cur.lastrowid)

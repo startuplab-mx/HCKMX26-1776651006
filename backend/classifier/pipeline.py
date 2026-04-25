@@ -94,6 +94,15 @@ def build_why(explanations: list[dict[str, str]], limit: int = 6) -> list[str]:
     return why
 
 
+def build_why_from_ids(heuristic, pattern_ids: list[str], limit: int = 6) -> list[str]:
+    """Reconstruct the why-list from a stored alert's pattern_ids.
+
+    Lets endpoints like /alerts/{id}/why return the same "¿Por qué?" view
+    the bot rendered at analysis time, without re-classifying.
+    """
+    return build_why(heuristic.explanations_from_ids(pattern_ids), limit=limit)
+
+
 class Pipeline:
     def __init__(
         self,

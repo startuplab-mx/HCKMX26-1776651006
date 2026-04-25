@@ -240,3 +240,47 @@ class HeuristicClassifier:
             "emoji_boosts": emoji_boosts,
             "explanations": all_explanations,
         }
+
+    def explanations_from_ids(
+        self, pattern_ids: list[str]
+    ) -> list[dict[str, str]]:
+        """Reconstruct user-facing `explanations` for a stored alert.
+
+        Used by GET /alerts/{id}/why so the panel can render the same
+        "¿Por qué?" view that the bot saw at analysis time, without
+        having to re-classify (we never persist the original text).
+        """
+        target = set(pattern_ids or [])
+        if not target:
+            return []
+        out: list[dict[str, str]] = []
+        for phase_key, patterns in self._compiled_patterns.items():
+            phase_label = PHASE_DISPLAY[phase_key]
+            for _compiled, weight, _source, pid, exp in patterns:
+                if pid in target:
+                    severity = (
+                        "alta"
+                        if weight >= 0.7
+                        else "media"
+                        if weight >= 0.4
+                        else "baja"
+                    )
+                    out.append(
+                        {"type": phase_label, "what": exp, "severity": severity}
+                    )
+        # Emojis stored by id → meaning lookup
+        emoji_by_id = {pid: e for e, pid in zip(self._emojis, self._emoji_ids.values())}
+        for pid, e in emoji_by_id.items():
+            if pid in target:
+                weight = float(e["weight"])
+                severity = (
+                    "alta" if weight >= 0.7 else "media" if weight >= 0.4 else "baja"
+                )
+                out.append(
+                    {
+                        "type": "Narcocultura",
+                        "what": f"emoji asociado a {e['meaning']}",
+                        "severity": severity,
+                    }
+                )
+        return out
