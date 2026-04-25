@@ -63,11 +63,120 @@ DEFAULT_EXPLANATIONS: dict[str, str] = {
 }
 
 
-def _normalize(text: str) -> str:
-    """Lowercase + strip diacritics for diacritic-insensitive matching."""
-    text = text.lower()
+_CHAT_ABBREVIATIONS = [
+    # word-boundary aware → won't munge "que" → "que" or "para" → "p ara"
+    (r"\bxq\b", "porque"),
+    (r"\bpq\b", "porque"),
+    (r"\bxk\b", "porque"),
+    (r"\bx\b", "por"),
+    (r"\bq\b", "que"),
+    (r"\bk\b", "que"),
+    (r"\bd\b", "de"),
+    (r"\bpa\b", "para"),
+    (r"\bpa'", "para"),
+    (r"\bpal\b", "para el"),
+    (r"\btoy\b", "estoy"),
+    (r"\btoi\b", "estoy"),
+    (r"\btmb\b", "tambien"),
+    (r"\btb\b", "tambien"),
+    (r"\bbn\b", "bien"),
+    (r"\bps\b", "pues"),
+    (r"\bpz\b", "pues"),
+    (r"\bwey\b", "guey"),
+    (r"\bwe\b", "guey"),
+    (r"\bnmms\b", "no mames"),
+    (r"\bvrdd\b", "verdad"),
+    (r"\bvdd\b", "verdad"),
+    (r"\bplis\b", "porfavor"),
+    (r"\bxfa\b", "porfavor"),
+    (r"\bxfis\b", "porfavor"),
+]
+
+# Spanish-written numbers → digit form. Order matters: longer first so
+# "quince mil" doesn't get partially replaced by "quince". CRITICAL: do
+# NOT include bare "mil" here — it would clobber "15 mil" → "15 1000"
+# before the digit-based regex can produce "15000". Bare "mil" is handled
+# by the regex below.
+_NUMBER_WORDS = [
+    ("un millon", "1000000"), ("medio millon", "500000"),
+    ("cien mil", "100000"), ("cincuenta mil", "50000"),
+    ("treinta mil", "30000"), ("veinticinco mil", "25000"),
+    ("veinte mil", "20000"), ("quince mil", "15000"),
+    ("diez mil", "10000"), ("ocho mil", "8000"),
+    ("cinco mil", "5000"), ("cuatro mil", "4000"),
+    ("tres mil", "3000"), ("dos mil", "2000"),
+    ("mil quinientos", "1500"),
+]
+
+# Common typos that bypass detection. Real-world chat data from Marco's
+# field testing. The fix-list is small and high-confidence — no risk of
+# turning unrelated words into pattern hits.
+_TYPO_FIXES = [
+    ("ofresieron", "ofrecieron"),
+    ("ofresio",    "ofrecio"),
+    ("ofrese",     "ofrece"),
+    ("amenasaron", "amenazaron"),
+    ("amenasa",    "amenaza"),
+    ("amenasar",   "amenazar"),
+    ("travajo",    "trabajo"),
+    ("travajar",   "trabajar"),
+    ("matarme",    "matarme"),  # noop, just here for visibility
+    ("dinero fasil", "dinero facil"),
+    ("rrancho", "rancho"),
+    ("desidir", "decidir"),
+]
+
+
+def _strip_diacritics(text: str) -> str:
     nfkd = unicodedata.normalize("NFKD", text)
     return "".join(c for c in nfkd if not unicodedata.combining(c))
+
+
+def _normalize(text: str) -> str:
+    """Advanced normalization for Mexican-Spanish chat input.
+
+    Steps (each idempotent):
+    1. Lowercase + strip diacritics (diacritic-insensitive matching).
+    2. Expand chat abbreviations (x→por, q→que, pa→para, toy→estoy…).
+    3. Spanish-written numbers → digits ("quince mil" → "15000").
+    4. Money formats — strip commas/dots in 4+ digit groups
+       ("15,000" → "15000", "$15.000" → "$15000"); collapse "N mil" with
+       digits ("15 mil" → "15000").
+    5. Common typos → canonical (ofresieron → ofrecieron).
+    6. Collapse whitespace.
+
+    Designed so the same regex pattern fires on both the dataset's
+    canonical form ("me ofrecieron 15000 a la semana") AND the way users
+    actually type it ("me ofresieron 15 mil x semana").
+    """
+    text = text.lower()
+    text = _strip_diacritics(text)
+
+    # Step 2 — chat abbrevs.
+    for pat, rep in _CHAT_ABBREVIATIONS:
+        text = re.sub(pat, rep, text)
+
+    # Step 3 — written numbers (longest first via list ordering above).
+    for word, num in _NUMBER_WORDS:
+        text = text.replace(word, num)
+
+    # Step 4 — money normalisation.
+    # "15 mil" / "15mil" → "15000". Captures bare digits or "N mil pesos".
+    text = re.sub(
+        r"(\d+)\s*mil(?=\s|$|[,.])",
+        lambda m: str(int(m.group(1)) * 1000),
+        text,
+    )
+    # "$15,000" → "$15000" (and "15.000" → "15000" Euro-style).
+    text = re.sub(r"(\d{1,3})[,\.](\d{3}\b)", r"\1\2", text)
+
+    # Step 5 — typo fixes.
+    for typo, fix in _TYPO_FIXES:
+        text = text.replace(typo, fix)
+
+    # Step 6 — collapse whitespace.
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
 
 
 class HeuristicClassifier:

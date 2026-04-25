@@ -170,18 +170,57 @@ class Pipeline:
             weighted = max(weighted, 0.30)
         weighted = max(0.0, min(1.0, weighted))
 
+        # Contextual boost — multiple weak signals in different categories
+        # often add up to a real threat ("incentivo + perfilamiento" =
+        # offer + asking for personal info = recruitment). Without this,
+        # 3 mid-weight matches (each 0.5) average down instead of up.
+        weighted = self._contextual_boost(weighted, phase_scores, categories)
+
         llm_used = False
         llm_rationale = None
         final_score = weighted
 
-        if (
-            use_llm
-            and GREY_ZONE_MIN <= weighted <= GREY_ZONE_MAX
-            and self.llm.enabled
+        # ── LLM activation logic ──────────────────────────────────────
+        # Three triggers (any one fires the LLM call):
+        #   1. Classic grey zone (0.3 ≤ score ≤ 0.6)
+        #   2. Score == 0 BUT the text is substantive (>30 chars). This
+        #      catches the "Marco gap" — heuristic missed entirely but
+        #      the message is suspicious in shape.
+        #   3. Low score (<0.3) BUT the text contains money/work/threat
+        #      vocabulary that *might* be a recruitment signal in the
+        #      wrong arrangement.
+        text_lower = text.lower()
+        ACTIVATION_KEYWORDS = (
+            "pesos", "dinero", "lana", "feria", "billete", "varos",
+            "mil", "semana", "diario", "mensual", "quincenal",
+            "matar", "amenaz", "morir", "miedo", "peligr", "obligar",
+            "rancho", "monte", "punto", "jale", "chamba", "halcon",
+            "ofrecieron", "ofrecio", "ofrecen", "pidieron", "piden",
+            "dijeron", "dicen", "obligaron", "obligan", "extorsion",
+            "pasame", "manda", "fotos", "nudes", "secuestr",
+        )
+        score_is_zero = weighted == 0
+        substantive = len(text.strip()) > 30
+        has_keywords = any(k in text_lower for k in ACTIVATION_KEYWORDS)
+        in_grey_zone = GREY_ZONE_MIN <= weighted <= GREY_ZONE_MAX
+        marco_gap = score_is_zero and substantive
+        weak_keywords = weighted < GREY_ZONE_MIN and has_keywords
+
+        if use_llm and self.llm.enabled and (
+            in_grey_zone or marco_gap or weak_keywords
         ):
             llm_result = self.llm.analyze(text)
             if llm_result is not None:
-                final_score = max(0.0, min(1.0, (weighted + llm_result["risk_score"]) / 2))
+                # When the heuristic gave 0 but LLM activated as a safety
+                # net, trust the LLM 100% — there's nothing to merge.
+                # Otherwise, average heuristic and LLM 50/50.
+                if score_is_zero:
+                    final_score = max(0.0, min(1.0, llm_result["risk_score"]))
+                else:
+                    final_score = max(
+                        0.0,
+                        min(1.0, (weighted + llm_result["risk_score"]) / 2),
+                    )
                 llm_used = True
                 llm_rationale = llm_result["rationale"]
                 # Auto-tuner signal: when Claude and the heuristic disagree
@@ -230,6 +269,50 @@ class Pipeline:
         )
         self._maybe_tune()
         return result
+
+    # ---------------- Contextual boost ----------------
+
+    # Combos of categories that, when seen together, are MUCH more dangerous
+    # than the individual scores suggest. Picked from real-world recruitment
+    # patterns (Colmex, REDIM): a stranger who offers money AND asks where
+    # you live is doing recruitment surveillance, even if neither signal
+    # alone hits the override threshold.
+    _DANGER_COMBOS: list[set[str]] = [
+        {"oferta_economica", "perfilamiento"},
+        {"oferta_economica", "aislamiento"},
+        {"oferta_recibida",  "perfilamiento"},
+        {"oferta_recibida",  "topologia_narco"},
+        {"amenaza",          "orden_directa"},
+        {"amenaza_recibida", "extorsion_recibida"},
+        {"sextorsion_recibida", "sextorsion_chantaje"},
+        {"confianza_falsa",  "perfilamiento"},
+        {"jerga_dinero",     "fronts_falsos"},
+        {"red_social_dm",    "oferta_economica"},
+    ]
+
+    @staticmethod
+    def _contextual_boost(
+        weighted: float,
+        phase_scores: dict[str, float],
+        categories: list[str],
+    ) -> float:
+        """Boost the score when multiple weak signals from DIFFERENT
+        categories co-occur. Multiplier:
+          * 1.30 if 3+ unique categories matched (broad surface)
+          * 1.50 if any DANGER_COMBOS pair is present (specific high-risk)
+        Capped at 1.0. Only applied when 0 < weighted < OVERRIDE_THRESHOLD
+        (no point boosting a clean 0 or a guaranteed PELIGRO).
+        """
+        if not (0.0 < weighted < OVERRIDE_THRESHOLD):
+            return weighted
+        unique = set(categories)
+        # Specific dangerous co-occurrence beats the generic count.
+        for combo in Pipeline._DANGER_COMBOS:
+            if combo.issubset(unique):
+                return min(1.0, weighted * 1.50)
+        if len(unique) >= 3:
+            return min(1.0, weighted * 1.30)
+        return weighted
 
     # ---------------- Auto-tune ----------------
 
