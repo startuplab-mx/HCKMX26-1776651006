@@ -157,18 +157,45 @@ CREATE TABLE sessions (
 );
 ```
 
-## API ENDPOINTS
+## API ENDPOINTS (33 total)
 
+### Public (no auth)
 | Method | Route | Description |
 |--------|-------|-------------|
-| POST | /analyze | Analyze text → risk_score, risk_level, phases, categories |
-| POST | /alert | Register alert from bot (internal webhook) |
-| GET | /alerts | List all alerts (desc by date) |
-| GET | /alerts/{id} | Single alert detail |
-| GET | /stats | Aggregated stats (totals, by phase, by platform) |
-| POST | /report/{id} | Generate PDF report for an alert |
-| GET | /health | Health check |
+| POST | /analyze | Classify text → risk_score, phases, categories, why, escalation, legal |
+| POST | /alert | Register alert from bot/extension (also classifies + persists) |
+| POST | /transcribe | Audio → text (Groq Whisper) |
+| POST | /ocr | Image → text (Claude Vision) |
+| GET | /stats | Aggregated stats (totals, by phase, by platform, by status) |
+| GET | /stats/timeseries | Hourly/daily buckets for the panel chart |
+| GET | /health | LLM/STT enabled flags + auth_enforced |
+| POST | /report/{id} | Download PDF report (no auth — IDs already gated by /alerts) |
+| GET | /profile/{id} | Cumulative risk profile of a session (pitch demo + extension) |
+| POST | /feedback | User feedback for the auto-tuner (bot/panel/extension) |
+| POST | /contribute | Anonymous research metadata |
+| GET | /contributions/stats | Aggregate from contributed-research dataset |
 | GET | /docs | Swagger UI (automatic) |
+
+### Admin / observability (read-only, public, PII-free)
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | /admin/version | commit SHA + branch + commit_at + python version + env |
+| GET | /admin/dataset-info | per-phase pattern counts + weight histogram + emojis |
+| GET | /admin/metrics | requests/analyze/alert/transcribe/ocr counters since boot |
+| GET | /admin/healthcheck-deep | live ping to DB + Anthropic + Groq |
+
+### Protected (X-API-Key header, default `nahual-hackathon-2026`)
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | /alerts | List + filter (status, risk_level, limit, offset) |
+| GET | /alerts.csv | Excel-friendly UTF-8-BOM export |
+| GET/PATCH | /alerts/{id} | Detail / update status / notes / reviewer |
+| POST | /alerts/{id}/escalate | Escalate to 088 / SIPINNA / Fiscalía |
+| GET | /alerts/{id}/why | Reconstruct human explanations from pattern_ids |
+| GET | /alerts/{id}/legal | Recompute legal block from stored alert |
+| GET/PUT/DELETE | /sessions/{id} | Bot session state (used to survive restarts) |
+| GET/DELETE | /risk-history/{id} | Cronological scores for a session |
+| GET/POST | /precision/* | Auto-tuner diagnostics + state + manual tune |
 
 ## BOT STATE MACHINE
 
@@ -180,48 +207,95 @@ INICIO → BIENVENIDA → RECIBIR_MSG → ANALIZANDO → RESULT_SAFE/ATTENTION/D
 ```
 
 ## KEYWORDS — STATUS
-The keyword JSON files in backend/classifier/keywords/ are PENDING. Marco is working on them.
-For now, create the classifier with a PLACEHOLDER dataset that has 5-10 patterns per phase so the pipeline works end-to-end. We'll swap in the real dataset when Marco delivers.
 
-### Placeholder patterns to use:
-Phase 1 (Captación): "quiero jale", "$X,000 semanales", "guardia de seguridad", "te pago el viaje", narco emojis
-Phase 2 (Enganche): "dónde vives", "pásate a telegram", "no le digas a nadie", "envía tu ubicación"
-Phase 3 (Coerción): "ya sabes demasiado", "te vamos a buscar", "última oportunidad", "te va a pesar"
-Phase 4 (Explotación): "ve al punto", "deposita $X", "manda fotos", "trae a tus compas", "gift card"
+**Dataset is COMPLETE and in production.** 768 patterns total, 433 high-confidence (weight ≥ 0.8), 14 emojis.
 
-## WHAT TO BUILD NOW (IN ORDER)
+```
+phase1_captacion.json   260 patterns (high=117)  Captación
+phase2_enganche.json    172 patterns (high= 59)  Enganche
+phase3_coercion.json    194 patterns (high=171)  Coerción ← override-prone
+phase4_explotacion.json 142 patterns (high= 86)  Explotación
+emojis_narco.json        14 emojis
+```
 
-### Phase 1: Foundation (BUILD FIRST)
-1. Initialize repo structure (all folders, package.json, requirements.txt, .gitignore, LICENSE, .env.example)
-2. Backend: FastAPI app with /health, /analyze, /alerts, /stats, /report/{id} endpoints
-3. Classifier: heuristic.py with 4-phase regex scoring + override logic + pipeline.py
-4. Database: SQLite init + CRUD operations
+Patterns include both **aggressor speech** ("te voy a matar") and **victim
+reception** ("me van a matar", "me amenazan con publicar mis fotos") —
+critical because users paste mensajes recibidos OR describe what happened.
 
-### Phase 2: Bot
-5. Bot: Baileys connection with QR auth
-6. Bot: Message handler + text extractor
-7. Bot: State machine (flowController.js) with all states
-8. Bot: messages.js with all bot messages
-9. Bot: Integration with backend (/analyze endpoint via axios)
-10. Bot: Alert dispatcher (webhook to backend + message to guardian)
+Sources: Marco's curated patterns (374 originales) + alta-confidence subset
+of CSV expansion (189) + audit additions (sextortion, Roblox grooming,
+Mexican slang lana/billete/feria, cartel jerga halcón/puchador/punto).
 
-### Phase 3: Panel + PDF
-11. Panel: HTML dashboard with stats cards + alerts table + semaphore colors + auto-refresh
-12. PDF: ReportLab template with incident data + legal protocols + contacts
+ETL: `scripts/etl_dataset.py` (one-shot, idempotent).
 
-### Phase 4: Extension
-13. Extension: manifest.json + content.js with MutationObserver
-14. Extension: Mini-regex local detection (Phase 3/4 patterns only)
-15. Extension: Overlay UI + deep link to WhatsApp bot
+## DEPLOYMENT — PRODUCTION
 
-### Phase 5: Polish
-16. LLM Layer: Claude API integration with 5s timeout
-17. seed_test_data.py: Demo data for panel
-18. Testing: End-to-end flow
-19. README.md: Complete documentation
+**Live at**: `159.223.187.6` (DigitalOcean Ubuntu 24.04, 1 vCPU / 1 GB)
 
-## IMPORTANT NOTES
-- This is a HACKATHON project. Speed > perfection. Working demo > clean code.
-- The extension content scripts for Instagram, WhatsApp Web, and Discord DOM extraction already exist in Armando's other projects. He will integrate them manually.
-- All commits must have descriptive messages with conventional prefixes: feat:, fix:, docs:, polish:
-- The project runs on Windows (D: drive). Use appropriate path separators.
+```
+Backend      systemd: nahual-backend.service  → uvicorn :8000
+Bot WhatsApp systemd: nahual-bot.service      → +52 844 538 7404
+Panel        Nginx static at /opt/nahual/panel + reverse proxy
+HTTP only    HTTPS pending DNS for nahualshield.com / nahualsec.com
+```
+
+**Production resilience (already shipped)**:
+- Baileys reconnect with exponential backoff + listener cleanup + SIGTERM
+- SQLite WAL + retry-on-lock (5 attempts, exp backoff)
+- Bot per-JID rate limit (5 alerts / 60s sliding window)
+- Session TTL eviction (drop entries idle > 7d)
+- Webhook retry (3 attempts on 5xx/network, 4xx never retries)
+- Nginx rate limits per IP + security headers (X-Frame-Options, CSP, HSTS-ready)
+- Anthropic model: `claude-sonnet-4-5-20250929`
+- MIME normalization for `audio/ogg; codecs=opus` & `image/jpeg;charset=binary`
+
+## BOT BEHAVIORAL RULES
+
+**Universal commands** (any state, slash optional):
+`menu`, `ayuda`, `privacidad`, `estado`, `reset`, `reporte`
+
+**Conversational closers** (don't trigger /analyze):
+`gracias`, `ok`, `bye`, `listo`, `chido`, `sale`, `fin`, `ya`, `cuídate`,
+`no`, `no gracias`, `estoy bien`, `nada más`, `ya no`...
+
+**Distress / SOS** (empathy first, no analysis):
+`tengo miedo`, `necesito ayuda`, `me quiero morir`, `estoy asustado/a`
+→ Línea de la Vida (800-911-2000) + 088 + invites the suspicious message.
+
+**Greeting handling** (don't double-welcome):
+Bot greets only on EXPLICIT greeting OR first-ever turn — Marco surfaced
+the double-welcome bug Apr 25.
+
+## CHROME EXTENSION — RULES
+
+`extension/` is **v1.3.0**. Manifest matches `https://discord.com/*`,
+`https://*.discord.com/*`, `https://web.whatsapp.com/*`,
+`https://www.instagram.com/*`, Roblox.
+
+**Detection scope** (critical to avoid false positives):
+- Per-platform `urlAllowlist` / `urlBlocklist` (Roblox blocks `/catalog`,
+  `/giftcards`, `/marketplace`, `/upgrades`, `/charity`, `/redeem`,
+  `/avatar`, `/games/<id>`, `/home`, `/discover`)
+- Per-platform `containerSelectors` verified against the user's existing
+  extractors at `C:\Users\arma2\Codigo\{discord,wa,ig}-chat-extractor`
+  (Discord: `ol[class*="scrollerInner"]` + `li[id^="chat-messages-"]`)
+- `WHITELIST_REGEX` for UI/store phrases that look risky out of context
+- `nodeIsInsideChat()` — only fire if matched text is INSIDE a chat
+  container; avoids matching JSON payloads in `<script>` tags
+- SPA navigation handling: `platformIsActive()` re-evaluates on every
+  scan + mount watcher tracks `location.href` changes
+
+**Phase 4 regex requires verb-of-proposition** — "te paso 10000 robux si"
+fires; "Buy Roblox Gift Cards" (catalog) does NOT.
+
+## IMPORTANT NOTES FOR FUTURE WORK
+
+- This was a HACKATHON project. Speed > perfection. Working demo > clean code.
+- Sole developer: Armando. All bot/backend/panel/extension code lives in `D:\nahual` (Windows D: drive).
+- Existing chat extractors at `C:\Users\arma2\Codigo\` were the reference for extension DOM selectors.
+- All commits must have descriptive messages with conventional prefixes: `feat:`, `fix:`, `docs:`, `polish:`, `round-N`, `hotfix:`.
+- Privacy by design is non-negotiable — never store original message text, only SHA-256 + anonymized summary.
+- Override rule (Phase 3 or Phase 4 individual ≥ 0.80 → risk_score = 1.0) is the cornerstone of detection. Don't relax it.
+- 147 pytest tests must remain green. New endpoints get tests in `tests/test_admin.py` style.
+
+See `CHANGELOG.md` for the post-deploy commit history.

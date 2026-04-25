@@ -55,18 +55,24 @@ Si Fase 3 o Fase 4 obtienen score individual ≥ 0.80, el sistema ignora el prom
 
 | Componente | Tecnología |
 |------------|-----------|
-| Bot WhatsApp | Node.js 18+ + `@whiskeysockets/baileys` |
-| Backend API | Python 3.11+ + FastAPI + Uvicorn |
-| Clasificador | Regex + keyword scoring (sin GPU) |
-| LLM Layer | Anthropic Claude API (sólo zona gris) |
-| Database | SQLite3 |
+| Bot WhatsApp | Node.js 20 + `@whiskeysockets/baileys` 6.7 |
+| Backend API | Python 3.12+ + FastAPI + Uvicorn |
+| Clasificador | Regex + keyword scoring (768 patrones, sin GPU) |
+| LLM Layer | Anthropic `claude-sonnet-4-5-20250929` (zona gris 0.3–0.6) |
+| Audio STT | Groq Whisper-large-v3 (`/transcribe`) |
+| Imagen OCR | Anthropic Claude Sonnet 4.5 Vision (`/ocr`) |
+| Database | SQLite3 con WAL mode + retry on lock |
 | PDF | ReportLab |
-| Extensión | Chrome Manifest V3 |
-| Panel | HTML + Tailwind CDN + vanilla JS |
+| Extensión | Chrome Manifest V3 (v1.3.0) |
+| Panel | HTML + Tailwind CDN + Chart.js + vanilla JS |
+| Reverse proxy | Nginx con rate limiting + security headers |
+| Deploy | DigitalOcean droplet + systemd |
 
 ---
 
 ## Setup Rápido
+
+> **Para arrancar todo de un solo click**: en Windows usá `start_all.bat`, en macOS/Linux `./start_all.sh`. Levanta backend + panel + abre el navegador, con verificación de dependencias y seed automático.
 
 ### 1. Backend
 
@@ -242,20 +248,107 @@ El endpoint público `GET /contributions/stats` expone agregados (top patrones, 
 
 ---
 
+## Despliegue en producción
+
+El sistema está corriendo 24/7 en un droplet DigitalOcean (Ubuntu 24.04, 1 vCPU / 1 GB RAM):
+
+```
+IP pública:   159.223.187.6
+Panel:        http://159.223.187.6/
+Swagger:      http://159.223.187.6/docs
+Bot WhatsApp: +52 844 538 7404
+```
+
+DNS preparado para `nahualshield.com` y `nahualsec.com` (subdominios `panel.` / `api.` / `www.`). HTTPS automático vía `certbot --nginx` cuando el DNS apunte al droplet.
+
+**Servicios systemd:**
+- `nahual-backend.service` — FastAPI + uvicorn :8000
+- `nahual-bot.service` — Node.js + Baileys (WhatsApp)
+- `nginx` — reverse proxy + panel estático + rate limit + security headers
+
+**Hardening en producción:**
+- API key auth opt-in vía `NAHUAL_API_KEY` en endpoints sensibles (`/alerts*`, `/sessions/*`, `/precision/*`, `/risk-history/*`)
+- Rate limiting per-IP en Nginx: `/analyze` 20/min, `/alert` 15/min, `/transcribe+ocr` 8/min, general 120/min
+- Rate limit per-JID en bot (5 alertas / 60s)
+- Security headers globales: `X-Frame-Options SAMEORIGIN`, `X-Content-Type-Options nosniff`, `Referrer-Policy strict-origin-when-cross-origin`, `Permissions-Policy locks geolocation/mic/camera`
+- SQLite con WAL + retry on lock (5 intentos backoff exponencial)
+- Webhook retry (3 intentos en 5xx/network, 4xx no-retry)
+- Baileys reconnect con backoff exponencial + jitter + cleanup de listeners
+- Bot SIGTERM/SIGINT handler para graceful shutdown
+- Session TTL eviction (drop entries idle > 7d)
+
+**One-click launchers (dev local):**
+- `start_all.bat` (Windows) — banner, dependency checks, multi-window
+- `start_all.sh` (macOS/Linux) — equivalente
+
+---
+
+## Endpoints de observabilidad (`/admin/*`)
+
+Públicos, read-only, PII-free:
+
+```bash
+GET /admin/version             # commit SHA + branch + env + python
+GET /admin/dataset-info        # 768 patrones · histograma de pesos · 14 emojis
+GET /admin/metrics             # request counters por endpoint + uptime
+GET /admin/healthcheck-deep    # ping live a DB + Anthropic + Groq
+GET /alerts.csv (PROTECTED)    # export Excel UTF-8-BOM
+```
+
+```bash
+$ curl http://159.223.187.6/admin/dataset-info
+{
+  "total_patterns": 768,
+  "high_confidence_patterns": 433,
+  "phases": {
+    "phase1": {"name": "Captación",   "patterns": 260, "high_0.8_1.0": 117},
+    "phase2": {"name": "Enganche",    "patterns": 172, "high_0.8_1.0":  59},
+    "phase3": {"name": "Coerción",    "patterns": 194, "high_0.8_1.0": 171},
+    "phase4": {"name": "Explotación", "patterns": 142, "high_0.8_1.0":  86}
+  }
+}
+```
+
+---
+
+## Comandos universales del bot
+
+Disponibles en cualquier estado del FSM (slash opcional):
+
+| Comando | Qué hace |
+|---|---|
+| `menu` / `comandos` | Lista comandos disponibles |
+| `ayuda` / `help` | Cómo funciona Nahual |
+| `privacidad` | Qué guarda y qué no |
+| `estado` / `status` | En qué paso del flujo estás |
+| `reset` / `reiniciar` | Empezar la conversación de cero |
+| `reporte` / `pdf` | Descargar PDF del último análisis |
+
+**Cierres conversacionales** (sin trigger de `/analyze`):
+`gracias`, `ok`, `bye`, `listo`, `chido`, `sale`, `fin`, `ya`, `cuídate`, `no`, `no gracias`, `estoy bien`, `nada más`, `ya no`...
+
+**Distress detection** (empatía primero, análisis después):
+`tengo miedo`, `estoy asustado/a`, `necesito ayuda`, `no sé qué hacer`, `me quiero morir` → respuesta empática + Línea de la Vida (800-911-2000) + 088, sin interrogar.
+
+**Soporte conversacional**:
+`quiero platicar`, `me puedes escuchar` → reconoce ser bot, ofrece contacto humano + opción de analizar.
+
+---
+
 ## Limitaciones conocidas
 
-Nahual es un MVP de hackathon construido en 48 horas. Lo enviamos con una lectura honesta de lo que **no** hace todavía:
+Nahual es un MVP de hackathon. Lo enviamos con una lectura honesta de lo que **no** hace todavía:
 
 1. **No reemplaza a un profesional.** Nahual orienta, no diagnostica. PELIGRO siempre debe escalarse a Policía Cibernética 088, SIPINNA o un adulto de confianza. El bot lo dice explícitamente en cada mensaje crítico.
-2. **Cobertura idiomática limitada.** El dataset (563 patrones) está calibrado para español mexicano informal. Variantes regionales (norteño, sureste) y otros países hispanohablantes tienen menor recall hasta enriquecer el dataset.
-3. **Texto > multimedia.** STT (Whisper-large-v3) y OCR (Claude Vision) están integrados pero requieren confirmación explícita del usuario antes del análisis. El tunado fino para audios cortos con ruido o capturas borrosas queda fuera de alcance.
-4. **Sin detección de deepfakes ni perfiles falsos.** Solo analizamos texto recibido. Verificación de identidad del emisor (cuentas falsas, suplantación) no es parte del pipeline.
-5. **Falsos positivos posibles.** El score heurístico se basa en patrones léxicos. Mensajes irónicos, citas literarias, lirismo narcocultural sin intención real pueden disparar ATENCIÓN. Por eso el panel permite marcar "descartar" y eso retro-alimenta al auto-tuner.
-6. **Falsos negativos posibles.** Lenguaje codificado nuevo (jerga emergente, emojis no catalogados) puede pasar inadvertido hasta que un operador lo reporte vía `/feedback`. La capa LLM mitiga esto en zona gris (0.3–0.6) pero no es infalible.
-7. **Privacidad first, telemetría limitada.** No almacenamos mensajes originales, solo SHA-256 + resumen anonimizado. Esto significa que NO podemos auditar retroactivamente el texto que disparó una alerta — solo los pattern_ids que matchearon.
-8. **Demo local, no producción.** El backend corre en SQLite (un archivo) y `uvicorn` sin reverse proxy. Para piloto real haría falta Postgres, autenticación OAuth (no API key estática), rate limiting por IP, y observabilidad (Sentry/Datadog).
+2. **Cobertura idiomática limitada.** El dataset (768 patrones, 433 de alta confianza) está calibrado para español mexicano informal. Variantes regionales y otros países hispanohablantes tienen menor recall hasta enriquecer el dataset.
+3. **Texto > multimedia.** STT (Whisper-large-v3 vía Groq) y OCR (Claude Sonnet 4.5 Vision) están integrados con confirmación explícita del usuario. Audios muy ruidosos o capturas borrosas pueden fallar.
+4. **Sin detección de deepfakes ni perfiles falsos.** Solo analizamos texto recibido. Verificación de identidad del emisor no es parte del pipeline.
+5. **Falsos positivos posibles.** El panel permite marcar "descartar" y eso retro-alimenta al auto-tuner. La extensión usa whitelist + scope al chat container para evitar matches en UI/catálogo.
+6. **Falsos negativos posibles.** Lenguaje codificado nuevo puede pasar inadvertido hasta que un operador lo reporte vía `/feedback`. La capa LLM mitiga esto en zona gris (0.3–0.6).
+7. **Privacy-first, telemetría limitada.** No almacenamos mensajes originales, solo SHA-256 + resumen anonimizado. NO podemos auditar retroactivamente el texto que disparó una alerta — solo los pattern_ids que matchearon.
+8. **HTTPS pendiente.** Producción usa HTTP por IP mientras se configura DNS. HSTS preparado en Nginx, listo para `certbot --nginx` cuando los subdominios apunten al droplet.
 
-Si encuentras un caso donde Nahual falla, abre un issue con el patrón redactado (sin PII) y lo agregamos al backlog del dataset.
+Si encuentras un caso donde Nahual falla, abre un issue con el texto literal (sin PII de la víctima) y lo agregamos al dataset.
 
 ---
 
