@@ -176,16 +176,34 @@ function showOverlay(phase, snippet) {
   bumpHits();
 }
 
+// Tags whose textContent is never user-visible chat — we MUST skip them or
+// the scanner ends up reading Instagram's React/GraphQL JSON payloads,
+// stylesheets, etc. and showing those as "the snippet" in the overlay.
+// (Caught live during testing on instagram.com/direct.)
+const SKIP_TAGS = new Set([
+  'SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE',
+  'META', 'LINK', 'TITLE', 'HEAD',
+  'IFRAME', 'OBJECT', 'EMBED',
+  'CODE', 'PRE', // dev tools / docs / paste-inspect surfaces
+]);
+
 function scanNode(node) {
   if (!node || SEEN_NODES.has(node)) return;
   if (node.nodeType === Node.TEXT_NODE) {
     SEEN_NODES.add(node);
+    // Climb to the parent element to check the host tag — text nodes inside
+    // <script> tags will silently match patterns from JSON payloads otherwise.
+    const parent = node.parentNode;
+    if (parent && parent.nodeType === Node.ELEMENT_NODE && SKIP_TAGS.has(parent.tagName)) {
+      return;
+    }
     const text = (node.textContent || '').trim();
-    if (text.length < 8) return;
+    if (text.length < 8 || text.length > 2000) return; // skip empty + huge JSON blobs
     const phase = flagText(text);
     if (phase && !alreadySeenRecently(text)) showOverlay(phase, text);
   } else if (node.nodeType === Node.ELEMENT_NODE) {
     SEEN_NODES.add(node);
+    if (SKIP_TAGS.has(node.tagName)) return; // bail before recursing into <script>
     for (const child of node.childNodes) scanNode(child);
   }
 }
