@@ -129,11 +129,27 @@ function alreadySeenRecently(text) {
   return false;
 }
 
-function bumpHits() {
+function bumpHits(phase, snippet) {
   if (!chrome?.storage?.local) return;
   chrome.storage.local.get(['hits'], ({ hits }) => {
     const n = (Number(hits) || 0) + 1;
-    chrome.storage.local.set({ hits: n, lastHitAt: Date.now() });
+    const lastHit = {
+      phase,
+      snippet: String(snippet || '').slice(0, 200),
+      at: Date.now(),
+      host: location.hostname,
+    };
+    chrome.storage.local.set({ hits: n, lastHit, lastHitAt: lastHit.at });
+  });
+}
+
+// Pause flag: when popup toggles `paused`, content scripts stop showing
+// overlays. We cache the value in memory + listen for changes.
+let PAUSED = false;
+if (chrome?.storage?.local) {
+  chrome.storage.local.get(['paused'], ({ paused }) => { PAUSED = !!paused; });
+  chrome.storage.onChanged?.addListener((c, area) => {
+    if (area === 'local' && 'paused' in c) PAUSED = !!c.paused.newValue;
   });
 }
 
@@ -144,7 +160,7 @@ function bumpHits() {
 const BOT_PHONE = '5218445387404';
 
 function showOverlay(phase, snippet) {
-  if (overlayOpen) return;
+  if (overlayOpen || PAUSED) return;
   overlayOpen = true;
   const overlay = document.createElement('div');
   overlay.id = 'nahual-overlay';
@@ -169,11 +185,20 @@ function showOverlay(phase, snippet) {
     </div>
   `;
   document.body.appendChild(overlay);
-  document.getElementById('nahual-close').addEventListener('click', () => {
+  const closeOverlay = () => {
+    if (!overlay.isConnected) return;
     overlay.remove();
     overlayOpen = false;
-  });
-  bumpHits();
+    document.removeEventListener('keydown', onKeydown);
+  };
+  const onKeydown = (e) => { if (e.key === 'Escape') closeOverlay(); };
+  document.getElementById('nahual-close').addEventListener('click', closeOverlay);
+  document.addEventListener('keydown', onKeydown);
+  // Auto-dismiss after 30s so the overlay never sticks forever if the user
+  // walks away. Still less aggressive than a typical toast (8s) because the
+  // user might be reading the snippet carefully.
+  setTimeout(closeOverlay, 30000);
+  bumpHits(phase, snippet);
 }
 
 // Tags whose textContent is never user-visible chat — we MUST skip them or

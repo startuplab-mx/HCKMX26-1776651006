@@ -4,25 +4,57 @@
     <meta charset="utf-8" />
     <title>Nahual Shield</title>
     <style>
-      body { width: 300px; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #2F353A; color: #fff; }
-      h1 { font-size: 16px; margin: 0; padding: 14px 16px; background: #C16A4C; }
-      .body { padding: 14px 16px; font-size: 13px; line-height: 1.4; }
-      .stat { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+      body { width: 320px; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #2F353A; color: #fff; }
+      h1 { font-size: 16px; margin: 0; padding: 14px 16px; background: #C16A4C; display: flex; justify-content: space-between; align-items: center; }
+      h1 .ver { font-size: 11px; opacity: 0.85; font-weight: 400; }
+      .body { padding: 14px 16px; font-size: 13px; line-height: 1.45; }
+      .stat { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
       .stat:last-child { border: 0; }
-      .legend { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 8px; }
+      .legend { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 10px; line-height: 1.4; }
+      .last { background: rgba(0,0,0,0.3); border-left: 3px solid #C16A4C; padding: 8px 10px; border-radius: 4px; margin-top: 10px; font-size: 12px; }
+      .last .phase { color: #C16A4C; font-weight: 700; text-transform: uppercase; font-size: 11px; }
+      .last .when  { color: rgba(255,255,255,0.5); font-size: 10px; margin-top: 2px; }
+      .last .snip  { color: #fff; margin-top: 4px; word-break: break-word; opacity: 0.9; }
+      .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0 4px; }
+      .toggle { width: 36px; height: 20px; border-radius: 999px; background: rgba(255,255,255,0.18); position: relative; cursor: pointer; transition: background .2s; }
+      .toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: left .2s; }
+      .toggle.on { background: #C16A4C; }
+      .toggle.on::after { left: 18px; }
+      .actions { display: flex; gap: 8px; margin-top: 12px; }
+      .btn { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; font-size: 12px; }
+      .btn:hover { background: rgba(255,255,255,0.12); }
+      .btn.primary { background: #C16A4C; border-color: #C16A4C; }
+      .btn.primary:hover { background: #a85a3f; }
       .footer { font-size: 11px; color: #C16A4C; padding: 10px 16px; background: #1f2326; text-align: center; }
       .footer strong { color: #fff; }
     </style>
   </head>
   <body>
-    <h1>🛡️ Nahual Shield</h1>
+    <h1>🛡️ Nahual Shield <span class="ver">v1.2</span></h1>
     <div class="body">
       <div class="stat"><span>Estado</span><strong id="status">Activo</strong></div>
       <div class="stat"><span>Detecciones esta sesión</span><strong id="hits">0</strong></div>
-      <div class="stat"><span>Plataformas</span><strong>WA · IG · Discord</strong></div>
+      <div class="stat"><span>Plataformas</span><strong>WA · IG · Discord · Roblox</strong></div>
+
+      <div id="last-block" class="last" style="display:none">
+        <div class="phase" id="last-phase">—</div>
+        <div class="when"  id="last-when">—</div>
+        <div class="snip"  id="last-snip">—</div>
+      </div>
+
+      <div class="toggle-row">
+        <span>Pausar detección</span>
+        <div id="toggle" class="toggle" role="switch" aria-checked="false" tabindex="0"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="open-bot">💬 Abrir bot</button>
+        <button class="btn" id="reset">🗑 Resetear contador</button>
+      </div>
+
       <p class="legend">
-        Detección local (zero-trust). Si aparece una alerta sospechosa,
-        repórtala al bot Nahual de WhatsApp para análisis completo.
+        Detección local (zero-trust). El navegador NO envía mensajes al backend.
+        Si aparece una alerta, repórtala al bot Nahual o llama al 088.
       </p>
     </div>
     <div class="footer">Policía Cibernética: <strong>088</strong> · SIPINNA</div>

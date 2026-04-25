@@ -44,22 +44,67 @@
       .survey-num { font-size: 26px; font-weight: 900; color: #C16A4C; line-height: 1; font-variant-numeric: tabular-nums; }
       .survey-label { font-size: 11px; color: rgba(255,255,255,0.78); margin-top: 4px; line-height: 1.25; }
       .survey-source { font-size: 10px; color: rgba(255,255,255,0.5); font-style: italic; margin-left: auto; max-width: 240px; text-align: right; }
+
+      /* Live test box (judge-facing): paste a phrase, see verdict instantly */
+      .test-box { background: rgba(193,106,76,0.06); border: 1px dashed rgba(193,106,76,0.45); border-radius: 12px; padding: 16px 22px; }
+      .test-box textarea { background: rgba(0,0,0,0.4); color: #fff; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 10px; width: 100%; font-family: inherit; font-size: 14px; resize: vertical; min-height: 70px; }
+      .test-box textarea:focus { outline: none; border-color: #C16A4C; }
+      .test-result { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 8px; min-height: 60px; white-space: pre-wrap; line-height: 1.55; }
+      .test-result.SEGURO    { border-left: 4px solid #22C55E; }
+      .test-result.ATENCION  { border-left: 4px solid #EAB308; }
+      .test-result.PELIGRO   { border-left: 4px solid #EF4444; }
+      .test-result.error     { border-left: 4px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.6); }
+
+      /* PELIGRO toast: bottom-right slide-in, 6s auto-dismiss */
+      #toast-stack { position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; pointer-events: none; }
+      .toast { background: #2F353A; border: 1px solid #EF4444; border-left: 6px solid #EF4444; border-radius: 8px; padding: 12px 18px; min-width: 280px; max-width: 380px; box-shadow: 0 8px 30px rgba(0,0,0,0.45); animation: nahual-toast-in .3s ease-out; pointer-events: auto; cursor: pointer; }
+      .toast .toast-title { color: #EF4444; font-weight: 700; font-size: 13px; }
+      .toast .toast-body  { color: #fff; font-size: 12px; margin-top: 4px; }
+      @keyframes nahual-toast-in { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+      /* Connection state pill */
+      .conn-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+      .conn-pill.ok        { background: rgba(34,197,94,0.18); color: #22C55E; }
+      .conn-pill.degraded  { background: rgba(234,179,8,0.18); color: #EAB308; }
+      .conn-pill.down      { background: rgba(239,68,68,0.18); color: #EF4444; }
+
+      /* Pause control */
+      .pause-toggle { font-size: 11px; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); background: transparent; color: #fff; cursor: pointer; }
+      .pause-toggle.paused { background: #C16A4C; border-color: #C16A4C; }
+
+      /* Mobile overrides — single column under 640px */
+      @media (max-width: 640px) {
+        body { font-size: 14px; }
+        header { padding: 14px 16px !important; flex-direction: column; align-items: flex-start; gap: 10px; }
+        main { padding: 14px !important; }
+        .survey-banner { gap: 12px; padding: 12px; }
+        .survey-num { font-size: 22px; }
+        .survey-source { display: none; }
+        table th, table td { padding: 6px 8px !important; font-size: 12px; }
+      }
     </style>
   </head>
   <body class="min-h-screen">
-    <header class="px-8 py-6 border-b border-white/10 flex items-center justify-between">
+    <header class="px-8 py-6 border-b border-white/10 flex items-center justify-between flex-wrap gap-4">
       <div>
         <h1 class="text-2xl font-bold">🛡️ Nahual <span class="accent">/ Panel</span></h1>
-        <p class="text-sm text-white/60">Detección de reclutamiento criminal digital · auto-refresh cada 5 s</p>
+        <p class="text-sm text-white/60">Detección de reclutamiento criminal digital · <span id="refresh-label">auto-refresh cada 5 s</span></p>
       </div>
-      <div class="text-right flex items-center gap-4">
+      <div class="flex items-center gap-4 flex-wrap">
         <div class="live-indicator"><span class="live-dot"></span><span>LIVE · escuchando</span></div>
+        <button id="pause-toggle" class="pause-toggle" title="Pausar / reanudar el auto-refresh">⏸ Pausar</button>
+        <div class="text-xs text-white/50 hidden md:block" id="dataset-stats" title="Patrones cargados en el clasificador">
+          <span class="accent font-semibold">—</span> patrones · <span class="accent font-semibold">—</span> alta-conf
+        </div>
         <div>
           <div class="text-xs text-white/50">Backend</div>
-          <div id="health" class="text-sm font-semibold">…</div>
+          <div id="health" class="conn-pill ok">…</div>
         </div>
       </div>
     </header>
+
+    <!-- PELIGRO toast stack: each new high-risk alert pushes one in. -->
+    <div id="toast-stack" aria-live="polite"></div>
 
     <main class="p-8 space-y-8">
       <section class="survey-banner" aria-label="Validación de mercado">
@@ -76,6 +121,32 @@
           <span class="survey-label">prioriza la privacidad como criterio principal</span>
         </div>
         <div class="survey-source">Encuesta n=129 jóvenes mexicanos · abril 2026 · validación pre-MVP</div>
+      </section>
+
+      <!-- Live test box: paste any phrase, see verdict instantly. Calls
+           POST /analyze (public endpoint, no DB write). Designed for the
+           hackathon pitch — judges can type and watch the score change. -->
+      <section class="test-box" aria-label="Probar el clasificador en vivo">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <h3 class="text-sm font-semibold">🧪 Probar el clasificador en vivo</h3>
+          <span class="text-xs text-white/45">No persiste al panel · sólo /analyze</span>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3">
+          <div>
+            <textarea id="test-input" placeholder='Pegá un mensaje sospechoso. Ejemplos:
+• "Te pago $15,000 a la semana de halcón"
+• "Me dijeron que si no respondo me van a matar"
+• "Pásate a Telegram y no le digas a nadie"'></textarea>
+            <div class="flex gap-2 mt-2 flex-wrap">
+              <button id="test-run" class="btn-sm primary">🔍 Analizar</button>
+              <button class="btn-sm" data-fill="Te pago 15 mil a la semana, ven al rancho">Ej. Captación</button>
+              <button class="btn-sm" data-fill="Pásate a Telegram y no le digas a nadie">Ej. Enganche</button>
+              <button class="btn-sm" data-fill="Me dijeron que si no respondo me van a matar">Ej. Coerción</button>
+              <button class="btn-sm" data-fill="Tienes que levantar a alguien hoy, ve armado">Ej. Explotación</button>
+            </div>
+          </div>
+          <div id="test-result" class="test-result">Listo para analizar. Pegá un mensaje y dale "Analizar".</div>
+        </div>
       </section>
 
       <section class="grid grid-cols-1 md:grid-cols-3 gap-4">

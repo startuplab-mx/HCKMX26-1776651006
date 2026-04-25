@@ -209,4 +209,68 @@ export const MESSAGES = {
     'Tuve un problema al analizar tu mensaje. Inténtalo de nuevo en un momento. Si urge: 088 (Policía Cibernética).',
 
   despedida: 'Gracias por confiar en Nahual. Cuídate. 🛡️',
+
+  // ---------- Universal commands (always available) ----------
+  // The flow controller intercepts these in any state so the user
+  // always has an escape hatch.
+
+  menu: [
+    '🛡️ *Comandos disponibles*',
+    '',
+    'En cualquier momento puedes escribir:',
+    '',
+    '• *menu* — ves este menú',
+    '• *ayuda* — qué hago y cómo funciono',
+    '• *privacidad* — qué guardo y qué no',
+    '• *estado* — en qué paso del flujo estás',
+    '• *reset* — empezar la conversación de cero',
+    '• *reporte* — descargar PDF del último análisis',
+    '',
+    'O simplemente mándame un mensaje sospechoso (texto, audio o captura) y lo analizo.',
+  ].join('\n'),
+
+  ayuda: [
+    '🛡️ *Cómo funciona Nahual*',
+    '',
+    'Soy un bot que analiza mensajes para detectar reclutamiento criminal o sextorsión dirigida a jóvenes en México.',
+    '',
+    '*Cuatro fases que detecto:*',
+    '1. *Captación* — ofertas de trabajo sospechosas, narco-cultura',
+    '2. *Enganche* — aislamiento, secrecía, cambio de canal',
+    '3. *Coerción* — amenazas, presión, "ya sabes demasiado"',
+    '4. *Explotación* — sextorsión, instrucciones operativas',
+    '',
+    'Si detecto *PELIGRO*, te ayudo a avisar a un adulto de confianza y te genero un reporte en PDF para la Policía Cibernética (088).',
+    '',
+    '*No reemplazo a un profesional.* En urgencia llama al *088* o al *911*.',
+  ].join('\n'),
+
+  privacidad: [
+    '🔒 *Tu privacidad — qué guardo y qué no*',
+    '',
+    '*Lo que NUNCA guardo:*',
+    '• Tu nombre, número, ubicación o dirección',
+    '• El contenido original del mensaje que me mandas',
+    '• Tus audios o imágenes (se descartan tras el análisis)',
+    '',
+    '*Lo que sí guardo (anónimo):*',
+    '• Hash SHA-256 del texto (irreversible)',
+    '• Resumen anónimo: nivel de riesgo, fase, plataforma',
+    '• Si contribuyes voluntariamente: estado/región (genérico)',
+    '',
+    '*Marco legal:* Cumplimos Art. 16 CPEUM (no intercepto comunicaciones), LFPDPPP (datos personales) y LGDNNA (derechos de menores).',
+    '',
+    'Para borrar tus datos de sesión escribe *reset*.',
+  ].join('\n'),
+
+  estadoLabels: {
+    inicio: 'esperando un mensaje para analizar',
+    recibir_msg: 'esperando que me pegues el texto sospechoso',
+    analizando: 'analizando…',
+    result: 'análisis listo (puedes pedir reporte o seguir)',
+    confirm_transcription: 'confirmando texto extraído del audio/imagen',
+    notify: 'esperando el WhatsApp del adulto de confianza',
+    ask_contribute: 'preguntándote si quieres contribuir anónimamente',
+    ask_region: 'preguntándote tu estado (opcional)',
+  },
 };

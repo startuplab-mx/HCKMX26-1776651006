@@ -458,13 +458,52 @@ function renderRiskTimeline(alerts) {
     .join('');
 }
 
+// Track last seen PELIGRO alert id so the toast only fires for genuinely
+// new high-risk events (not for the 15 we already had on first load).
+let LAST_PELIGRO_ID = null;
+let CONSEC_FAILS = 0;
+let PAUSED = false;
+let TIMER_HANDLE = null;
+
+function setHealthPill(state, label) {
+  const el = document.getElementById('health');
+  if (!el) return;
+  el.textContent = label;
+  el.classList.remove('ok', 'degraded', 'down');
+  el.classList.add(state);
+}
+
+function showPeligroToast(alert) {
+  const stack = document.getElementById('toast-stack');
+  if (!stack) return;
+  const folio = `NAH-2026-${String(alert.id).padStart(4, '0')}`;
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `
+    <div class="toast-title">🚨 PELIGRO · ${esc(folio)}</div>
+    <div class="toast-body">${esc(alert.platform || '?')} · score ${(Number(alert.risk_score) * 100).toFixed(0)}% · fase ${esc(alert.phase_detected || 'ninguna')}${alert.override_triggered ? ' · OVERRIDE' : ''}</div>
+  `;
+  // Audio cue (optional, may be blocked by browser autoplay policy).
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = 880; g.gain.value = 0.04;
+    o.start(); o.stop(ctx.currentTime + 0.18);
+  } catch {}
+  t.addEventListener('click', () => t.remove());
+  stack.appendChild(t);
+  setTimeout(() => t.remove(), 8000);
+}
+
 async function refresh() {
   try {
     const health = await jget('/health');
-    setText(
-      'health',
+    setHealthPill(
+      'ok',
       `OK · LLM ${health.llm_enabled ? 'on' : 'off'} · STT ${health.groq_enabled ? 'on' : 'off'}`,
     );
+    CONSEC_FAILS = 0;
     const stats = await jget('/stats');
     setText('stat-total', stats.total_alerts);
     setText('stat-peligro', stats.by_level.PELIGRO || 0);
@@ -478,6 +517,22 @@ async function refresh() {
     // Mini risk-timeline (always shows the freshest 30 alerts unfiltered)
     const allAlerts = state.filterStatus ? await jget('/alerts?limit=30') : alerts;
     renderRiskTimeline(allAlerts);
+
+    // Toast for any newly-arrived PELIGRO above the last seen id.
+    const peligros = allAlerts.filter((a) => a.risk_level === 'PELIGRO');
+    if (peligros.length) {
+      const newest = peligros[0];
+      if (LAST_PELIGRO_ID !== null && newest.id > LAST_PELIGRO_ID) {
+        showPeligroToast(newest);
+      }
+      // Initialise high-water mark on first successful refresh — without
+      // this, every page load would fire a toast for the most recent
+      // historical PELIGRO, which is annoying.
+      if (LAST_PELIGRO_ID === null || newest.id > LAST_PELIGRO_ID) {
+        LAST_PELIGRO_ID = newest.id;
+      }
+    }
+
     // Refresh open history in place.
     await Promise.all(
       [...state.expanded].map(async (id) => {
@@ -486,15 +541,122 @@ async function refresh() {
     );
     document.getElementById('alerts-body').innerHTML = alerts.map(row).join('');
   } catch (err) {
-    setText('health', 'desconectado');
+    CONSEC_FAILS += 1;
+    if (CONSEC_FAILS === 1) setHealthPill('degraded', 'reconectando…');
+    else setHealthPill('down', 'desconectado');
     console.error(err);
   }
 }
 
+async function refreshDatasetStats() {
+  try {
+    const info = await jget('/admin/dataset-info');
+    const el = document.getElementById('dataset-stats');
+    if (el) {
+      el.innerHTML =
+        `<span class="accent font-semibold">${info.total_patterns}</span> patrones · ` +
+        `<span class="accent font-semibold">${info.high_confidence_patterns}</span> alta-conf`;
+      el.title =
+        Object.entries(info.phases)
+          .map(([k, v]) => `${v.name}: ${v.patterns}`)
+          .join('  ·  ') + `  ·  override≥${info.override_threshold}`;
+    }
+  } catch {
+    // Non-critical; the panel still works without dataset stats.
+  }
+}
+
+// ---------------- Manual analyze (test box) ----------------
+
+async function runTestAnalysis() {
+  const ta = document.getElementById('test-input');
+  const out = document.getElementById('test-result');
+  if (!ta || !out) return;
+  const text = ta.value.trim();
+  if (!text) {
+    out.className = 'test-result error';
+    out.textContent = 'Escribe algo en el textarea primero.';
+    return;
+  }
+  out.className = 'test-result';
+  out.textContent = 'Analizando…';
+  try {
+    const r = await fetch(`${API}/analyze`, {
+      method: 'POST',
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ text, use_llm: false }),
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const a = await r.json();
+    out.className = `test-result ${a.risk_level}`;
+    const pct = (Number(a.risk_score) * 100).toFixed(0);
+    const phases = a.phase_scores
+      ? Object.entries(a.phase_scores)
+          .map(([k, v]) => `${k.replace('phase', 'F')}=${(v * 100).toFixed(0)}%`)
+          .join(' · ')
+      : '';
+    const ids = (a.pattern_ids || []).slice(0, 6).join(', ') || '—';
+    const cats = (a.categories || []).join(', ') || '—';
+    const why = (a.why || []).slice(0, 4).map((w) => `   • ${w}`).join('\n') || '   —';
+    out.textContent =
+      `${a.risk_level}   ${pct}%   ${a.override_triggered ? 'OVERRIDE' : ''}\n` +
+      `Fase dominante: ${a.phase_detected || '—'}\n` +
+      `Phases:  ${phases}\n` +
+      `Categorías: ${cats}\n` +
+      `Pattern IDs: ${ids}\n` +
+      `Por qué:\n${why}`;
+  } catch (err) {
+    out.className = 'test-result error';
+    out.textContent = `Error: ${err.message}`;
+  }
+}
+
+function bindTestBox() {
+  const btn = document.getElementById('test-run');
+  const ta = document.getElementById('test-input');
+  if (btn) btn.addEventListener('click', runTestAnalysis);
+  if (ta) {
+    ta.addEventListener('keydown', (e) => {
+      // Cmd/Ctrl + Enter sends the analysis.
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault();
+        runTestAnalysis();
+      }
+    });
+  }
+  document.querySelectorAll('[data-fill]').forEach((b) => {
+    b.addEventListener('click', () => {
+      const t = document.getElementById('test-input');
+      if (t) {
+        t.value = b.getAttribute('data-fill') || '';
+        runTestAnalysis();
+      }
+    });
+  });
+}
+
+// ---------------- Pause toggle ----------------
+
+function bindPauseToggle() {
+  const btn = document.getElementById('pause-toggle');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    PAUSED = !PAUSED;
+    btn.textContent = PAUSED ? '▶ Reanudar' : '⏸ Pausar';
+    btn.classList.toggle('paused', PAUSED);
+    const lbl = document.getElementById('refresh-label');
+    if (lbl) lbl.textContent = PAUSED ? 'pausado · click ▶ para reanudar' : 'auto-refresh cada 5 s';
+  });
+}
+
 async function tick() {
+  if (PAUSED) return;
   await Promise.all([refresh(), refreshChart(), refreshContributions()]);
 }
 
 bindActions();
+bindTestBox();
+bindPauseToggle();
+refreshDatasetStats(); // one-shot; dataset is immutable at runtime
 tick();
-setInterval(tick, REFRESH_MS);
+TIMER_HANDLE = setInterval(tick, REFRESH_MS);

@@ -17,6 +17,7 @@ import {
   setStep,
   setSessionData,
   getSessionData,
+  resetSession,
 } from '../utils/sessionManager.js';
 import {
   registerAlert,
@@ -34,11 +35,19 @@ const PHASE_LABEL = {
 };
 
 const GREETING_RE =
-  /^(hola|hey|hi|buenas|qué onda|que onda|buenos dias|buenas tardes|buenas noches|holi|wenas|saludos|menu)[\s!.,?¿¡]*$/i;
-const REPORT_RE = /^\s*(reporte|report|pdf|descargar)\s*$/i;
+  /^(hola|hey|hi|buenas|qué onda|que onda|buenos dias|buenas tardes|buenas noches|holi|wenas|saludos)[\s!.,?¿¡]*$/i;
+const REPORT_RE = /^\s*\/?\s*(reporte|report|pdf|descargar)\s*$/i;
 const YES_RE = /^\s*(s[ií]|si|sí|yes|y|confirmar|confirmo|ok|dale|adelante)\s*[!.]?\s*$/i;
 const NO_RE = /^\s*(no|nop|nope|nah|cancelar|nel)\s*[!.]?\s*$/i;
 const SKIP_RE = /^\s*(skip|saltar|omitir|n\/?a|prefiero no|paso)\s*$/i;
+
+// Universal slash-style commands. Match in ANY state — they short-circuit
+// before the FSM dispatch so the user always has an escape hatch.
+const MENU_RE   = /^\s*\/?\s*(menu|men[uú]|comandos|opciones)\s*$/i;
+const HELP_RE   = /^\s*\/?\s*(ayuda|help|info|que\s+haces|qu[eé]\s+haces|c[oó]mo\s+funciona)\s*$/i;
+const RESET_RE  = /^\s*\/?\s*(reset|reiniciar|empezar(\s+de)?\s*nuevo|cancelar\s*todo|salir)\s*$/i;
+const STATUS_RE = /^\s*\/?\s*(estado|status|d(o|ó)nde\s+voy)\s*$/i;
+const PRIVACY_RE = /^\s*\/?\s*(privacidad|datos|qu[eé]\s+guardas|borra\s*mis\s*datos)\s*$/i;
 // Explicit denial of the alert verdict — distinct from "no quiero contribuir".
 // When the user says "no es" / "me equivoqué" / "falso" while we're waiting
 // for the guardian phone, treat it as an alert-level deny and feed the
@@ -182,6 +191,36 @@ export async function advance(sock, jid, text) {
   await ensureLoaded(jid);
   const session = getSession(jid);
 
+  // ---------- Universal commands (short-circuit before FSM dispatch) ----------
+  // These let the user always escape the current state without re-greeting.
+
+  if (MENU_RE.test(text)) {
+    await sock.sendMessage(jid, { text: MESSAGES.menu });
+    return;
+  }
+  if (HELP_RE.test(text)) {
+    await sock.sendMessage(jid, { text: MESSAGES.ayuda });
+    return;
+  }
+  if (PRIVACY_RE.test(text)) {
+    await sock.sendMessage(jid, { text: MESSAGES.privacidad });
+    return;
+  }
+  if (STATUS_RE.test(text)) {
+    const stepLabel = MESSAGES.estadoLabels?.[session.current_step] || session.current_step;
+    await sock.sendMessage(jid, {
+      text: `📍 Estado actual: *${stepLabel}*\n\nEscribe "menu" para ver tus opciones, o "reset" para empezar de cero.`,
+    });
+    return;
+  }
+  if (RESET_RE.test(text)) {
+    resetSession(jid);
+    await sock.sendMessage(jid, {
+      text: '🔄 Reinicié la conversación. Mándame el mensaje sospechoso cuando quieras.',
+    });
+    return;
+  }
+
   // "reporte" works in any post-analysis state.
   if (
     REPORT_RE.test(text) &&
@@ -193,10 +232,19 @@ export async function advance(sock, jid, text) {
 
   switch (session.current_step) {
     case 'inicio': {
-      await sock.sendMessage(jid, { text: MESSAGES.bienvenida });
+      // Only show the welcome banner if the user actually greeted ("hola",
+      // "buenas", "menu"…) or if this is their first interaction (no
+      // session.lastAnalysis yet). Otherwise the bot becomes annoyingly
+      // chatty — it greeted on every reset back to 'inicio', which Marco
+      // surfaced during field testing on Apr 25.
       if (looksLikeGreeting(text)) {
+        await sock.sendMessage(jid, { text: MESSAGES.bienvenida });
         setStep(jid, 'recibir_msg');
         return;
+      }
+      const seenAlready = !!getSessionData(jid, 'lastAlertId');
+      if (!seenAlready) {
+        await sock.sendMessage(jid, { text: MESSAGES.bienvenida });
       }
       await analyzeAndReply(sock, jid, text);
       return;

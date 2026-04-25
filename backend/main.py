@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import logging
 import os
+import sys
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -315,6 +317,193 @@ def health():
         "llm_enabled": app.state.pipeline.llm.enabled,
         "groq_enabled": bool(os.getenv("GROQ_API_KEY")),
         "auth_enforced": bool(os.getenv("NAHUAL_API_KEY", "").strip()),
+    }
+
+
+# ---------------- /admin observability (public — read-only) ----------------
+# These endpoints surface system metadata that judges and ops want at a
+# glance: dataset version, pattern counts, classifier weights snapshot, and
+# basic runtime metrics. PII-free, no DB rows leaked.
+
+_BUILD_INFO_CACHE: dict | None = None
+
+
+def _read_build_info() -> dict:
+    """Read git SHA + branch + last-commit timestamp without shelling out.
+
+    Walks the .git directory directly so it works in containers without
+    the git binary. Cached after first read because git refs do not
+    change at runtime.
+    """
+    global _BUILD_INFO_CACHE
+    if _BUILD_INFO_CACHE is not None:
+        return _BUILD_INFO_CACHE
+
+    info = {"commit": None, "branch": None, "committed_at": None}
+    try:
+        git_dir = ROOT / ".git"
+        head = (git_dir / "HEAD").read_text(encoding="utf-8").strip()
+        if head.startswith("ref: "):
+            ref = head[5:]
+            info["branch"] = ref.split("/")[-1]
+            ref_path = git_dir / ref
+            if ref_path.exists():
+                info["commit"] = ref_path.read_text(encoding="utf-8").strip()
+        else:
+            info["commit"] = head  # detached HEAD
+        # Best-effort committed_at via packed-refs or commit object header.
+        if info["commit"]:
+            obj_path = git_dir / "objects" / info["commit"][:2] / info["commit"][2:]
+            if obj_path.exists():
+                import zlib
+
+                raw = zlib.decompress(obj_path.read_bytes())
+                # Format: b"commit <size>\\0tree ...\\nauthor ... <ts> +0000\\n..."
+                idx = raw.find(b"committer ")
+                if idx >= 0:
+                    line_end = raw.find(b"\n", idx)
+                    chunk = raw[idx:line_end].decode("utf-8", errors="ignore")
+                    parts = chunk.rsplit(" ", 2)
+                    if len(parts) == 3:
+                        try:
+                            info["committed_at"] = int(parts[1])
+                        except ValueError:
+                            pass
+    except Exception:
+        # Best-effort only; admin endpoint never crashes on missing git data.
+        pass
+
+    _BUILD_INFO_CACHE = info
+    return info
+
+
+@app.get("/admin/version")
+def admin_version():
+    """Build/version metadata for the demo (commit SHA, branch, time)."""
+    info = _read_build_info()
+    return {
+        "service": "nahual-backend",
+        "commit": info.get("commit"),
+        "branch": info.get("branch"),
+        "committed_at": info.get("committed_at"),
+        "environment": os.getenv("ENVIRONMENT", "development"),
+        "python": sys.version.split()[0] if hasattr(sys, "version") else None,
+    }
+
+
+@app.get("/admin/dataset-info")
+def admin_dataset_info():
+    """Live snapshot of the heuristic classifier's loaded patterns.
+
+    Returns per-phase counts and weight histogram so the panel/judges
+    can see at a glance how dense the dataset is and where the high-
+    confidence patterns concentrate. Read directly from the in-memory
+    classifier (the source of truth at runtime); does not re-read JSON
+    so it reflects any tuner overlay applied since boot.
+    """
+    h = app.state.pipeline.heuristic
+    phases = {}
+    total = 0
+    high_conf = 0  # weight >= 0.8
+    for phase_id, name in [
+        ("phase1", "Captación"),
+        ("phase2", "Enganche"),
+        ("phase3", "Coerción"),
+        ("phase4", "Explotación"),
+    ]:
+        # Internal storage is a list of tuples:
+        # (compiled_regex, weight, source, pattern_id, explanation)
+        pats = h._compiled_patterns.get(phase_id, []) or []
+        weights = [t[1] for t in pats]
+        # Histogram buckets aligned with semaphore (low/mid/high signal).
+        buckets = {
+            "low_0.0_0.5": sum(1 for w in weights if w < 0.5),
+            "mid_0.5_0.8": sum(1 for w in weights if 0.5 <= w < 0.8),
+            "high_0.8_1.0": sum(1 for w in weights if w >= 0.8),
+        }
+        phases[phase_id] = {
+            "name": name,
+            "patterns": len(pats),
+            "weight_histogram": buckets,
+            "max_weight": max(weights) if weights else 0,
+            "avg_weight": round(sum(weights) / len(weights), 3) if weights else 0,
+        }
+        total += len(pats)
+        high_conf += buckets["high_0.8_1.0"]
+
+    # Auto-tuner active overlay count (may not exist in fresh boot).
+    tuner_overlay_size = 0
+    try:
+        ov = app.state.precision.export_state()
+        if isinstance(ov, dict):
+            tuner_overlay_size = len(ov.get("adjustments", {}) or {})
+    except Exception:
+        pass
+
+    return {
+        "total_patterns": total,
+        "high_confidence_patterns": high_conf,
+        "override_threshold": float(os.getenv("OVERRIDE_THRESHOLD", "0.80")),
+        "phases": phases,
+        "tuner_active_adjustments": tuner_overlay_size,
+        "emoji_count": len(getattr(h, "_emojis", []) or []),
+    }
+
+
+_REQUEST_METRICS = {
+    "boot_time": time.time(),
+    "requests_total": 0,
+    "analyze_total": 0,
+    "alert_total": 0,
+    "transcribe_total": 0,
+    "ocr_total": 0,
+    "llm_calls": 0,
+}
+
+
+@app.middleware("http")
+async def _bump_metrics(request, call_next):
+    """Bump the in-memory counters; cheap O(1), no I/O.
+
+    Path → counter mapping:
+      POST /analyze    → analyze_total
+      POST /alert      → alert_total
+      POST /transcribe → transcribe_total
+      POST /ocr        → ocr_total
+    Every request bumps requests_total. Errors are still counted (we
+    measure load, not success rate).
+    """
+    _REQUEST_METRICS["requests_total"] += 1
+    p = request.url.path
+    if p == "/analyze" and request.method == "POST":
+        _REQUEST_METRICS["analyze_total"] += 1
+    elif p == "/alert" and request.method == "POST":
+        _REQUEST_METRICS["alert_total"] += 1
+    elif p == "/transcribe" and request.method == "POST":
+        _REQUEST_METRICS["transcribe_total"] += 1
+    elif p == "/ocr" and request.method == "POST":
+        _REQUEST_METRICS["ocr_total"] += 1
+    return await call_next(request)
+
+
+@app.get("/admin/metrics")
+def admin_metrics():
+    """Lightweight request counters since boot. Updated by middleware above."""
+    # Best-effort alerts count without locking on a missing helper.
+    db_alerts = None
+    try:
+        if hasattr(app.state.db, "count_alerts"):
+            db_alerts = app.state.db.count_alerts()
+        elif hasattr(app.state.db, "stats"):
+            stats = app.state.db.stats()
+            db_alerts = (stats or {}).get("total_alerts")
+    except Exception:
+        pass
+
+    return {
+        **{k: v for k, v in _REQUEST_METRICS.items() if k != "boot_time"},
+        "uptime_seconds": int(time.time() - _REQUEST_METRICS["boot_time"]),
+        "alerts_in_db": db_alerts,
     }
 
 
