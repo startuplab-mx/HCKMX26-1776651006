@@ -1,0 +1,79 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Baileys auth
+bot/auth_info_baileys/
+bot/sessions/
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+backend/nahual.db
+
+# Generated reports
+backend/reports/generated/
+*.pdf
+!Nahual_Arquitectura_Roadmap_Completo*.pdf
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Claude
+.claude/
+
+# Next.js (landing page)
+nahuallanding/.next/
+nahuallanding/node_modules/
+nahuallanding/out/
+nahuallanding/.vercel/
+
+# Bot WhatsApp auth
+bot/auth_info_baileys/
