@@ -16,7 +16,7 @@ const mono = JetBrains_Mono({
   display: "swap"
 });
 
-const siteUrl = "https://nahual-landing.vercel.app";
+const siteUrl = "https://nahualsec.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

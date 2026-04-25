@@ -53,7 +53,7 @@ export type AdvancedFeature = {
 
 export const site = {
   name: "Nahual",
-  repoUrl: "https://github.com/cocopsn/nahual-landing",
+  repoUrl: "https://github.com/cocopsn/nahuallanding-demo",
   description:
     "Sistema de detección de reclutamiento criminal digital para menores en México. Bot de WhatsApp, extensión de monitoreo y análisis modular para alertas tempranas.",
   badge:
