@@ -43,7 +43,10 @@ backend/nahual.db
 
 # Generated reports
 backend/reports/generated/
+# Allow PDFs under docs/ (architecture, samples, research) but ignore
+# generated reports elsewhere.
 *.pdf
+!docs/**/*.pdf
 !Nahual_Arquitectura_Roadmap_Completo*.pdf
 
 # Environment
