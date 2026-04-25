@@ -1,4 +1,12 @@
-const API = (window.NAHUAL_API_URL || 'http://localhost:8000').replace(/\/$/, '');
+// Empty string means "same-origin relative URLs" — keep that case explicit
+// (the simpler `window.NAHUAL_API_URL || default` falls back when the value
+// is "" because empty string is falsy, which broke prod when index.html
+// injected `window.NAHUAL_API_URL = ""`).
+const API = (
+  typeof window.NAHUAL_API_URL === 'string'
+    ? window.NAHUAL_API_URL
+    : 'http://localhost:8000'
+).replace(/\/$/, '');
 const REFRESH_MS = 5000;
 // API key for protected endpoints (/alerts, /sessions, /precision, /risk-history).
 // Override at deploy time with `<script>window.NAHUAL_API_KEY = '...'</script>`
