@@ -21,6 +21,27 @@ const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 
 const SESSION_DIR = process.env.BOT_SESSION_DIR || './auth_info_baileys';
 
+// Reconnect bookkeeping. Without this `start()` recursed without backoff and
+// kept stale socket listeners alive — both real risks the resilience audit
+// flagged. Backoff: 0.5s × 2^n, capped at 60s, jittered ±25%.
+let RECONNECT_ATTEMPTS = 0;
+let CURRENT_SOCK = null;
+
+function scheduleReconnect() {
+  RECONNECT_ATTEMPTS += 1;
+  const base = Math.min(60000, 500 * Math.pow(2, RECONNECT_ATTEMPTS));
+  const jitter = base * 0.25 * (Math.random() * 2 - 1);
+  const delay = Math.max(500, Math.floor(base + jitter));
+  // Tear down the old socket FIRST so its listeners do not double-fire.
+  if (CURRENT_SOCK) {
+    try { CURRENT_SOCK.ev.removeAllListeners(); } catch {}
+    try { CURRENT_SOCK.end?.(); } catch {}
+    CURRENT_SOCK = null;
+  }
+  logger.warn({ attempt: RECONNECT_ATTEMPTS, delay }, 'reconnecting after backoff');
+  setTimeout(() => start().catch((e) => logger.error({ err: e.message }, 'reconnect failed')), delay);
+}
+
 async function start() {
   const { state, saveCreds } = await useMultiFileAuthState(SESSION_DIR);
 
@@ -43,6 +64,7 @@ async function start() {
     logger: pino({ level: 'silent' }),
     browser: ['Nahual', 'Chrome', '20.0.0'],
   });
+  CURRENT_SOCK = sock;
 
   sock.ev.on('creds.update', saveCreds);
 
@@ -62,9 +84,14 @@ async function start() {
     if (connection === 'close') {
       const shouldReconnect =
         lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
-      logger.warn({ reason: lastDisconnect?.error?.message }, 'connection closed');
-      if (shouldReconnect) start();
+      logger.warn({ reason: lastDisconnect?.error?.message, attempts: RECONNECT_ATTEMPTS }, 'connection closed');
+      if (shouldReconnect) {
+        scheduleReconnect();
+      } else {
+        logger.error('logged out — manual QR re-scan required');
+      }
     } else if (connection === 'open') {
+      RECONNECT_ATTEMPTS = 0; // success resets backoff
       logger.info('✅ Nahual bot conectado a WhatsApp');
       // Wipe the QR PNG once paired so a stale image can't trick a third
       // party into linking the wrong device.
@@ -84,6 +111,22 @@ async function start() {
     }
   });
 }
+
+// Graceful shutdown for systemd. Without this, systemd waits ~90s on the
+// default TimeoutStopSec before SIGKILL; with it, we close the socket
+// cleanly and exit fast on `systemctl restart nahual-bot`.
+let SHUTTING_DOWN = false;
+function gracefulShutdown(signal) {
+  if (SHUTTING_DOWN) return;
+  SHUTTING_DOWN = true;
+  logger.info({ signal }, 'shutting down gracefully');
+  try { CURRENT_SOCK?.ev?.removeAllListeners?.(); } catch {}
+  try { CURRENT_SOCK?.end?.(); } catch {}
+  // Give Baileys a moment to flush pending sends, then exit.
+  setTimeout(() => process.exit(0), 1500);
+}
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT',  () => gracefulShutdown('SIGINT'));
 
 start().catch((err) => {
   logger.error({ err: err.message }, 'fatal startup error');

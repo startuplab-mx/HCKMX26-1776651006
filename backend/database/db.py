@@ -170,18 +170,39 @@ class _LockedConn:
     proxy lets that code stay unchanged while becoming thread-safe.
     """
 
+    # Retry budget for "database is locked" — SQLite WAL can still surface
+    # this under heavy concurrent checkpoints. Exponential backoff capped
+    # at ~1.6s total. After that we re-raise so callers see the failure.
+    _RETRY_DELAYS = (0.05, 0.1, 0.2, 0.4, 0.8)
+
     def __init__(self, conn: sqlite3.Connection, lock: threading.RLock) -> None:
         self._conn = conn
         self._lock = lock
 
+    def _execute_with_retry(self, fn):
+        last_err = None
+        for delay in (*self._RETRY_DELAYS, None):
+            try:
+                return fn()
+            except sqlite3.OperationalError as e:
+                msg = str(e).lower()
+                if "locked" not in msg and "busy" not in msg:
+                    raise
+                last_err = e
+                if delay is None:
+                    break
+                import time as _t
+                _t.sleep(delay)
+        raise last_err
+
     def execute(self, sql: str, params: tuple | list = ()) -> _CursorSnapshot:
         with self._lock:
-            cur = self._conn.execute(sql, params)
+            cur = self._execute_with_retry(lambda: self._conn.execute(sql, params))
             return _CursorSnapshot(cur, self._lock)
 
     def executescript(self, sql: str) -> None:
         with self._lock:
-            self._conn.executescript(sql)
+            self._execute_with_retry(lambda: self._conn.executescript(sql))
 
     def close(self) -> None:
         with self._lock:
