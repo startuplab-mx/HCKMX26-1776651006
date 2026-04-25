@@ -519,8 +519,17 @@ OCR_SYSTEM_PROMPT = (
     "Si no hay texto legible, responde 'NO_TEXT'."
 )
 
-ALLOWED_AUDIO_MIME = {"audio/ogg", "audio/mpeg", "audio/mp4", "audio/wav", "audio/webm", "audio/x-m4a"}
-ALLOWED_IMAGE_MIME = {"image/png", "image/jpeg", "image/webp", "image/gif"}
+ALLOWED_AUDIO_MIME = {"audio/ogg", "audio/mpeg", "audio/mp4", "audio/wav", "audio/webm", "audio/x-m4a", "audio/aac", "audio/flac", "audio/x-wav"}
+ALLOWED_IMAGE_MIME = {"image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif", "image/heic", "image/heif"}
+
+
+def _normalize_mime(raw: str | None, default: str) -> str:
+    """WhatsApp/Baileys sends MIME types like 'audio/ogg; codecs=opus' or
+    'image/jpeg;charset=binary'. The strict set check rejected these as 415.
+    Normalize to the bare type/subtype so the lookup matches.
+    """
+    m = (raw or default).split(";")[0].strip().lower()
+    return m or default
 MAX_AUDIO_BYTES = 10 * 1024 * 1024   # 10 MB
 MAX_IMAGE_BYTES = 8 * 1024 * 1024    # 8 MB
 
@@ -544,7 +553,7 @@ async def transcribe_audio(file: UploadFile = File(...)):
     if len(audio_bytes) > MAX_AUDIO_BYTES:
         raise HTTPException(413, f"audio exceeds {MAX_AUDIO_BYTES // (1024 * 1024)} MB")
 
-    mime = file.content_type or "audio/ogg"
+    mime = _normalize_mime(file.content_type, "audio/ogg")
     if mime not in ALLOWED_AUDIO_MIME:
         raise HTTPException(415, f"unsupported audio type {mime!r}")
     timeout = float(os.getenv("STT_TIMEOUT_SECONDS", "15"))
@@ -586,12 +595,12 @@ async def ocr_image(file: UploadFile = File(...)):
     if len(image_bytes) > MAX_IMAGE_BYTES:
         raise HTTPException(413, f"image exceeds {MAX_IMAGE_BYTES // (1024 * 1024)} MB")
 
-    media_type = file.content_type or "image/png"
+    media_type = _normalize_mime(file.content_type, "image/png")
     if media_type not in ALLOWED_IMAGE_MIME:
         raise HTTPException(415, f"unsupported image type {media_type!r}")
 
     b64 = base64.b64encode(image_bytes).decode("ascii")
-    model = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-20250514")
+    model = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-5-20250929")
     timeout = float(os.getenv("OCR_TIMEOUT_SECONDS", "15"))
 
     try:

@@ -48,6 +48,16 @@ const HELP_RE   = /^\s*\/?\s*(ayuda|help|info|que\s+haces|qu[eé]\s+haces|c[oó]
 const RESET_RE  = /^\s*\/?\s*(reset|reiniciar|empezar(\s+de)?\s*nuevo|cancelar\s*todo|salir)\s*$/i;
 const STATUS_RE = /^\s*\/?\s*(estado|status|d(o|ó)nde\s+voy)\s*$/i;
 const PRIVACY_RE = /^\s*\/?\s*(privacidad|datos|qu[eé]\s+guardas|borra\s*mis\s*datos)\s*$/i;
+
+// Conversational closers — "gracias", "ok", "bye", "listo", "fin". When any
+// of these arrive, we acknowledge with a friendly close and reset to inicio
+// WITHOUT triggering /analyze. Without this, the bot was re-classifying
+// every "gracias" as a fresh message (Marco surfaced this Apr 25).
+const CLOSE_RE = /^\s*(gracias|grax|thx|thanks|ok|okay|listo|chido|sale|sale\s+pues|bye|adi[oó]s|hasta\s+luego|fin|ya|ya\s+est[áa]|nos\s+vemos|cu[ií]date|cu[ií]dale)\s*[!.😊🙏👍]*\s*$/i;
+// Affirmation-as-command — "si", "claro", "obvio" without context — also
+// shouldn't trigger /analyze in inicio state. We treat them as friendly
+// acknowledgements and prompt the user for what they actually want.
+const AFFIRM_NO_CONTEXT_RE = /^\s*(s[ií]|claro|obvio|por\s+supuesto|dale|seguro)\s*[!.]?\s*$/i;
 // Explicit denial of the alert verdict — distinct from "no quiero contribuir".
 // When the user says "no es" / "me equivoqué" / "falso" while we're waiting
 // for the guardian phone, treat it as an alert-level deny and feed the
@@ -217,6 +227,31 @@ export async function advance(sock, jid, text) {
     resetSession(jid);
     await sock.sendMessage(jid, {
       text: '🔄 Reinicié la conversación. Mándame el mensaje sospechoso cuando quieras.',
+    });
+    return;
+  }
+
+  // Conversational close: "gracias", "ok", "bye"… acknowledge + reset.
+  // Only trigger when we're past an analysis (i.e. there's no in-progress
+  // multi-step state). Otherwise let the FSM handle the literal token —
+  // e.g. "ok" inside ask_contribute is a different signal.
+  if (CLOSE_RE.test(text) && ['inicio', 'recibir_msg', 'result'].includes(session.current_step)) {
+    const variants = [
+      '🙏 Gracias por confiar en Nahual. Cuando lo necesites, aquí estoy. Cuídate. 🛡️',
+      '🛡️ Aquí estoy si vuelves a necesitar ayuda. Cuídate mucho.',
+      '👍 Listo. Si recibes otro mensaje sospechoso, mándamelo. Cuídate.',
+    ];
+    const reply = variants[Math.floor(Math.random() * variants.length)];
+    await sock.sendMessage(jid, { text: reply });
+    resetSession(jid);
+    return;
+  }
+
+  // Bare affirmation in initial states with no question pending → prompt.
+  // Without this, "si" by itself ran through analyze and came back SEGURO.
+  if (AFFIRM_NO_CONTEXT_RE.test(text) && session.current_step === 'inicio') {
+    await sock.sendMessage(jid, {
+      text: '¿"Sí" a qué? 🙂  Mándame el mensaje sospechoso (texto, audio o captura) y lo analizo. O escribe *menu* para ver opciones.',
     });
     return;
   }

@@ -66,7 +66,7 @@ class LLMLayer:
         timeout: float | None = None,
     ) -> None:
         self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
-        self.model = model or os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-20250514")
+        self.model = model or os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-5-20250929")
         self.timeout = timeout if timeout is not None else float(
             os.getenv("LLM_TIMEOUT_SECONDS", "5")
         )

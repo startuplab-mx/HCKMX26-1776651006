@@ -7,34 +7,62 @@
 // regardless, but the platform config is exposed so popups / future code
 // can know which site is active and adjust UX (e.g. a "Roblox detected"
 // banner). Keeping it data-only keeps the runtime trivial.
+// Platform configs informed by the user's existing extractors at
+// C:\Users\arma2\Codigo\{discord,wa,ig}-chat-extractor — selectors verified
+// to point at actual chat content (vs page chrome / store pages / nav menus).
 const PLATFORMS = [
   {
     name: 'whatsapp',
     matches: (host) => host.includes('whatsapp'),
-    chatSelector: '#main .copyable-text',
-    messageSelector: '.message-in .copyable-text span',
-    containerSelector: '#main',
+    // The chat panel's main container in WA Web. Only scan here.
+    containerSelectors: ['#main', '[data-testid="conversation-panel-messages"]'],
+    // We want only inbound messages; WA marks them with .message-in.
+    messageSelectors: ['.message-in', '.copyable-text'],
+    // URLs that should NEVER fire (settings, help, etc).
+    urlBlocklist: [/\/help\//, /\/about\//],
   },
   {
     name: 'instagram',
     matches: (host) => host.includes('instagram'),
-    chatSelector: '[role="main"]',
-    messageSelector: 'div[dir="auto"]',
-    containerSelector: '[role="main"]',
+    // /direct/ is the only place chat lives on IG.
+    urlAllowlist: [/\/direct\//],
+    containerSelectors: ['[role="main"] section[role="dialog"]', '[role="main"]'],
+    messageSelectors: ['div[role="row"]', 'div[dir="auto"]'],
   },
   {
     name: 'discord',
     matches: (host) => host.includes('discord'),
-    chatSelector: '[class*="chatContent"]',
-    messageSelector: '[id^="message-content"]',
-    containerSelector: '[class*="chatContent"]',
+    // Verified against Codigo/discord-chat-extractor: messages live inside
+    // ol[class*="scrollerInner"] and individual messages are
+    // li[id^="chat-messages-"]. The text node we want is
+    // [id^="message-content-"].
+    containerSelectors: ['ol[class*="scrollerInner"]'],
+    messageSelectors: ['li[id^="chat-messages-"]', '[id^="message-content-"]'],
+    // Only fire on actual channel paths, not friends/library/settings/store.
+    urlAllowlist: [/\/channels\//],
+    urlBlocklist: [
+      /\/store\b/, /\/library\b/, /\/discovery\b/, /\/shop\b/, /\/settings\b/,
+    ],
   },
   {
     name: 'roblox',
     matches: (host) => host.includes('roblox'),
-    chatSelector: '.chat-container, [class*="ChatWindow"], [class*="chat-window"]',
-    messageSelector: '.chat-message-content, [class*="message-content"]',
-    containerSelector: '.chat-container, [class*="ChatWindow"], [class*="chat-window"]',
+    // Roblox chat selectors. Avoiding the catalog/store text body which
+    // contains words like "Gift Card" in product titles (false positive
+    // surfaced by Armando Apr 25).
+    containerSelectors: [
+      '.chat-window', '[class*="ChatWindow"]', '[class*="chat-window"]',
+      '.message-row', '[data-testid="chat"]',
+    ],
+    messageSelectors: ['.message-row', '[class*="MessageContainer"]'],
+    // These paths are pure store/marketplace/profile and should NEVER
+    // trigger the shield even if they have phrases like "gift card".
+    urlBlocklist: [
+      /\/catalog\b/, /\/marketplace\b/, /\/upgrades?\b/, /\/redeem\b/,
+      /\/giftcards?\b/, /\/charity\b/, /\/users?\/\d+\b/, /\/develop\b/,
+      /\/communities\b/, /\/groups\b/, /\/games\/\d+\b/,  // game pages, not in-game chat
+      /\/home\b/, /\/discover\b/, /\/avatar\b/,
+    ],
   },
 ];
 
@@ -43,7 +71,38 @@ function detectPlatform() {
   return PLATFORMS.find((p) => p.matches(host)) || null;
 }
 
+function urlMatchesAny(patterns) {
+  if (!patterns || !patterns.length) return false;
+  const path = window.location.pathname;
+  return patterns.some((re) => re.test(path));
+}
+
+function platformActive(platform) {
+  if (!platform) return false;
+  if (urlMatchesAny(platform.urlBlocklist)) return false;
+  if (platform.urlAllowlist && !urlMatchesAny(platform.urlAllowlist)) return false;
+  return true;
+}
+
+function findChatContainers(platform) {
+  if (!platform || !platform.containerSelectors) return [];
+  const found = [];
+  for (const sel of platform.containerSelectors) {
+    document.querySelectorAll(sel).forEach((el) => found.push(el));
+  }
+  return found;
+}
+
+function nodeIsInsideChat(node, containers) {
+  if (!containers.length) return false;
+  for (const c of containers) {
+    if (c.contains(node)) return true;
+  }
+  return false;
+}
+
 const ACTIVE_PLATFORM = detectPlatform();
+const PLATFORM_ACTIVE = platformActive(ACTIVE_PLATFORM);
 
 // Phase 3 (Coerción) — direct threats received. The extension scans messages
 // the user is *receiving* in chat, so both aggressor-speech ("te voy a
@@ -212,7 +271,42 @@ const SKIP_TAGS = new Set([
   'CODE', 'PRE', // dev tools / docs / paste-inspect surfaces
 ]);
 
+// Whitelist patterns: phrases that look risky out of context but are
+// legitimate UI / store / catalog text. If text contains ANY of these, skip.
+const WHITELIST_REGEX = [
+  // Roblox / gift card store UX text
+  /(comprar|buy)\s+(gift\s?card|tarjeta\s+de\s+regalo)/i,
+  /robux\s+(gift\s?card|tarjeta\s+de\s+regalo|membership|membres[ií]a)/i,
+  /(canjear|redeem)\s+(gift\s?card|tarjeta|c[oó]digo)/i,
+  /tarjeta\s+de\s+regalo\s+de\s+\$?\d/i,
+  // Generic UI chrome
+  /(cookies|t[eé]rminos|condiciones|pol[ií]tica\s+de\s+privacidad)/i,
+  /(iniciar\s+sesi[oó]n|crear\s+cuenta|sign\s+up|log\s+in)\s*$/i,
+  // Discord store / nitro upsell
+  /(discord\s+nitro|boost\s+this\s+server|server\s+boost)/i,
+  // News / educational mentions of crime ("noticia: matan a..." in news feed)
+  /(noticias?|nota|reportaje|art[ií]culo)[:\s]/i,
+];
+
+function isWhitelisted(text) {
+  for (const r of WHITELIST_REGEX) if (r.test(text)) return true;
+  return false;
+}
+
+// Containers cache — refreshed lazily because chat panels mount/unmount.
+let CHAT_CONTAINERS = [];
+let CONTAINERS_LAST_REFRESH = 0;
+function getChatContainers() {
+  const now = Date.now();
+  if (now - CONTAINERS_LAST_REFRESH > 1500) {
+    CHAT_CONTAINERS = findChatContainers(ACTIVE_PLATFORM);
+    CONTAINERS_LAST_REFRESH = now;
+  }
+  return CHAT_CONTAINERS;
+}
+
 function scanNode(node) {
+  if (!PLATFORM_ACTIVE) return; // whole site is on the URL blocklist
   if (!node || SEEN_NODES.has(node)) return;
   if (node.nodeType === Node.TEXT_NODE) {
     SEEN_NODES.add(node);
@@ -222,13 +316,21 @@ function scanNode(node) {
     if (parent && parent.nodeType === Node.ELEMENT_NODE && SKIP_TAGS.has(parent.tagName)) {
       return;
     }
+    // Scope: only fire if this text node lives inside a known chat container.
+    // Falls back to "scan everything" only when no container has mounted yet
+    // — necessary for WhatsApp Web where chat is the entire viewport.
+    const containers = getChatContainers();
+    if (containers.length && parent && !nodeIsInsideChat(parent, containers)) {
+      return;
+    }
     const text = (node.textContent || '').trim();
-    if (text.length < 8 || text.length > 2000) return; // skip empty + huge JSON blobs
+    if (text.length < 8 || text.length > 2000) return;
+    if (isWhitelisted(text)) return;
     const phase = flagText(text);
     if (phase && !alreadySeenRecently(text)) showOverlay(phase, text);
   } else if (node.nodeType === Node.ELEMENT_NODE) {
     SEEN_NODES.add(node);
-    if (SKIP_TAGS.has(node.tagName)) return; // bail before recursing into <script>
+    if (SKIP_TAGS.has(node.tagName)) return;
     for (const child of node.childNodes) scanNode(child);
   }
 }
@@ -242,6 +344,27 @@ const observer = new MutationObserver((mutations) => {
 observer.observe(document.body, { childList: true, subtree: true });
 // Initial sweep so patterns already visible on load are caught too.
 for (const child of document.body.childNodes) scanNode(child);
+
+// React-heavy chat clients (Discord, IG) mount the conversation pane AFTER
+// our content script runs. Re-sweep once the chat container appears so we
+// don't miss messages already on screen.
+const _mountWatcher = setInterval(() => {
+  if (!PLATFORM_ACTIVE) { clearInterval(_mountWatcher); return; }
+  const containers = findChatContainers(ACTIVE_PLATFORM);
+  if (containers.length) {
+    CHAT_CONTAINERS = containers;
+    CONTAINERS_LAST_REFRESH = Date.now();
+    // Re-walk the chat container only.
+    SEEN_NODES.delete && containers.forEach((c) => SEEN_NODES.delete(c));
+    containers.forEach((c) => {
+      for (const child of c.childNodes) scanNode(child);
+    });
+    clearInterval(_mountWatcher);
+  }
+}, 1000);
+// Stop trying after 30s — if the user navigates away from chat, this is
+// fine; URL changes don't trigger content-script re-injection.
+setTimeout(() => clearInterval(_mountWatcher), 30000);
 
 // Privacy by design: no console output that reveals the extension is running.
 // (Earlier versions logged the active platform, which let host pages detect
