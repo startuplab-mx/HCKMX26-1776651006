@@ -231,29 +231,88 @@ export async function advance(sock, jid, text) {
         return;
       }
 
-      const phone = text.replace(/[^\d]/g, '');
-      if (phone.length < 10) {
+      const digits = text.replace(/[^\d]/g, '');
+      if (digits.length < 10) {
         await sock.sendMessage(jid, {
           text: 'Número no válido. Mándame +52 con 10 dígitos, escribe "no" si te equivocaste, o "reporte" para el PDF.',
         });
         return;
       }
-      const guardianJid = `${phone}@s.whatsapp.net`;
-      const guardianText = MESSAGES.notificacionTutor('PELIGRO', 'WhatsApp');
+      // WhatsApp JID normalisation for Mexican numbers.
+      // Accepted inputs:
+      //   • 10 digits             → 521XXXXXXXXXX (mobile, with legacy '1')
+      //   • 12 digits, starts 52  → 521XXXXXXXXXX (insert mobile prefix)
+      //   • 13 digits, starts 521 → use as-is
+      //   • Anything else with country code (US, Argentina…) → use raw digits
+      let normalized;
+      if (digits.length === 10) normalized = `521${digits}`;
+      else if (digits.length === 12 && digits.startsWith('52')) normalized = `521${digits.slice(2)}`;
+      else if (digits.length === 13 && digits.startsWith('521')) normalized = digits;
+      else normalized = digits; // foreign number — let WA decide
+
+      const guardianJid = `${normalized}@s.whatsapp.net`;
+
+      // Verify the guardian number actually exists on WhatsApp before
+      // pretending we delivered the alert. Baileys answers with `exists:true`
+      // and a fixed-up JID when the number is registered. This avoids the
+      // silent black-hole case where sendMessage queues to a non-existent
+      // JID and the operator never finds out.
+      let resolvedJid = guardianJid;
       try {
-        await sock.sendMessage(guardianJid, { text: guardianText });
+        const lookup = await sock.onWhatsApp(guardianJid);
+        const hit = Array.isArray(lookup) ? lookup[0] : null;
+        if (!hit || !hit.exists) {
+          await sock.sendMessage(jid, {
+            text: 'Ese número no parece estar en WhatsApp. Verifícalo y envíame uno donde sí pueda contactar al adulto de confianza.',
+          });
+          return;
+        }
+        // WA returns the canonical JID (sometimes adds/removes the legacy '1').
+        if (hit.jid) resolvedJid = hit.jid;
+      } catch (lookupErr) {
+        console.warn(`[guardian] onWhatsApp lookup failed: ${lookupErr.message}`);
+        // Continue with the best-effort JID — better to try than to drop.
+      }
+
+      const guardianText = MESSAGES.notificacionTutor('PELIGRO', 'WhatsApp');
+      const lastAlertId = getSessionData(jid, 'lastAlertId');
+      try {
+        await sock.sendMessage(resolvedJid, { text: guardianText });
+
+        // Also push the PDF — the guardian needs the full evidence package
+        // (folio + legal block + categories), not just a one-line alert.
+        let pdfDelivered = false;
+        if (lastAlertId) {
+          try {
+            const buf = await fetchReportBytes(lastAlertId);
+            const folio = `NAH-2026-${String(lastAlertId).padStart(4, '0')}`;
+            await sock.sendMessage(resolvedJid, {
+              document: buf,
+              mimetype: 'application/pdf',
+              fileName: `${folio}.pdf`,
+              caption: `📄 Reporte oficial Nahual · ${folio}\n\nEste reporte contiene categorías detectadas, marco legal aplicable y autoridades. NO incluye el contenido original del mensaje.`,
+            });
+            pdfDelivered = true;
+          } catch (pdfErr) {
+            // Don't block the user notification on a PDF failure.
+            console.warn(`[guardian] PDF send failed for alert ${lastAlertId}: ${pdfErr.message}`);
+          }
+        }
+
         await sock.sendMessage(jid, {
-          text: '✅ Aviso enviado al adulto de confianza (sin contenido del mensaje). Si necesitas el reporte PDF, escribe "reporte".',
+          text: pdfDelivered
+            ? '✅ Aviso + reporte PDF enviados al adulto de confianza (sin contenido del mensaje original).'
+            : '✅ Aviso enviado al adulto de confianza. El PDF no se pudo adjuntar — escribe "reporte" para que te lo mande aquí y reenvíalo manualmente.',
         });
       } catch (err) {
         await sock.sendMessage(jid, {
-          text: `No pude enviar el aviso (${err.message}). Llama 088 directamente.`,
+          text: `No pude enviar el aviso (${err.message}). Llama al 088 directamente o escribe "reporte" para descargar el PDF y reenviarlo manualmente.`,
         });
       }
       // Implicit confirm: the user acted on the PELIGRO verdict by handing
       // over the guardian phone. Feed it to the auto-tuner so the patterns
-      // that fired keep their weight (or move up).
-      const lastAlertId = getSessionData(jid, 'lastAlertId');
+      // that fired keep their weight (or move up). `lastAlertId` was already
+      // captured above for the PDF dispatch — reuse it here.
       const lastAnalysis = getSessionData(jid, 'lastAnalysis') || {};
       await submitFeedback({
         feedback_type: 'confirm',
