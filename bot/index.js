@@ -11,6 +11,9 @@ import {
   fetchLatestBaileysVersion,
 } from '@whiskeysockets/baileys';
 import qrcode from 'qrcode-terminal';
+import QRCode from 'qrcode';
+import fs from 'node:fs';
+import path from 'node:path';
 import pino from 'pino';
 import { handleIncomingMessage } from './handlers/messageHandler.js';
 
@@ -48,6 +51,13 @@ async function start() {
     if (qr) {
       console.log('\n🛡️  Escanea este QR con WhatsApp → Dispositivos vinculados:\n');
       qrcode.generate(qr, { small: true });
+      // Also persist a PNG to a well-known path so the operator can scan it
+      // from a browser (handy for headless deploys where reading the journal
+      // is awkward). Path is overridable via BOT_QR_FILE.
+      const qrPath = process.env.BOT_QR_FILE || '/opt/nahual/panel/bot-qr.png';
+      QRCode.toFile(qrPath, qr, { width: 400, margin: 2 })
+        .then(() => logger.info({ qrPath }, 'QR written to disk'))
+        .catch((err) => logger.warn({ err: err.message }, 'failed to persist QR'));
     }
     if (connection === 'close') {
       const shouldReconnect =
@@ -56,6 +66,10 @@ async function start() {
       if (shouldReconnect) start();
     } else if (connection === 'open') {
       logger.info('✅ Nahual bot conectado a WhatsApp');
+      // Wipe the QR PNG once paired so a stale image can't trick a third
+      // party into linking the wrong device.
+      const qrPath = process.env.BOT_QR_FILE || '/opt/nahual/panel/bot-qr.png';
+      try { fs.existsSync(qrPath) && fs.unlinkSync(qrPath); } catch {}
     }
   });
 
