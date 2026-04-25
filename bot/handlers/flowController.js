@@ -106,6 +106,15 @@ async function analyzeAndReply(sock, jid, text, sourceType = 'text') {
       setStep(jid, 'ask_contribute');
     }
     await sock.sendMessage(jid, { text: reply });
+
+    // Legal guide: send only when risk_level is not SEGURO and the API
+    // returned a populated `legal` block. Capped to 5 actions / 3 authorities
+    // to keep the WA message readable; the PDF carries the full list.
+    if (result.risk_level !== 'SEGURO' && result.legal) {
+      const guia = MESSAGES.guiaLegal(result.legal);
+      if (guia) await sock.sendMessage(jid, { text: guia });
+    }
+
     if (result.risk_level !== 'PELIGRO') {
       // For SAFE / ATTENTION we go straight to the contribute prompt; for
       // DANGER we ask after the guardian-notify flow completes.

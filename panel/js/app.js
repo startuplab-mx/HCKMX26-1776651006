@@ -5,6 +5,8 @@ const state = {
   filterStatus: '',
   expanded: new Set(),
   history: new Map(),
+  legalExpanded: new Set(),
+  legal: new Map(),
   tsRange: { interval: 'hour', hours: 24 },
   chart: null,
 };
@@ -58,11 +60,13 @@ function row(a) {
   const isExpanded = state.expanded.has(a.id);
   const hist = isExpanded ? state.history.get(a.id) || [] : [];
 
+  const isLegalExpanded = state.legalExpanded.has(a.id);
   const actions = `
     <div class="flex gap-1 justify-end flex-wrap">
       <button class="btn-sm" data-act="reviewed" data-id="${a.id}">✓ Revisar</button>
       <button class="btn-sm" data-act="escalate" data-id="${a.id}">⚠️ Escalar</button>
       <button class="btn-sm" data-act="dismissed" data-id="${a.id}">✗ Descartar</button>
+      <button class="btn-sm" data-act="legal" data-id="${a.id}">📜 ${isLegalExpanded ? 'Ocultar legal' : 'Legal'}</button>
       <button class="btn-sm" data-act="history" data-id="${a.id}">🕑 ${isExpanded ? 'Ocultar' : 'Historial'}</button>
       <a class="btn-sm primary" href="${API}/report/${a.id}" target="_blank" rel="noopener">PDF</a>
     </div>`;
@@ -80,10 +84,10 @@ function row(a) {
       <td class="px-4 py-3">${actions}</td>
     </tr>`;
 
-  if (!isExpanded) return mainRow;
+  let extraRows = '';
 
-  const historyRows =
-    hist.length === 0
+  if (isExpanded) {
+    extraRows += hist.length === 0
       ? '<tr class="history-row"><td colspan="9" class="px-8 py-2 text-white/50 italic">Sin acciones aún.</td></tr>'
       : hist
           .map(
@@ -99,8 +103,70 @@ function row(a) {
         </tr>`,
           )
           .join('');
+  }
 
-  return mainRow + historyRows;
+  if (isLegalExpanded) {
+    const legal = state.legal.get(a.id);
+    if (!legal) {
+      extraRows += '<tr class="history-row"><td colspan="9" class="px-8 py-2 text-white/50 italic">Cargando marco legal…</td></tr>';
+    } else {
+      extraRows += renderLegalRow(legal);
+    }
+  }
+
+  return mainRow + extraRows;
+}
+
+function renderLegalRow(legal) {
+  const urgencyColor = {
+    inmediata: 'text-red-400',
+    prioritaria: 'text-yellow-400',
+    preventiva: 'text-green-400',
+  }[legal.urgency] || 'text-white';
+
+  const articlesHtml = (legal.articles || [])
+    .map(
+      (a) => `<tr>
+        <td class="pr-4 align-top text-white/60">${esc(a.law)}</td>
+        <td class="pr-4 align-top font-mono text-xs">${esc(a.article)}</td>
+        <td class="pr-4 align-top">${esc(a.title)}</td>
+        <td class="align-top text-white/70">${esc(a.penalty || '—')}</td>
+      </tr>`,
+    )
+    .join('');
+
+  const authoritiesHtml = (legal.authorities || [])
+    .map(
+      (au) => `<div class="py-0.5"><strong>${esc(au.name)}</strong> · <span class="accent">${esc(au.phone)}</span> <span class="text-white/40">· ${esc(au.hours)}</span></div>`,
+    )
+    .join('');
+
+  const actionsHtml = (legal.recommended_actions || [])
+    .map((act, i) => `<li>${esc(act)}</li>`)
+    .join('');
+
+  const rightsHtml = (legal.victim_rights || [])
+    .map((r) => `<li>${esc(r)}</li>`)
+    .join('');
+
+  return `
+    <tr class="history-row">
+      <td colspan="9" class="px-8 py-3 text-xs">
+        <div class="font-semibold ${urgencyColor} mb-2">📜 Marco legal · urgencia: ${esc(legal.urgency)}</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <div class="text-white/60 mb-1">Artículos aplicables</div>
+            <table class="w-full text-xs"><tbody>${articlesHtml || '<tr><td class="text-white/40 italic">Sin artículos</td></tr>'}</tbody></table>
+          </div>
+          <div>
+            <div class="text-white/60 mb-1">Autoridades competentes</div>
+            ${authoritiesHtml || '<div class="text-white/40 italic">Ninguna autoridad recomendada.</div>'}
+            ${actionsHtml ? `<div class="text-white/60 mt-3 mb-1">Acciones recomendadas</div><ol class="list-decimal list-inside space-y-0.5">${actionsHtml}</ol>` : ''}
+            ${rightsHtml ? `<div class="text-white/60 mt-3 mb-1">Derechos de la víctima</div><ul class="list-disc list-inside space-y-0.5">${rightsHtml}</ul>` : ''}
+          </div>
+        </div>
+      </td>
+    </tr>`;
 }
 
 async function patchStatus(id, status) {
@@ -119,6 +185,17 @@ async function escalate(id) {
     reason,
     reviewer: localStorage.getItem('nahual_reviewer') || 'panel',
   });
+}
+
+async function toggleLegal(id) {
+  if (state.legalExpanded.has(id)) {
+    state.legalExpanded.delete(id);
+    state.legal.delete(id);
+  } else {
+    state.legalExpanded.add(id);
+    state.legal.set(id, await jget(`/alerts/${id}/legal`));
+  }
+  await refresh();
 }
 
 async function toggleHistory(id) {
@@ -225,6 +302,7 @@ function bindActions() {
     const act = btn.dataset.act;
     try {
       if (act === 'history') await toggleHistory(id);
+      else if (act === 'legal') await toggleLegal(id);
       else if (act === 'escalate') {
         await escalate(id);
         await refresh();

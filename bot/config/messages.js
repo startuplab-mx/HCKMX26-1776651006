@@ -108,6 +108,44 @@ export const MESSAGES = {
   reporteListo: (folio) =>
     `📄 Tu reporte fue generado con folio *${folio}*. Puedes descargarlo desde el panel o pedirlo aquí.`,
 
+  // Legal context (Phase 4) -------------------------------------------
+  // The bot keeps WhatsApp messages short. We cap actions at 5 and
+  // authorities at 3 — the full list goes to the PDF report.
+  guiaLegal: (legal) => {
+    if (!legal) return null;
+    const urgencyLabel = {
+      inmediata: '🔴 URGENCIA INMEDIATA',
+      prioritaria: '🟡 ATENCIÓN PRIORITARIA',
+      preventiva: '🟢 ACCIÓN PREVENTIVA',
+    }[legal.urgency] || legal.urgency;
+
+    const actions = (legal.recommended_actions || [])
+      .slice(0, 5)
+      .map((a, i) => `${i + 1}. ${a}`)
+      .join('\n');
+
+    const authorities = (legal.authorities || [])
+      .slice(0, 3)
+      .map((a) => `• ${a.name}: *${a.phone}* (${a.hours})`)
+      .join('\n');
+
+    const articleHint = (legal.articles || [])
+      .filter((a) => a.law !== 'CPEUM' && a.law !== 'LFPDPPP')
+      .slice(0, 3)
+      .map((a) => `• ${a.law} ${a.article} — ${a.title}`)
+      .join('\n');
+
+    const blocks = [`🛡️ *Guía legal · ${urgencyLabel}*`, ''];
+    if (actions) blocks.push('*Qué hacer ahora:*', actions, '');
+    if (authorities) blocks.push('*Contactos:*', authorities, '');
+    if (articleHint)
+      blocks.push('*Marco legal aplicable (extracto):*', articleHint, '');
+    blocks.push(
+      '_El reporte PDF incluye la lista completa de artículos, autoridades y derechos de la víctima._',
+    );
+    return blocks.join('\n');
+  },
+
   // Contribuciones (Phase 3) -------------------------------------------
   preguntarContribuir: [
     '🔬 *Última pregunta*',

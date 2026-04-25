@@ -23,6 +23,7 @@ from fastapi.responses import FileResponse, JSONResponse
 
 from classifier import Pipeline
 from database import get_db
+from legal import get_legal_context, get_privacy_disclaimer, serialize_context
 import webhooks
 from database.models import (
     AlertAction,
@@ -302,10 +303,21 @@ def contributions_stats():
     return app.state.db.contribution_stats()
 
 
-@app.post("/analyze", response_model=AnalyzeResponse)
+@app.post("/analyze")
 def analyze(req: AnalyzeRequest):
+    """Analyze text + return classification AND applicable legal context.
+
+    The `legal` block is built by backend/legal/framework.py and lists
+    every Mexican law article that applies to the detected phase /
+    categories, plus the competent authorities and recommended actions.
+    """
     result = app.state.pipeline.classify(req.text, use_llm=req.use_llm)
-    return AnalyzeResponse(
+    legal = get_legal_context(
+        phase=result["phase_detected"],
+        categories=result["categories"],
+        risk_level=result["risk_level"],
+    )
+    body = AnalyzeResponse(
         risk_score=result["risk_score"],
         risk_level=result["risk_level"],
         phase_detected=result["phase_detected"],
@@ -317,7 +329,10 @@ def analyze(req: AnalyzeRequest):
         llm_rationale=result["llm_rationale"],
         text_hash=result["text_hash"],
         summary=result["summary"],
-    )
+    ).model_dump()
+    body["legal"] = serialize_context(legal)
+    body["privacy_disclaimer"] = get_privacy_disclaimer()
+    return body
 
 
 @app.post("/alert", status_code=status.HTTP_201_CREATED)
@@ -345,6 +360,11 @@ def create_alert(payload: AlertCreate):
         pattern_ids=result.get("pattern_ids", []),
         source_type=payload.source_type,
     )
+    legal = get_legal_context(
+        phase=result["phase_detected"],
+        categories=result["categories"],
+        risk_level=result["risk_level"],
+    )
     response = {
         "id": alert_id,
         "risk_score": result["risk_score"],
@@ -357,6 +377,7 @@ def create_alert(payload: AlertCreate):
         "llm_used": result["llm_used"],
         "summary": result["summary"],
         "source_type": payload.source_type,
+        "legal": serialize_context(legal),
     }
     # Auto-fire webhook on override (death threats, sextortion). External
     # consumers — e.g. SIPINNA bridge, Fiscalía intake — can listen here.
@@ -445,6 +466,25 @@ def alert_history(alert_id: int):
     if app.state.db.get_alert(alert_id) is None:
         raise HTTPException(404, f"Alert {alert_id} not found")
     return app.state.db.list_actions(alert_id)
+
+
+@app.get("/alerts/{alert_id}/legal")
+def alert_legal(alert_id: int):
+    """Recompute the legal context for a stored alert.
+
+    Built deterministically from the persisted phase + categories +
+    risk_level, so the panel can render the same articles, authorities
+    and recommended actions that the bot saw at analysis time.
+    """
+    alert = app.state.db.get_alert(alert_id)
+    if alert is None:
+        raise HTTPException(404, f"Alert {alert_id} not found")
+    legal = get_legal_context(
+        phase=alert.get("phase_detected"),
+        categories=alert.get("categories") or [],
+        risk_level=alert.get("risk_level", "SEGURO"),
+    )
+    return serialize_context(legal)
 
 
 @app.get("/stats", response_model=StatsResponse)
