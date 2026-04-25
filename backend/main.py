@@ -24,6 +24,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from classifier import Pipeline
 from classifier.escalation import EscalationDetector
 from classifier.pipeline import build_why_from_ids
+from classifier.precision import PrecisionProcessor
 from database import get_db
 from legal import get_legal_context, get_privacy_disclaimer, serialize_context
 import webhooks
@@ -36,6 +37,7 @@ from database.models import (
     ContributionCreate,
     ContributionStats,
     EscalationRequest,
+    FeedbackCreate,
     PhaseScores,
     SessionState,
     SessionUpsert,
@@ -58,7 +60,11 @@ logger = logging.getLogger("nahual")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.db = get_db()
-    app.state.pipeline = Pipeline(escalation=EscalationDetector(app.state.db))
+    app.state.precision = PrecisionProcessor(app.state.db)
+    app.state.pipeline = Pipeline(
+        escalation=EscalationDetector(app.state.db),
+        precision=app.state.precision,
+    )
     logger.info("Nahual backend up · LLM enabled=%s", app.state.pipeline.llm.enabled)
     yield
     app.state.db.close()
@@ -203,6 +209,56 @@ def reset_risk_history(session_id: str):
     """Clear the session's risk history. Used by demo_live.py to start clean."""
     app.state.db.clear_risk_history(session_id)
     return None
+
+
+@app.post("/feedback", status_code=status.HTTP_201_CREATED)
+def submit_feedback(payload: FeedbackCreate):
+    """Record a feedback signal for the auto-tuner.
+
+    Sources:
+      • bot: 'confirm' when the user provides the guardian phone after
+        PELIGRO; 'deny' when the user explicitly contradicts the alert
+      • panel: 'operator_fp' / 'operator_fn' (twice the magnitude)
+      • pipeline: 'llm_discrepancy' (auto-recorded when |LLM−heuristic|≥0.3)
+    """
+    fid = app.state.db.save_feedback(
+        feedback_type=payload.feedback_type,
+        alert_id=payload.alert_id,
+        heuristic_score=payload.heuristic_score,
+        llm_score=payload.llm_score,
+        final_score=payload.final_score,
+        pattern_ids=payload.pattern_ids,
+        session_id=payload.session_id,
+    )
+    return {"received": True, "id": fid}
+
+
+@app.get("/precision/diagnostics")
+def precision_diagnostics():
+    """Snapshot of the auto-tuner: active adjustments + problematic patterns."""
+    return app.state.precision.get_diagnostics()
+
+
+@app.get("/precision/stats")
+def precision_stats():
+    """Counts of feedback rows in the queue by type + pending."""
+    return app.state.db.feedback_stats()
+
+
+@app.post("/precision/tune")
+def precision_tune():
+    """Force a tuning cycle (drains the feedback_log queue once)."""
+    return app.state.precision.process_pending_feedback()
+
+
+@app.get("/precision/state")
+def precision_state():
+    """Export full processor state (adjustments + per-pattern stats).
+
+    Useful for persistence between restarts and for the post-hackathon
+    dashboard to visualize what the tuner has learned.
+    """
+    return app.state.precision.export_state()
 
 
 @app.get("/health")

@@ -50,3 +50,13 @@ export async function submitContribution(payload) {
   const { data } = await axios.post(`${BASE_URL}/contribute`, payload, { timeout: TIMEOUT_MS });
   return data;
 }
+
+export async function submitFeedback(payload) {
+  // Best-effort: failures must NOT bubble up into the bot flow.
+  try {
+    await axios.post(`${BASE_URL}/feedback`, payload, { timeout: TIMEOUT_MS });
+  } catch (err) {
+    const code = err.response ? err.response.status : err.code || err.message;
+    console.warn(`[feedback] sync failed: ${code}`);
+  }
+}

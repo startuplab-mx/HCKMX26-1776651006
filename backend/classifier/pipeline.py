@@ -31,6 +31,7 @@ from typing import Any
 from .escalation import EscalationDetector
 from .heuristic import HeuristicClassifier, PHASE_NAMES
 from .llm_layer import LLMLayer
+from .precision import PrecisionProcessor
 
 OVERRIDE_THRESHOLD = float(os.getenv("OVERRIDE_THRESHOLD", "0.80"))
 GREY_ZONE_MIN = float(os.getenv("LLM_GREY_ZONE_MIN", "0.3"))
@@ -40,6 +41,11 @@ GREY_ZONE_MAX = float(os.getenv("LLM_GREY_ZONE_MAX", "0.6"))
 # bump ATENCION → PELIGRO. The hackathon UX rule: trajectory matters as
 # much as any single message.
 ESCALATION_LEVEL_BUMP_VELOCITY = 0.20
+
+# Auto-tuner: how often the pipeline drains the feedback_log queue and
+# applies adjustments. Inline + sync because batches are tiny (≤100 rows).
+TUNING_INTERVAL = int(os.getenv("PRECISION_TUNING_INTERVAL", "10"))
+LLM_DISCREPANCY_THRESHOLD = 0.30
 
 PHASE_WEIGHTS = {"phase1": 0.15, "phase2": 0.25, "phase3": 0.35, "phase4": 0.25}
 
@@ -109,10 +115,13 @@ class Pipeline:
         heuristic: HeuristicClassifier | None = None,
         llm: LLMLayer | None = None,
         escalation: EscalationDetector | None = None,
+        precision: PrecisionProcessor | None = None,
     ) -> None:
         self.heuristic = heuristic or HeuristicClassifier()
         self.llm = llm or LLMLayer()
         self.escalation = escalation  # set lazily by caller (needs DB)
+        self.precision = precision    # set lazily by caller (needs DB)
+        self._analysis_count = 0
 
     def classify(
         self,
@@ -121,7 +130,9 @@ class Pipeline:
         session_id: str | None = None,
         source_type: str = "text",
     ) -> dict[str, Any]:
-        h = self.heuristic.classify(text)
+        # Pass the precision processor to the heuristic so its weights
+        # reflect every adjustment the auto-tuner has learned so far.
+        h = self.heuristic.classify(text, weight_overrides=self.precision)
         phase_scores: dict[str, float] = h["phase_scores"]
         categories: list[str] = h["categories"]
         pattern_ids: list[str] = h.get("matched_pattern_ids", [])
@@ -173,8 +184,31 @@ class Pipeline:
                 final_score = max(0.0, min(1.0, (weighted + llm_result["risk_score"]) / 2))
                 llm_used = True
                 llm_rationale = llm_result["rationale"]
+                # Auto-tuner signal: when Claude and the heuristic disagree
+                # noticeably on grey-zone text, log the discrepancy so the
+                # PrecisionProcessor can nudge the matched pattern weights
+                # up or down depending on which side LLM landed on.
+                if (
+                    self.precision is not None
+                    and self.escalation is not None  # implies db exists on db side
+                    and abs(llm_result["risk_score"] - weighted)
+                    >= LLM_DISCREPANCY_THRESHOLD
+                    and pattern_ids
+                ):
+                    try:
+                        self.escalation.db.save_feedback(
+                            feedback_type="llm_discrepancy",
+                            heuristic_score=round(weighted, 4),
+                            llm_score=round(llm_result["risk_score"], 4),
+                            final_score=round(final_score, 4),
+                            pattern_ids=pattern_ids,
+                            text_hash=text_hash(text),
+                            session_id=session_id,
+                        )
+                    except Exception:  # noqa: BLE001 — feedback is best-effort
+                        pass
 
-        return self._finalize(
+        result = self._finalize(
             risk_score=final_score,
             phase_scores=phase_scores,
             categories=categories,
@@ -188,6 +222,26 @@ class Pipeline:
             session_id=session_id,
             source_type=source_type,
         )
+        self._maybe_tune()
+        return result
+
+    # ---------------- Auto-tune ----------------
+
+    def _maybe_tune(self) -> None:
+        """Run a tuning batch every TUNING_INTERVAL classifications.
+
+        Inline + sync — feedback batches are small (≤100 rows) and the
+        cost of a SELECT + a few dict updates is negligible compared to
+        the rest of the analysis (regex + optional Claude call).
+        """
+        if self.precision is None:
+            return
+        self._analysis_count += 1
+        if self._analysis_count % TUNING_INTERVAL == 0:
+            try:
+                self.precision.process_pending_feedback()
+            except Exception:  # noqa: BLE001
+                pass
 
     def _finalize(
         self,

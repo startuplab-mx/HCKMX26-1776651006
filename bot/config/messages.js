@@ -197,6 +197,14 @@ export const MESSAGES = {
   contribucionError:
     'No pude registrar la contribución, pero tu análisis sigue en pie. Intenta más tarde si quieres aportar.',
 
+  falsoPositivoReconocido: [
+    '🙏 Entendido, gracias por la corrección.',
+    '',
+    'Esto nos ayuda a mejorar la precisión del sistema. Cada corrección de un usuario ajusta automáticamente los patrones del clasificador.',
+    '',
+    '¿Hay algo más que quieras analizar?',
+  ].join('\n'),
+
   errorBackend:
     'Tuve un problema al analizar tu mensaje. Inténtalo de nuevo en un momento. Si urge: 088 (Policía Cibernética).',
 

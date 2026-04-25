@@ -132,7 +132,10 @@ class HeuristicClassifier:
             self._emoji_ids[e["emoji"]] = e.get("id") or f"emoji.{idx:03d}"
 
     def _score_phase(
-        self, phase_key: str, normalized: str
+        self,
+        phase_key: str,
+        normalized: str,
+        weight_overrides: Any = None,
     ) -> tuple[float, list[str], list[str], list[dict[str, str]]]:
         matched_descriptions: list[str] = []
         matched_ids: list[str] = []
@@ -140,14 +143,27 @@ class HeuristicClassifier:
         raw = 0.0
         max_matched_weight = 0.0
         phase_label = PHASE_DISPLAY[phase_key]
-        for compiled, weight, source, pattern_id, exp in self._compiled_patterns[
+        for compiled, base_weight, source, pattern_id, exp in self._compiled_patterns[
             phase_key
         ]:
             if compiled.search(normalized):
+                # Auto-tuner overlay: ask the precision processor for the
+                # adjusted weight. Falls back to base when no overrides.
+                if weight_overrides is not None and hasattr(
+                    weight_overrides, "get_adjusted_weight"
+                ):
+                    weight = weight_overrides.get_adjusted_weight(
+                        pattern_id, base_weight
+                    )
+                else:
+                    weight = base_weight
                 raw += weight
                 max_matched_weight = max(max_matched_weight, weight)
                 matched_descriptions.append(f"{compiled.pattern} ({source})")
                 matched_ids.append(pattern_id)
+                # Severity is a UX cue, computed from the *adjusted* weight
+                # so the user-facing "alta/media/baja" reflects what the
+                # tuner has learned about each pattern.
                 severity = (
                     "alta" if weight >= 0.7 else "media" if weight >= 0.4 else "baja"
                 )
@@ -195,7 +211,9 @@ class HeuristicClassifier:
                 )
         return boosts, categories, ids, explanations
 
-    def classify(self, text: str) -> dict[str, Any]:
+    def classify(
+        self, text: str, weight_overrides: Any = None
+    ) -> dict[str, Any]:
         normalized = _normalize(text)
         per_phase: dict[str, float] = {}
         matched_per_phase: dict[str, list[str]] = {}
@@ -204,7 +222,7 @@ class HeuristicClassifier:
 
         for phase_key in PHASE_FILES:
             score, matched, ids, explanations = self._score_phase(
-                phase_key, normalized
+                phase_key, normalized, weight_overrides=weight_overrides
             )
             per_phase[phase_key] = score
             matched_per_phase[phase_key] = matched

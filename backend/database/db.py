@@ -75,6 +75,28 @@ CREATE TABLE IF NOT EXISTS contributions (
     override_triggered INTEGER DEFAULT 0
 );
 
+-- Auto-tuning feedback log. Three sources feed it:
+--   1. confirm/deny: implicit signals from the bot flow (user provided
+--      guardian phone vs explicitly denied the alert)
+--   2. llm_discrepancy: pipeline observed a >0.3 gap between heuristic
+--      and Claude API scores
+--   3. operator_fp/operator_fn: explicit panel actions
+-- The PrecisionProcessor reads `processed=0` rows in batches and adjusts
+-- per-pattern weight overlays in runtime.
+CREATE TABLE IF NOT EXISTS feedback_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    alert_id INTEGER,
+    feedback_type TEXT NOT NULL,
+    heuristic_score REAL,
+    llm_score REAL,
+    final_score REAL,
+    pattern_ids TEXT,
+    text_hash TEXT,
+    session_id TEXT,
+    processed INTEGER DEFAULT 0
+);
+
 -- Per-session risk score history. One row per analysis. Used by
 -- classifier/escalation.py to detect when risk is increasing across a
 -- conversation, even when individual messages would land in ATENCION.
@@ -98,6 +120,8 @@ CREATE INDEX IF NOT EXISTS idx_contrib_platform ON contributions(platform);
 CREATE INDEX IF NOT EXISTS idx_contrib_phase ON contributions(phase_detected);
 CREATE INDEX IF NOT EXISTS idx_contrib_created_at ON contributions(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_risk_history_session ON risk_history(session_id, timestamp);
+CREATE INDEX IF NOT EXISTS idx_feedback_processed ON feedback_log(processed);
+CREATE INDEX IF NOT EXISTS idx_feedback_type ON feedback_log(feedback_type);
 """
 
 # Columns added after v1.0 that need ALTER TABLE on pre-existing DBs.
@@ -682,6 +706,88 @@ class Database:
         self._conn.execute(
             "DELETE FROM risk_history WHERE session_id = ?", (session_id,)
         )
+
+    # ---------------- Precision feedback (auto-tuning) ----------------
+
+    def save_feedback(
+        self,
+        *,
+        feedback_type: str,
+        alert_id: int | None = None,
+        heuristic_score: float | None = None,
+        llm_score: float | None = None,
+        final_score: float | None = None,
+        pattern_ids: list[str] | None = None,
+        text_hash: str | None = None,
+        session_id: str | None = None,
+    ) -> int:
+        cur = self._conn.execute(
+            """
+            INSERT INTO feedback_log (
+                alert_id, feedback_type, heuristic_score, llm_score, final_score,
+                pattern_ids, text_hash, session_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                alert_id,
+                feedback_type,
+                heuristic_score,
+                llm_score,
+                final_score,
+                json.dumps(pattern_ids or [], ensure_ascii=False),
+                text_hash,
+                session_id,
+            ),
+        )
+        return int(cur.lastrowid)
+
+    def get_unprocessed_feedback(self, limit: int = 100) -> list[dict[str, Any]]:
+        rows = self._conn.execute(
+            "SELECT * FROM feedback_log WHERE processed = 0 ORDER BY created_at ASC LIMIT ?",
+            (limit,),
+        ).fetchall()
+        return [
+            {
+                "id": r["id"],
+                "created_at": r["created_at"],
+                "alert_id": r["alert_id"],
+                "feedback_type": r["feedback_type"],
+                "heuristic_score": r["heuristic_score"],
+                "llm_score": r["llm_score"],
+                "final_score": r["final_score"],
+                "pattern_ids": json.loads(r["pattern_ids"] or "[]"),
+                "text_hash": r["text_hash"],
+                "session_id": r["session_id"],
+                "processed": r["processed"],
+            }
+            for r in rows
+        ]
+
+    def mark_feedback_processed(self, feedback_ids: list[int]) -> None:
+        if not feedback_ids:
+            return
+        with self._lock:
+            placeholders = ",".join("?" * len(feedback_ids))
+            self._conn.execute(
+                f"UPDATE feedback_log SET processed = 1 WHERE id IN ({placeholders})",
+                feedback_ids,
+            )
+
+    def feedback_stats(self) -> dict[str, Any]:
+        with self._lock:
+            total = self._conn.execute(
+                "SELECT COUNT(*) AS c FROM feedback_log"
+            ).fetchone()["c"]
+            pending = self._conn.execute(
+                "SELECT COUNT(*) AS c FROM feedback_log WHERE processed = 0"
+            ).fetchone()["c"]
+            by_type = {
+                r["feedback_type"]: r["c"]
+                for r in self._conn.execute(
+                    "SELECT feedback_type, COUNT(*) AS c FROM feedback_log GROUP BY feedback_type"
+                ).fetchall()
+            }
+        return {"total": total, "pending": pending, "by_type": by_type}
 
     def close(self) -> None:
         self._conn.close()

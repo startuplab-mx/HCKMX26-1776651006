@@ -22,6 +22,7 @@ import {
   registerAlert,
   fetchReportBytes,
   submitContribution,
+  submitFeedback,
 } from './alertDispatcher.js';
 
 const PHASE_LABEL = {
@@ -38,6 +39,12 @@ const REPORT_RE = /^\s*(reporte|report|pdf|descargar)\s*$/i;
 const YES_RE = /^\s*(s[ií]|si|sí|yes|y|confirmar|confirmo|ok|dale|adelante)\s*[!.]?\s*$/i;
 const NO_RE = /^\s*(no|nop|nope|nah|cancelar|nel)\s*[!.]?\s*$/i;
 const SKIP_RE = /^\s*(skip|saltar|omitir|n\/?a|prefiero no|paso)\s*$/i;
+// Explicit denial of the alert verdict — distinct from "no quiero contribuir".
+// When the user says "no es" / "me equivoqué" / "falso" while we're waiting
+// for the guardian phone, treat it as an alert-level deny and feed the
+// auto-tuner accordingly.
+const DENY_ALERT_RE =
+  /^\s*(no\s+es|no\s+es\s+cierto|me\s+equivoqu[eé]|fals[oa]|no\s+(es\s+)?peligro|esto\s+no\s+es|exager(o|aste)|fui\s+yo)\s*[!.]?\s*$/i;
 
 function looksLikeGreeting(text) {
   return text.length < 30 && GREETING_RE.test(text.trim());
@@ -205,10 +212,29 @@ export async function advance(sock, jid, text) {
       return;
 
     case 'notify': {
+      // Explicit denial → feed the auto-tuner as a possible false positive
+      // and exit the flow gracefully, no guardian notify, no contribute.
+      if (DENY_ALERT_RE.test(text)) {
+        const lastAlertId = getSessionData(jid, 'lastAlertId');
+        const lastAnalysis = getSessionData(jid, 'lastAnalysis') || {};
+        await submitFeedback({
+          feedback_type: 'deny',
+          alert_id: lastAlertId,
+          session_id: jid,
+          pattern_ids: lastAnalysis.pattern_ids || [],
+          heuristic_score: lastAnalysis.risk_score,
+          final_score: lastAnalysis.risk_score,
+        });
+        await sock.sendMessage(jid, { text: MESSAGES.falsoPositivoReconocido });
+        setSessionData(jid, { lastAnalysis: null });
+        setStep(jid, 'inicio');
+        return;
+      }
+
       const phone = text.replace(/[^\d]/g, '');
       if (phone.length < 10) {
         await sock.sendMessage(jid, {
-          text: 'Número no válido. Mándame +52 con 10 dígitos, o escribe "reporte" para descargar el PDF.',
+          text: 'Número no válido. Mándame +52 con 10 dígitos, escribe "no" si te equivocaste, o "reporte" para el PDF.',
         });
         return;
       }
@@ -224,6 +250,19 @@ export async function advance(sock, jid, text) {
           text: `No pude enviar el aviso (${err.message}). Llama 088 directamente.`,
         });
       }
+      // Implicit confirm: the user acted on the PELIGRO verdict by handing
+      // over the guardian phone. Feed it to the auto-tuner so the patterns
+      // that fired keep their weight (or move up).
+      const lastAlertId = getSessionData(jid, 'lastAlertId');
+      const lastAnalysis = getSessionData(jid, 'lastAnalysis') || {};
+      await submitFeedback({
+        feedback_type: 'confirm',
+        alert_id: lastAlertId,
+        session_id: jid,
+        pattern_ids: lastAnalysis.pattern_ids || [],
+        heuristic_score: lastAnalysis.risk_score,
+        final_score: lastAnalysis.risk_score,
+      });
       setStep(jid, 'ask_contribute');
       await sock.sendMessage(jid, { text: MESSAGES.preguntarContribuir });
       return;

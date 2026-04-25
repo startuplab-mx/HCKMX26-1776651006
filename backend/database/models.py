@@ -145,6 +145,21 @@ class ContributionCreate(BaseModel):
     override_triggered: bool = False
 
 
+class FeedbackCreate(BaseModel):
+    """Implicit or explicit feedback for the auto-tuner."""
+    model_config = {"extra": "forbid"}
+
+    feedback_type: Literal[
+        "confirm", "deny", "operator_fp", "operator_fn", "llm_discrepancy"
+    ]
+    alert_id: int | None = None
+    session_id: str | None = Field(default=None, max_length=120)
+    heuristic_score: float | None = Field(default=None, ge=0.0, le=1.0)
+    llm_score: float | None = Field(default=None, ge=0.0, le=1.0)
+    final_score: float | None = Field(default=None, ge=0.0, le=1.0)
+    pattern_ids: list[str] = Field(default_factory=list)
+
+
 class ContributionStats(BaseModel):
     total_contributions: int
     by_platform: dict[str, int]
