@@ -1,0 +1,23 @@
+{
+  "name": "nahual-bot",
+  "version": "1.0.0",
+  "description": "Nahual WhatsApp bot — detección de reclutamiento criminal digital",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.0",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "pino": "^9.5.0",
+    "qrcode-terminal": "^0.12.0"
+  },
+  "license": "MIT",
+  "author": "Equipo Vanguard — Armando Flores + Marco Espinosa"
+}
