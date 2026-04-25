@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Nahual Shield",
+  "version": "1.0.0",
+  "description": "Detección proactiva de reclutamiento criminal digital en chats de WhatsApp Web, Instagram y Discord.",
+  "permissions": ["activeTab", "storage"],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://web.whatsapp.com/*",
+        "*://www.instagram.com/*",
+        "*://*.discord.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Nahual Shield"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
