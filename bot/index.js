@@ -4,7 +4,12 @@
 // messageHandler. State machine + flow controller live in handlers/.
 
 import 'dotenv/config';
-import { makeWASocket, useMultiFileAuthState, DisconnectReason } from '@whiskeysockets/baileys';
+import {
+  makeWASocket,
+  useMultiFileAuthState,
+  DisconnectReason,
+  fetchLatestBaileysVersion,
+} from '@whiskeysockets/baileys';
 import qrcode from 'qrcode-terminal';
 import pino from 'pino';
 import { handleIncomingMessage } from './handlers/messageHandler.js';
@@ -16,10 +21,24 @@ const SESSION_DIR = process.env.BOT_SESSION_DIR || './auth_info_baileys';
 async function start() {
   const { state, saveCreds } = await useMultiFileAuthState(SESSION_DIR);
 
+  // Without this WhatsApp rejects the handshake on any baked-in WA version
+  // older than the current server-side protocol — even on a fresh install.
+  // fetchLatestBaileysVersion() pulls the active version from a CDN; falls
+  // back to the bundled version if the lookup fails (which is fine on dev).
+  let waVersion;
+  try {
+    const v = await fetchLatestBaileysVersion();
+    waVersion = v.version;
+    logger.info({ version: waVersion, isLatest: v.isLatest }, 'WA version negotiated');
+  } catch (err) {
+    logger.warn({ err: err.message }, 'fetchLatestBaileysVersion failed, using bundled');
+  }
+
   const sock = makeWASocket({
     auth: state,
+    version: waVersion,
     logger: pino({ level: 'silent' }),
-    printQRInTerminal: false,
+    browser: ['Nahual', 'Chrome', '20.0.0'],
   });
 
   sock.ev.on('creds.update', saveCreds);
