@@ -792,6 +792,53 @@ def list_alerts(
     )
 
 
+@app.get("/alerts.csv", dependencies=PROTECTED)
+def list_alerts_csv(
+    limit: int = 500,
+    status: str | None = None,
+    risk_level: str | None = None,
+):
+    """CSV export for triage / handoff to authorities. PII-free by design:
+    text_hash is the only "sensitive" field, and it's irreversible.
+    """
+    import csv
+    import io
+
+    if limit < 1 or limit > 5000:
+        raise HTTPException(400, "limit must be in [1, 5000]")
+    rows = app.state.db.list_alerts(
+        limit=limit,
+        offset=0,
+        status=status,
+        risk_level=risk_level,
+    )
+    columns = [
+        "id", "created_at", "platform", "source", "risk_score", "risk_level",
+        "phase_detected", "categories", "override_triggered", "status",
+        "report_generated", "llm_used", "session_id", "text_hash",
+    ]
+    buf = io.StringIO()
+    writer = csv.writer(buf, dialect="excel")
+    writer.writerow(columns)
+    for r in rows:
+        cats = r.get("categories")
+        if isinstance(cats, list):
+            cats = ",".join(cats)
+        writer.writerow([
+            r.get(c) if c != "categories" else (cats or "") for c in columns
+        ])
+    csv_bytes = buf.getvalue().encode("utf-8-sig")  # BOM for Excel
+    from fastapi.responses import Response
+
+    return Response(
+        content=csv_bytes,
+        media_type="text/csv; charset=utf-8",
+        headers={
+            "Content-Disposition": 'attachment; filename="nahual-alerts.csv"',
+        },
+    )
+
+
 @app.get("/alerts/{alert_id}", dependencies=PROTECTED)
 def get_alert(alert_id: int):
     alert = app.state.db.get_alert(alert_id)
