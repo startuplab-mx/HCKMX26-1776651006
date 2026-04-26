@@ -1,12 +1,22 @@
-// Empty string means "same-origin relative URLs" — keep that case explicit
-// (the simpler `window.NAHUAL_API_URL || default` falls back when the value
-// is "" because empty string is falsy, which broke prod when index.html
-// injected `window.NAHUAL_API_URL = ""`).
-const API = (
-  typeof window.NAHUAL_API_URL === 'string'
-    ? window.NAHUAL_API_URL
-    : 'http://localhost:8000'
-).replace(/\/$/, '');
+// Resolution rules for the backend base URL:
+//   1. Explicit override via `<script>window.NAHUAL_API_URL = "..."</script>`
+//      injected before this file (used for cross-origin staging environments).
+//   2. Auto-detect: if the panel is being served from localhost / 127.0.0.1 /
+//      file://, target the dev backend on :8000. Otherwise return "" so all
+//      requests stay same-origin and Nginx (or whatever proxy) routes them.
+//   This avoids the 26 Apr 2026 prod regression where the deployed panel
+//   defaulted to http://localhost:8000 — every fetch from a remote browser
+//   hit *its own* localhost (which has no backend) and the table never
+//   refreshed.
+function _resolveApiBase() {
+  if (typeof window.NAHUAL_API_URL === 'string') return window.NAHUAL_API_URL;
+  const host = (typeof location !== 'undefined' && location.hostname) || '';
+  if (host === 'localhost' || host === '127.0.0.1' || host === '') {
+    return 'http://localhost:8000';
+  }
+  return ''; // same-origin → /alerts, /stats, etc. proxied by Nginx
+}
+const API = _resolveApiBase().replace(/\/$/, '');
 const REFRESH_MS = 5000;
 // API key for protected endpoints (/alerts, /sessions, /precision, /risk-history).
 // Override at deploy time with `<script>window.NAHUAL_API_KEY = '...'</script>`
@@ -802,6 +812,13 @@ async function tick() {
   if (PAUSED) return;
   await Promise.all([refresh(), refreshChart(), refreshContributions()]);
 }
+
+// Tiny boot banner so any future "panel doesn't update" regression is
+// debuggable from the browser DevTools without source-mapping the bundle.
+console.log(
+  `[nahual-panel] API base="${API || '(same-origin)'}" · refresh=${REFRESH_MS}ms` +
+  ` · key=${API_KEY ? 'present' : 'absent'}`,
+);
 
 bindActions();
 bindTestBox();
