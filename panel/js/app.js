@@ -649,6 +649,61 @@ function bindTestBox() {
 
 // ---------------- Pause toggle ----------------
 
+function showDeepCheckModal(info, errMsg) {
+  // Remove previous modal if any.
+  document.getElementById('deep-modal')?.remove();
+  const modal = document.createElement('div');
+  modal.id = 'deep-modal';
+  modal.style.cssText = `
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    backdrop-filter: blur(4px);
+  `;
+  let body = '';
+  if (errMsg) {
+    body = `<div style="color:#EF4444">⚠️ ${esc(errMsg)}</div>`;
+  } else {
+    const checks = Object.entries(info.checks || {})
+      .map(([k, v]) => {
+        const ok = v.ok;
+        const icon = ok ? '✓' : '✗';
+        const color = ok ? '#22C55E' : '#EF4444';
+        const detail =
+          v.error || v.reason || (v.status ? `status=${v.status}` : 'ok');
+        return `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);"><span><span style="color:${color};font-weight:bold">${icon}</span> <strong>${esc(k)}</strong></span><span style="color:rgba(255,255,255,0.6);font-family:ui-monospace,Menlo,monospace;font-size:12px">${esc(String(detail))}</span></div>`;
+      })
+      .join('');
+    const summary = info.all_ok
+      ? '<div style="color:#22C55E;margin-top:14px;font-weight:bold">✅ Todos los servicios responden.</div>'
+      : '<div style="color:#EAB308;margin-top:14px;font-weight:bold">⚠️ Algún servicio falló.</div>';
+    body = `${checks}${summary}`;
+  }
+  modal.innerHTML = `
+    <div style="background:#2F353A;border:1px solid #C16A4C;border-radius:12px;padding:24px;min-width:380px;max-width:560px;color:#fff;box-shadow:0 20px 60px rgba(0,0,0,0.6)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h3 style="margin:0;font-size:16px;color:#C16A4C">🔬 Deep Healthcheck</h3>
+        <button id="deep-modal-close" style="background:transparent;border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:999px;width:28px;height:28px;cursor:pointer">×</button>
+      </div>
+      ${body}
+      <div style="margin-top:18px;font-size:11px;color:rgba(255,255,255,0.4)">DB · Anthropic · Groq · live ping</div>
+    </div>
+  `;
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal || (e.target instanceof Element && e.target.id === 'deep-modal-close')) {
+      modal.remove();
+    }
+  });
+  document.body.appendChild(modal);
+  // ESC closes too
+  const onEsc = (e) => {
+    if (e.key === 'Escape') {
+      modal.remove();
+      document.removeEventListener('keydown', onEsc);
+    }
+  };
+  document.addEventListener('keydown', onEsc);
+}
+
 async function runDeepHealthcheck() {
   const btn = document.getElementById('deep-check');
   if (!btn) return;
@@ -656,17 +711,9 @@ async function runDeepHealthcheck() {
   btn.textContent = '🔬 Probando…';
   try {
     const info = await jget('/admin/healthcheck-deep');
-    const lines = ['DEEP HEALTHCHECK:'];
-    for (const [k, v] of Object.entries(info.checks || {})) {
-      const icon = v.ok ? '✓' : '✗';
-      const detail = v.error || v.reason || (v.status ? `status=${v.status}` : 'ok');
-      lines.push(`  ${icon} ${k.padEnd(10)} — ${detail}`);
-    }
-    lines.push('');
-    lines.push(info.all_ok ? '  ✅ Todos los servicios responden.' : '  ⚠️ Algún servicio falló.');
-    alert(lines.join('\n'));
+    showDeepCheckModal(info);
   } catch (e) {
-    alert(`Deep healthcheck falló: ${e.message}`);
+    showDeepCheckModal(null, e.message);
   } finally {
     btn.disabled = false;
     btn.textContent = '🔬 Deep check';
