@@ -165,3 +165,26 @@ def test_admin_runtime_info_no_pii(tmp_path):
         s = _json.dumps(body, ensure_ascii=False)
         for term in ("manda fotos", "las publico"):
             assert term not in s, f"PII leak: {term!r} found in /admin/runtime-info"
+
+
+# ---------------- /feedback rate limit ----------------
+
+
+def test_feedback_rate_limit_kicks_in_after_max(tmp_path):
+    """When FEEDBACK_RATE_LIMIT_MAX > 0, the (max+1)-th request returns 429."""
+    os.environ["FEEDBACK_RATE_LIMIT_MAX"] = "2"  # tighten for the test
+    try:
+        with _client(tmp_path) as c:
+            # Create one alert so we have a real id to hammer
+            aid = c.post("/alert", json={"text": "te voy a matar"}).json()["id"]
+            payload = {"feedback_type": "deny", "alert_id": aid}
+            r1 = c.post("/feedback", json=payload)
+            r2 = c.post("/feedback", json=payload)
+            r3 = c.post("/feedback", json=payload)
+            assert r1.status_code == 201
+            assert r2.status_code == 201
+            assert r3.status_code == 429
+            assert "Retry-After" in r3.headers
+    finally:
+        # Restore the test default (unlimited) for any later test.
+        os.environ["FEEDBACK_RATE_LIMIT_MAX"] = "0"

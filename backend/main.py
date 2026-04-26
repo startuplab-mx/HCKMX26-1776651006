@@ -20,7 +20,7 @@ import base64
 
 import httpx
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, File, HTTPException, Security, UploadFile, status
+from fastapi import Depends, FastAPI, File, HTTPException, Request, Security, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.security import APIKeyHeader
@@ -258,11 +258,56 @@ def reset_risk_history(session_id: str):
     return None
 
 
+def _client_ip(request) -> str:
+    """Extract the real client IP behind Nginx. Trusts X-Forwarded-For
+    only when the immediate peer is loopback (which is the case behind
+    our local Nginx)."""
+    peer = request.client.host if request.client else "0.0.0.0"
+    if peer in ("127.0.0.1", "::1"):
+        xff = request.headers.get("x-forwarded-for", "")
+        if xff:
+            return xff.split(",")[0].strip()
+    return peer
+
+
+# Per-(IP, alert_id) feedback rate limit. Stops a single attacker from
+# flooding /feedback with deny signals to poison the auto-tuner. Sliding
+# window with cheap dict-of-deques. Limits configurable via env so tests
+# can disable (FEEDBACK_RATE_LIMIT_MAX=0).
+import collections
+_FEEDBACK_HITS: dict[tuple[str, int], collections.deque] = {}
+_FEEDBACK_WINDOW_S = int(os.getenv("FEEDBACK_RATE_WINDOW_S", "600"))
+_FEEDBACK_MAX = int(os.getenv("FEEDBACK_RATE_LIMIT_MAX", "3"))
+
+
+def _feedback_rate_check(ip: str, alert_id: int | None) -> tuple[bool, int]:
+    """Return (ok, retry_after_seconds). When alert_id is None (general
+    feedback without a target), the limit is keyed on IP alone. Set
+    FEEDBACK_RATE_LIMIT_MAX=0 to disable (used by tests)."""
+    if _FEEDBACK_MAX <= 0:
+        return True, 0
+    if alert_id is None:
+        alert_id = -1
+    now = time.time()
+    key = (ip, alert_id)
+    dq = _FEEDBACK_HITS.get(key)
+    if dq is None:
+        dq = collections.deque()
+        _FEEDBACK_HITS[key] = dq
+    # Drop expired hits.
+    while dq and (now - dq[0]) > _FEEDBACK_WINDOW_S:
+        dq.popleft()
+    if len(dq) >= _FEEDBACK_MAX:
+        return False, int(_FEEDBACK_WINDOW_S - (now - dq[0]))
+    dq.append(now)
+    return True, 0
+
+
 @app.post(
     "/feedback",
     status_code=status.HTTP_201_CREATED,
 )
-def submit_feedback(payload: FeedbackCreate):
+def submit_feedback(payload: FeedbackCreate, request: Request):
     """Record a feedback signal for the auto-tuner.
 
     Sources:
@@ -274,7 +319,21 @@ def submit_feedback(payload: FeedbackCreate):
     Side effect: feeds the Bayesian classifier when the alert is known.
     `confirm` → train with the alert's dominant phase.
     `deny` / `operator_fp` → train as "seguro" (the alert was wrong).
+
+    Rate-limited to 3 submissions per (IP, alert_id) per 10 min to prevent
+    auto-tuner poisoning. Captures source IP + user-agent for audit.
     """
+    # Audit trail + rate limit
+    ip = _client_ip(request)
+    ua = (request.headers.get("user-agent") or "")[:200]
+    ok, retry_after = _feedback_rate_check(ip, payload.alert_id)
+    if not ok:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"feedback rate limit; retry in {retry_after}s",
+            headers={"Retry-After": str(retry_after)},
+        )
+
     fid = app.state.db.save_feedback(
         feedback_type=payload.feedback_type,
         alert_id=payload.alert_id,
@@ -283,6 +342,11 @@ def submit_feedback(payload: FeedbackCreate):
         final_score=payload.final_score,
         pattern_ids=payload.pattern_ids,
         session_id=payload.session_id,
+    )
+    # Best-effort log for audit (no PII; just IP + UA + feedback type).
+    logger.info(
+        "feedback id=%s type=%s alert=%s ip=%s ua=%s",
+        fid, payload.feedback_type, payload.alert_id, ip, ua[:60],
     )
 
     # Feed the Bayesian classifier so the model learns from real feedback.

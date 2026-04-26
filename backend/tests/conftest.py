@@ -28,6 +28,10 @@ for _key in (
 ):
     os.environ[_key] = ""
 
+# Disable rate limit on /feedback for tests (set MAX=0 → unlimited).
+# Production keeps the default of 3 per (IP, alert_id) per 10 min.
+os.environ["FEEDBACK_RATE_LIMIT_MAX"] = "0"
+
 
 # Pytest fixture: redirect the Bayesian model file to a per-test tmp path
 # so the singleton does NOT inherit the production-bootstrapped model
