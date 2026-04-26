@@ -653,6 +653,78 @@ def admin_metrics():
     }
 
 
+@app.get("/admin/runtime-info")
+def admin_runtime_info():
+    """Aggregated ops view — combines version, dataset, metrics, and the
+    last 5 alert ids/levels/dates without exposing PII. Single round-trip
+    for the panel header strip + operator dashboards.
+    """
+    info_pieces: dict = {}
+
+    # Version
+    bi = _read_build_info()
+    info_pieces["version"] = {
+        "commit": (bi.get("commit") or "")[:10],
+        "branch": bi.get("branch"),
+        "committed_at": bi.get("committed_at"),
+        "environment": os.getenv("ENVIRONMENT", "development"),
+    }
+
+    # Dataset
+    try:
+        h = app.state.pipeline.heuristic
+        total = sum(len(h._compiled_patterns.get(p, []))
+                    for p in ("phase1", "phase2", "phase3", "phase4"))
+        info_pieces["dataset"] = {
+            "total_patterns": total,
+            "phases": {
+                p: len(h._compiled_patterns.get(p, []))
+                for p in ("phase1", "phase2", "phase3", "phase4")
+            },
+        }
+    except Exception:
+        info_pieces["dataset"] = None
+
+    # Bayesian
+    try:
+        if app.state.pipeline.bayesian is not None:
+            s = app.state.pipeline.bayesian.get_stats()
+            info_pieces["bayesian"] = {
+                "total_docs": s.get("total_training_examples"),
+                "vocab": s.get("vocabulary_size"),
+                "classes": s.get("class_distribution"),
+            }
+    except Exception:
+        info_pieces["bayesian"] = None
+
+    # Metrics
+    info_pieces["metrics"] = {
+        k: v for k, v in _REQUEST_METRICS.items() if k != "boot_time"
+    }
+    info_pieces["metrics"]["uptime_seconds"] = int(
+        time.time() - _REQUEST_METRICS["boot_time"]
+    )
+
+    # Recent alerts (id + level + platform + date — NO content/hash/PII).
+    try:
+        rows = app.state.db.list_alerts(limit=5, offset=0)
+        info_pieces["recent_alerts"] = [
+            {
+                "id": r.get("id"),
+                "created_at": r.get("created_at"),
+                "platform": r.get("platform"),
+                "risk_level": r.get("risk_level"),
+                "phase_detected": r.get("phase_detected"),
+                "override": bool(r.get("override_triggered")),
+            }
+            for r in rows
+        ]
+    except Exception:
+        info_pieces["recent_alerts"] = []
+
+    return info_pieces
+
+
 # ---------------- STT / OCR (Phase 3) ----------------
 
 GROQ_TRANSCRIBE_URL = "https://api.groq.com/openai/v1/audio/transcriptions"
