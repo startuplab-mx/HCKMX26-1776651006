@@ -208,13 +208,13 @@ INICIO → BIENVENIDA → RECIBIR_MSG → ANALIZANDO → RESULT_SAFE/ATTENTION/D
 
 ## KEYWORDS — STATUS
 
-**Dataset is COMPLETE and in production.** 870 patterns total, 460 high-confidence (weight ≥ 0.8), 14 emojis.
+**Dataset is COMPLETE and in production.** 900 patterns total, 487 high-confidence (weight ≥ 0.8), 14 emojis.
 
 ```
-phase1_captacion.json   294 patterns (high=130)  Captación
-phase2_enganche.json    189 patterns (high= 70)  Enganche
-phase3_coercion.json    225 patterns (high=180)  Coerción ← override-prone
-phase4_explotacion.json 162 patterns (high= 80)  Explotación
+phase1_captacion.json   299 patterns (high=132)  Captación
+phase2_enganche.json    192 patterns (high= 71)  Enganche
+phase3_coercion.json    236 patterns (high=187)  Coerción ← override-prone
+phase4_explotacion.json 173 patterns (high= 89)  Explotación
 emojis_narco.json        14 emojis
 ```
 

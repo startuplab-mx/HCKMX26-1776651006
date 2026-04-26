@@ -1,7 +1,33 @@
 # 📋 NAHUAL — CHANGELOG
 
 Cronología de la sesión de hardening + deploy a producción
-(25 abril 2026, ~12:00 → 18:00 CST).
+(25 abril 2026, ~12:00 → 23:30 CST).
+
+## [v1.4.1] — Apr 25 night · "240-corpus iterations + landing refresh"
+
+* **Corpus v2 (240 frases curadas)**: 60 P1 + 40 P2 + 50 P3 + 40 P4 + 50 SAFE.
+  4 iteraciones (test → fix → retrain) hasta llegar a **99.6% accuracy local
+  sin LLM** (239/240). 0 falsos negativos, 1 falso positivo aceptado en
+  `"qué vas a hacer"` que el LLM resuelve.
+* **Dataset 870 → 900 patrones** (+30 desde override-grade lifts y nuevos):
+  - phase3 +9 (distress severo, stalking, lista de muerte, gift card extort)
+  - phase4 +14 (sextort recibida, forced ops, payment demands, halconear)
+  - phase1+2 +7 (cartel jerga variants, topología finca, false friendship)
+* **Bayesiano re-balanceado**: 50 → 165 frases SAFE en bootstrap (FP rate
+  cortado de 24/50 a 1/50 en suite SAFE). Vocab: 5701 → 6104.
+* **Pipeline tweak**: cuando `heur=0` y LLM no activa, el Bayesiano gets
+  100% del peso. Probado experimentalmente cap a 0.25 — introdujo 9 FN
+  reales, revertido.
+* **Landing v1.4 refresh** (`nahuallanding/`):
+  - "122 patrones" → "900 patrones" en classifierSection title
+  - Architecture rebuilt como 4-layer cognitive (Heurístico + Bayesiano +
+    Sonnet 4.5 + Trayectoria) en site.ts y graphics
+  - Nueva LiveDemoSection (Bot WA + Panel + Swagger en 3 cards)
+  - Hero CTA reordenado: WhatsApp deeplink primario
+  - SEO metadata expanded (keywords, openGraph siteName, robots)
+  - Outputs section: legal articles + live panel link
+  - Flow section: documenta los 13+ universal commands + distress path
+  - Push a `personal/main` para auto-deploy Vercel a nahualsec.com
 
 ## [v1.4.0] — Apr 25 evening · "4-layer cognitive classifier"
 

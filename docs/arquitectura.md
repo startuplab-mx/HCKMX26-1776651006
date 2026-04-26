@@ -13,7 +13,7 @@ flowchart TB
     subgraph BACKEND[Backend Core · FastAPI :8000]
         direction TB
         Pipe[Pipeline]
-        H[Layer 1<br/>Heuristic 768 patrones<br/>(F1 260 · F2 172 · F3 194 · F4 142)]
+        H[Layer 1<br/>Heuristic 900 patrones<br/>(F1 299 · F2 192 · F3 236 · F4 173)]
         L[Layer 2<br/>claude-sonnet-4-5<br/>5s timeout · zona gris 0.3-0.6]
         STT[Layer Audio<br/>Groq Whisper-large-v3]
         OCR_L[Layer Imagen<br/>Claude Vision]
