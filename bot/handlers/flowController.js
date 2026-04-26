@@ -120,7 +120,7 @@ async function analyzeAndReply(sock, jid, text, sourceType = 'text') {
     });
     return;
   }
-  await sock.sendMessage(jid, { text: MESSAGES.recibido });
+  await sock.sendMessage(jid, { text: MESSAGES.recibidoRandom() });
   setStep(jid, 'analizando');
   try {
     const result = await registerAlert({

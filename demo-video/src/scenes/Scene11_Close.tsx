@@ -6,64 +6,65 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
+import { FilmGrain } from "../components/FilmGrain";
+import { ParticleField } from "../components/ParticleField";
+import { GlowText } from "../components/GlowText";
 
-export const Scene7_Close: React.FC = () => {
+export const Scene11_Close: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Fade in from black
   const fadeIn = interpolate(frame, [0, 30], [0, 1], {
     extrapolateRight: "clamp",
   });
 
-  // "Not just a hackathon code" line
-  const line1Opacity = interpolate(frame, [20, 50], [0, 1], {
+  // "Not just hackathon code" line
+  const line1Opacity = interpolate(frame, [10, 35], [0, 1], {
     extrapolateRight: "clamp",
   });
-  const line1Y = interpolate(frame, [20, 50], [20, 0], {
+  const line1Y = interpolate(frame, [10, 35], [20, 0], {
     extrapolateRight: "clamp",
   });
 
-  // "It's a real solution" line
-  const line2Opacity = interpolate(frame, [70, 100], [0, 1], {
+  // "Real solution" line
+  const line2Opacity = interpolate(frame, [40, 65], [0, 1], {
     extrapolateRight: "clamp",
   });
-  const line2Y = interpolate(frame, [70, 100], [20, 0], {
+  const line2Y = interpolate(frame, [40, 65], [20, 0], {
     extrapolateRight: "clamp",
   });
 
   // Lines fade out
-  const linesFadeOut = interpolate(frame, [140, 160], [1, 0], {
+  const linesFadeOut = interpolate(frame, [80, 95], [1, 0], {
     extrapolateRight: "clamp",
     extrapolateLeft: "clamp",
   });
 
-  // Logo appears
+  // Logo with glow rings
   const logoSpring = spring({
-    frame: frame - 170,
+    frame: frame - 100,
     fps,
-    durationInFrames: 30,
+    durationInFrames: 25,
     config: { mass: 0.6, damping: 10 },
   });
 
-  // Glow pulse
-  const glowIntensity =
-    frame > 200 ? 20 + 10 * Math.sin((frame - 200) * 0.06) : 0;
+  // Glow rings expanding from logo
+  const ringCount = 4;
 
   // Contact info
-  const contactOpacity = interpolate(frame, [250, 280], [0, 1], {
+  const contactOpacity = interpolate(frame, [140, 160], [0, 1], {
     extrapolateRight: "clamp",
     extrapolateLeft: "clamp",
   });
 
   // Team
-  const teamOpacity = interpolate(frame, [310, 340], [0, 1], {
+  const teamOpacity = interpolate(frame, [165, 185], [0, 1], {
     extrapolateRight: "clamp",
     extrapolateLeft: "clamp",
   });
 
   // Hackathon badge
-  const badgeSpring = spring({ frame: frame - 370, fps, durationInFrames: 25 });
+  const badgeSpring = spring({ frame: frame - 195, fps, durationInFrames: 20 });
 
   return (
     <div
@@ -80,6 +81,9 @@ export const Scene7_Close: React.FC = () => {
         overflow: "hidden",
       }}
     >
+      <FilmGrain opacity={0.04} />
+      <ParticleField count={50} />
+
       {/* Background gradient orbs */}
       <div
         style={{
@@ -105,8 +109,8 @@ export const Scene7_Close: React.FC = () => {
       />
 
       {/* Manifesto lines */}
-      {frame < 160 && (
-        <div style={{ textAlign: "center", opacity: linesFadeOut }}>
+      {frame < 95 && (
+        <div style={{ textAlign: "center", opacity: linesFadeOut, zIndex: 10 }}>
           <div
             style={{
               opacity: line1Opacity,
@@ -133,35 +137,57 @@ export const Scene7_Close: React.FC = () => {
         </div>
       )}
 
-      {/* Logo */}
-      {frame >= 170 && (
+      {/* Logo with glow rings */}
+      {frame >= 100 && (
         <div
           style={{
             transform: `scale(${logoSpring})`,
             textAlign: "center",
-            marginBottom: 40,
+            marginBottom: 30,
+            position: "relative",
+            zIndex: 10,
           }}
         >
+          {/* Expanding glow rings */}
+          {Array.from({ length: ringCount }).map((_, i) => {
+            const ringFrame = frame - 110 - i * 15;
+            const ringScale = ringFrame > 0
+              ? interpolate(ringFrame, [0, 50], [0.5, 3 + i * 0.6], { extrapolateRight: "clamp" })
+              : 0;
+            const ringOpacity = ringFrame > 0
+              ? interpolate(ringFrame, [0, 50], [0.5, 0], { extrapolateRight: "clamp" })
+              : 0;
+
+            return (
+              <div
+                key={i}
+                style={{
+                  position: "absolute",
+                  top: "30%",
+                  left: "50%",
+                  width: 100,
+                  height: 100,
+                  borderRadius: "50%",
+                  border: `2px solid ${COLORS.cobreGlow}`,
+                  transform: `translate(-50%, -50%) scale(${ringScale})`,
+                  opacity: ringOpacity,
+                  pointerEvents: "none",
+                }}
+              />
+            );
+          })}
+
           <div
             style={{
-              fontSize: 48,
+              fontSize: 52,
               marginBottom: 16,
-              filter: `drop-shadow(0 0 ${glowIntensity}px ${COLORS.cobre})`,
+              position: "relative",
+              zIndex: 2,
             }}
           >
             🛡️
           </div>
-          <div
-            style={{
-              fontSize: 96,
-              fontWeight: 900,
-              color: COLORS.cobre,
-              letterSpacing: 12,
-              textShadow: `0 0 ${glowIntensity * 2}px ${COLORS.cobre}66`,
-            }}
-          >
-            NAHUAL
-          </div>
+          <GlowText text="NAHUAL" fontSize={96} style={{ letterSpacing: 12 }} />
         </div>
       )}
 
@@ -170,7 +196,8 @@ export const Scene7_Close: React.FC = () => {
         style={{
           opacity: contactOpacity,
           textAlign: "center",
-          marginBottom: 40,
+          marginBottom: 24,
+          zIndex: 10,
         }}
       >
         <div
@@ -178,17 +205,12 @@ export const Scene7_Close: React.FC = () => {
             fontSize: 28,
             fontWeight: 600,
             color: COLORS.cream,
-            marginBottom: 12,
+            marginBottom: 8,
           }}
         >
           nahualsec.com
         </div>
-        <div
-          style={{
-            fontSize: 22,
-            color: COLORS.cobreLight,
-          }}
-        >
+        <div style={{ fontSize: 22, color: COLORS.cobreLight }}>
           Bot: +52 844 538 7404
         </div>
       </div>
@@ -198,7 +220,8 @@ export const Scene7_Close: React.FC = () => {
         style={{
           opacity: teamOpacity,
           textAlign: "center",
-          marginBottom: 40,
+          marginBottom: 24,
+          zIndex: 10,
         }}
       >
         <div
@@ -206,7 +229,7 @@ export const Scene7_Close: React.FC = () => {
             fontSize: 14,
             color: COLORS.cream,
             opacity: 0.4,
-            marginBottom: 8,
+            marginBottom: 6,
             letterSpacing: 4,
             textTransform: "uppercase",
           }}
@@ -228,16 +251,17 @@ export const Scene7_Close: React.FC = () => {
       <div
         style={{
           position: "absolute",
-          bottom: 50,
+          bottom: 40,
           opacity: badgeSpring,
           transform: `scale(${badgeSpring})`,
           display: "flex",
           alignItems: "center",
-          gap: 12,
-          padding: "12px 28px",
+          gap: 16,
+          padding: "14px 32px",
           background: "rgba(255,255,255,0.05)",
           borderRadius: 50,
           border: `1px solid rgba(255,255,255,0.1)`,
+          zIndex: 10,
         }}
       >
         <div style={{ fontSize: 16, color: COLORS.cream, opacity: 0.6 }}>
@@ -246,6 +270,10 @@ export const Scene7_Close: React.FC = () => {
         <div style={{ color: COLORS.cream, opacity: 0.3 }}>|</div>
         <div style={{ fontSize: 16, color: COLORS.cobreLight, fontWeight: 600 }}>
           Abril 2026
+        </div>
+        <div style={{ color: COLORS.cream, opacity: 0.3 }}>|</div>
+        <div style={{ fontSize: 16, color: COLORS.yellow, fontWeight: 700 }}>
+          $25,000 USD
         </div>
       </div>
     </div>

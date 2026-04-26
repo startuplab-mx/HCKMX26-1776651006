@@ -6,6 +6,9 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
+import { FilmGrain } from "../components/FilmGrain";
+import { ParticleField } from "../components/ParticleField";
+import { AnimatedCounter } from "../components/AnimatedCounter";
 
 const HeatDot: React.FC<{
   x: number;
@@ -58,7 +61,7 @@ const HeatDot: React.FC<{
   );
 };
 
-export const Scene6_Platform: React.FC = () => {
+export const Scene10_Platform: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -66,37 +69,28 @@ export const Scene6_Platform: React.FC = () => {
     extrapolateRight: "clamp",
   });
 
-  // Title
   const titleSpring = spring({ frame, fps, durationInFrames: 25 });
 
-  // Map outline opacity
+  // Map outline
   const mapOpacity = interpolate(frame, [20, 50], [0, 1], {
     extrapolateRight: "clamp",
   });
 
   // Text blocks
-  const text1Opacity = interpolate(frame, [180, 210], [0, 1], {
+  const text1Opacity = interpolate(frame, [160, 190], [0, 1], {
     extrapolateRight: "clamp",
     extrapolateLeft: "clamp",
   });
-  const text2Opacity = interpolate(frame, [240, 270], [0, 1], {
+  const text2Opacity = interpolate(frame, [210, 240], [0, 1], {
     extrapolateRight: "clamp",
     extrapolateLeft: "clamp",
   });
 
-  // Bottom stats
-  const statsSpring = spring({ frame: frame - 300, fps, durationInFrames: 25 });
-  const patternCount = interpolate(frame, [300, 360], [0, 870], {
-    extrapolateRight: "clamp",
-    extrapolateLeft: "clamp",
-  });
-  const accuracy = interpolate(frame, [320, 370], [0, 99.6], {
-    extrapolateRight: "clamp",
-    extrapolateLeft: "clamp",
-  });
+  // Stats
+  const statsSpring = spring({ frame: frame - 260, fps, durationInFrames: 25 });
 
   // Fade out
-  const fadeOut = interpolate(frame, [430, 450], [1, 0], {
+  const fadeOut = interpolate(frame, [335, 360], [1, 0], {
     extrapolateRight: "clamp",
     extrapolateLeft: "clamp",
   });
@@ -112,6 +106,9 @@ export const Scene6_Platform: React.FC = () => {
         position: "relative",
       }}
     >
+      <FilmGrain opacity={0.03} />
+      <ParticleField count={30} />
+
       {/* LEFT — Map */}
       <div
         style={{
@@ -120,9 +117,9 @@ export const Scene6_Platform: React.FC = () => {
           justifyContent: "center",
           alignItems: "center",
           position: "relative",
+          zIndex: 10,
         }}
       >
-        {/* Simplified Mexico map outline */}
         <div
           style={{
             width: 700,
@@ -131,7 +128,6 @@ export const Scene6_Platform: React.FC = () => {
             opacity: mapOpacity,
           }}
         >
-          {/* Mexico outline (simplified SVG) */}
           <svg
             viewBox="0 0 700 500"
             style={{ width: "100%", height: "100%", position: "absolute" }}
@@ -145,39 +141,11 @@ export const Scene6_Platform: React.FC = () => {
             />
           </svg>
 
-          {/* Heat dots */}
-          <HeatDot
-            x={300}
-            y={250}
-            size={60}
-            color={COLORS.red}
-            label="Saltillo"
-            delay={80}
-          />
-          <HeatDot
-            x={450}
-            y={300}
-            size={80}
-            color={COLORS.red}
-            label="CDMX"
-            delay={120}
-          />
-          <HeatDot
-            x={350}
-            y={230}
-            size={40}
-            color={COLORS.yellow}
-            label="Monterrey"
-            delay={150}
-          />
-          <HeatDot
-            x={380}
-            y={350}
-            size={30}
-            color={COLORS.yellow}
-            label="Torreon"
-            delay={170}
-          />
+          <HeatDot x={300} y={250} size={60} color={COLORS.red} label="Saltillo" delay={80} />
+          <HeatDot x={450} y={300} size={80} color={COLORS.red} label="CDMX" delay={110} />
+          <HeatDot x={350} y={230} size={40} color={COLORS.yellow} label="Monterrey" delay={130} />
+          <HeatDot x={380} y={350} size={30} color={COLORS.yellow} label="Torreon" delay={150} />
+          <HeatDot x={280} y={310} size={35} color={COLORS.yellow} label="Guadalajara" delay={170} />
         </div>
       </div>
 
@@ -189,6 +157,7 @@ export const Scene6_Platform: React.FC = () => {
           flexDirection: "column",
           justifyContent: "center",
           padding: "60px 80px 60px 40px",
+          zIndex: 10,
         }}
       >
         <div
@@ -208,22 +177,22 @@ export const Scene6_Platform: React.FC = () => {
         <div
           style={{
             opacity: text1Opacity,
-            fontSize: 26,
+            fontSize: 24,
             color: COLORS.cream,
             lineHeight: 1.6,
-            marginBottom: 30,
+            marginBottom: 24,
           }}
         >
-          Cada analisis que un usuario comparte construye el{" "}
+          Contribuciones anonimas construyen el{" "}
           <span style={{ color: COLORS.cobre, fontWeight: 700 }}>
-            primer mapa de reclutamiento criminal digital en Mexico
+            primer mapa abierto de reclutamiento criminal digital en Mexico
           </span>
         </div>
 
         <div
           style={{
             opacity: text2Opacity * 0.7,
-            fontSize: 24,
+            fontSize: 22,
             color: COLORS.cream,
             lineHeight: 1.6,
             marginBottom: 50,
@@ -250,15 +219,12 @@ export const Scene6_Platform: React.FC = () => {
               border: `1px solid ${COLORS.cobre}33`,
             }}
           >
-            <div
-              style={{
-                fontSize: 40,
-                fontWeight: 900,
-                color: COLORS.cobre,
-              }}
-            >
-              {Math.round(patternCount)}
-            </div>
+            <AnimatedCounter
+              to={900}
+              startFrame={260}
+              duration={50}
+              style={{ fontSize: 40, fontWeight: 900, color: COLORS.cobre }}
+            />
             <div style={{ fontSize: 14, color: COLORS.cream, opacity: 0.6 }}>
               Patrones
             </div>
@@ -272,15 +238,14 @@ export const Scene6_Platform: React.FC = () => {
               border: `1px solid ${COLORS.green}33`,
             }}
           >
-            <div
-              style={{
-                fontSize: 40,
-                fontWeight: 900,
-                color: COLORS.green,
-              }}
-            >
-              {accuracy.toFixed(1)}%
-            </div>
+            <AnimatedCounter
+              to={99.6}
+              startFrame={275}
+              duration={50}
+              decimals={1}
+              suffix="%"
+              style={{ fontSize: 40, fontWeight: 900, color: COLORS.green }}
+            />
             <div style={{ fontSize: 14, color: COLORS.cream, opacity: 0.6 }}>
               Accuracy
             </div>
@@ -294,13 +259,7 @@ export const Scene6_Platform: React.FC = () => {
               border: `1px solid ${COLORS.red}33`,
             }}
           >
-            <div
-              style={{
-                fontSize: 40,
-                fontWeight: 900,
-                color: COLORS.red,
-              }}
-            >
+            <div style={{ fontSize: 40, fontWeight: 900, color: COLORS.red }}>
               0
             </div>
             <div style={{ fontSize: 14, color: COLORS.cream, opacity: 0.6 }}>

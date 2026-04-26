@@ -17,7 +17,22 @@ export const MESSAGES = {
     '🔒 No guardo el mensaje original, sólo un resumen anónimo. Tu privacidad es prioridad.',
   ].join('\n'),
 
+  // Subtle variation per analysis so the bot doesn't sound canned.
+  // All variants keep the same ~3-second-wait expectation. Callers
+  // accessing MESSAGES.recibido as a string still get the original
+  // (used by the FSM with `text: MESSAGES.recibido`).
   recibido: 'Recibido. Esto requiere un análisis detallado, dame unos segundos... 🔍',
+  recibidoVariants: [
+    'Recibido. Esto requiere un análisis detallado, dame unos segundos... 🔍',
+    '🔍 Lo estoy revisando. En unos segundos te digo qué encontré.',
+    'Anotado. Estoy corriendo el clasificador completo... un momento.',
+    '🛡️ Recibido. Voy a chequear con las 4 capas cognitivas. Dame ~3 segundos.',
+    '🔬 Analizando con heurístico + Bayesiano + LLM. Casi listo...',
+  ],
+  recibidoRandom() {
+    const v = this.recibidoVariants;
+    return v[Math.floor(Math.random() * v.length)];
+  },
 
   // Multimedia ----------------------------------------------------------
   audioRecibido: '🎙️ Recibí tu audio. Transcribiendo… esto puede tardar unos segundos.',
