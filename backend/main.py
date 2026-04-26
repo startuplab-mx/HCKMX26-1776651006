@@ -270,6 +270,10 @@ def submit_feedback(payload: FeedbackCreate):
         PELIGRO; 'deny' when the user explicitly contradicts the alert
       • panel: 'operator_fp' / 'operator_fn' (twice the magnitude)
       • pipeline: 'llm_discrepancy' (auto-recorded when |LLM−heuristic|≥0.3)
+
+    Side effect: feeds the Bayesian classifier when the alert is known.
+    `confirm` → train with the alert's dominant phase.
+    `deny` / `operator_fp` → train as "seguro" (the alert was wrong).
     """
     fid = app.state.db.save_feedback(
         feedback_type=payload.feedback_type,
@@ -280,7 +284,83 @@ def submit_feedback(payload: FeedbackCreate):
         pattern_ids=payload.pattern_ids,
         session_id=payload.session_id,
     )
+
+    # Feed the Bayesian classifier so the model learns from real feedback.
+    # Best-effort: failures here MUST NOT prevent the feedback row from
+    # being saved (which is what the auto-tuner consumes).
+    try:
+        bayes = getattr(app.state.pipeline, "bayesian", None)
+        if bayes is not None and payload.alert_id:
+            alert = app.state.db.get_alert(payload.alert_id)
+            if alert:
+                # We don't have the original text (privacy by design) — use
+                # the anonymized summary as a coarse feature source. It
+                # contains the categories that fired, which is the most
+                # generalisable signal we can persist.
+                surrogate_text = alert.get("summary") or ""
+                # Pattern_ids reconstruct via the heuristic to recover the
+                # actual pattern surface forms (better feature signal).
+                from classifier.pipeline import build_why_from_ids
+                why_lines = build_why_from_ids(
+                    app.state.pipeline.heuristic,
+                    alert.get("pattern_ids") or [],
+                    limit=5,
+                )
+                surrogate_text = " ".join([surrogate_text] + (why_lines or []))
+                if not surrogate_text.strip():
+                    surrogate_text = " ".join(alert.get("categories") or [])
+                if surrogate_text:
+                    if payload.feedback_type == "confirm":
+                        phase = (alert.get("phase_detected") or "").strip()
+                        # Map phase_detected to bayesian class names.
+                        phase_to_class = {
+                            "captacion": "captacion",
+                            "enganche": "enganche",
+                            "coercion": "coercion",
+                            "explotacion": "explotacion",
+                        }
+                        cls = phase_to_class.get(phase)
+                        if cls:
+                            bayes.train_one(surrogate_text, cls)
+                    elif payload.feedback_type in ("deny", "operator_fp"):
+                        bayes.train_one(surrogate_text, "seguro")
+    except Exception as e:
+        logger.warning("bayesian feed from /feedback failed: %s", e)
+
     return {"received": True, "id": fid}
+
+
+# ---------------- Bayesian (Capa 1.5) ----------------
+
+
+@app.get("/bayesian/stats")
+def bayesian_stats():
+    """Diagnostic snapshot of the Bayesian classifier.
+
+    Public read-only — exposes counts and top features per class but NEVER
+    PII or original text (only n-gram tokens that came from the dataset
+    or anonymized summaries). Useful in the panel + pitch demo.
+    """
+    bayes = getattr(app.state.pipeline, "bayesian", None)
+    if bayes is None:
+        return {"available": False}
+    s = bayes.get_stats()
+    s["available"] = True
+    return s
+
+
+@app.post("/bayesian/predict")
+def bayesian_predict(payload: AnalyzeRequest):
+    """Pure Bayesian prediction (debug/comparison endpoint).
+
+    Bypasses the heuristic + LLM merge so callers can see what the
+    Bayesian thinks alone. Matches /analyze's input shape so the same
+    request body works.
+    """
+    bayes = getattr(app.state.pipeline, "bayesian", None)
+    if bayes is None:
+        raise HTTPException(503, "bayesian classifier not initialised")
+    return bayes.predict(payload.text)
 
 
 @app.get("/precision/diagnostics", dependencies=PROTECTED)
@@ -782,6 +862,7 @@ def analyze(req: AnalyzeRequest):
     body["why"] = result.get("why", [])
     body["escalation"] = result.get("escalation")
     body["escalation_override"] = result.get("escalation_override", False)
+    body["bayesian"] = result.get("bayesian")
     body["legal"] = serialize_context(legal)
     body["privacy_disclaimer"] = get_privacy_disclaimer()
     return body
@@ -834,6 +915,7 @@ def create_alert(payload: AlertCreate):
         "escalation_override": result.get("escalation_override", False),
         "escalation": result.get("escalation"),
         "why": result.get("why", []),
+        "bayesian": result.get("bayesian"),
         "llm_used": result["llm_used"],
         "summary": result["summary"],
         "source_type": payload.source_type,

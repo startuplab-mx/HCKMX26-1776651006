@@ -27,3 +27,25 @@ for _key in (
     "GROQ_API_KEY",
 ):
     os.environ[_key] = ""
+
+
+# Pytest fixture: redirect the Bayesian model file to a per-test tmp path
+# so the singleton does NOT inherit the production-bootstrapped model
+# (886 docs from scripts/bootstrap_bayesian.py). Without this, integration
+# tests that expect a cold model would always fail.
+import tempfile
+import pytest
+
+@pytest.fixture(autouse=True)
+def _isolated_bayesian_model(tmp_path, monkeypatch):
+    fresh = tmp_path / "bayesian_iso.json"
+    monkeypatch.setenv("BAYESIAN_MODEL_PATH", str(fresh))
+    # Reset the singleton so the next get_bayesian() call uses the new path.
+    try:
+        import sys
+        sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent.parent))
+        from classifier.bayesian import _reset_singleton_for_tests
+        _reset_singleton_for_tests()
+    except Exception:
+        pass
+    yield

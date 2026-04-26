@@ -116,11 +116,21 @@ class Pipeline:
         llm: LLMLayer | None = None,
         escalation: EscalationDetector | None = None,
         precision: PrecisionProcessor | None = None,
+        bayesian=None,  # type: ignore[assignment]
     ) -> None:
         self.heuristic = heuristic or HeuristicClassifier()
         self.llm = llm or LLMLayer()
         self.escalation = escalation  # set lazily by caller (needs DB)
         self.precision = precision    # set lazily by caller (needs DB)
+        # Capa 1.5 — Bayesiano. Lazy import to keep the class importable
+        # even if the module file is missing during unit tests.
+        if bayesian is None:
+            try:
+                from classifier.bayesian import get_bayesian
+                bayesian = get_bayesian()
+            except Exception:
+                bayesian = None
+        self.bayesian = bayesian
         self._analysis_count = 0
 
     def classify(
@@ -137,6 +147,23 @@ class Pipeline:
         categories: list[str] = h["categories"]
         pattern_ids: list[str] = h.get("matched_pattern_ids", [])
         explanations: list[dict[str, str]] = h.get("explanations", [])
+
+        # Run the Bayesian as early as possible so even override-path
+        # responses surface the second-opinion in the response payload
+        # (useful for the pitch demo: "regex says PELIGRO, ML agrees").
+        bayesian_early = None
+        if self.bayesian is not None:
+            try:
+                br = self.bayesian.predict(text)
+                if br and not br.get("insufficient_data") and br.get("risk_score") is not None:
+                    bayesian_early = {
+                        "risk_score": br.get("risk_score"),
+                        "predicted_class": br.get("predicted_class"),
+                        "confidence": br.get("confidence"),
+                        "probabilities": br.get("probabilities"),
+                    }
+            except Exception:
+                pass
 
         if (
             phase_scores["phase3"] >= OVERRIDE_THRESHOLD
@@ -160,6 +187,7 @@ class Pipeline:
                 text=text,
                 session_id=session_id,
                 source_type=source_type,
+                bayesian_payload=bayesian_early,
             )
 
         weighted = sum(phase_scores[k] * w for k, w in PHASE_WEIGHTS.items())
@@ -206,21 +234,35 @@ class Pipeline:
         marco_gap = score_is_zero and substantive
         weak_keywords = weighted < GREY_ZONE_MIN and has_keywords
 
+        # ── Capa 1.5 — Bayesiano ─────────────────────────────────────
+        # Reuse the early prediction (we ran it before the override check
+        # so it could surface even when override fires). cheap to re-use.
+        bayesian_result = bayesian_early
+        bayesian_score = None
+        if bayesian_early is not None and bayesian_early.get("risk_score") is not None:
+            bayesian_score = float(bayesian_early["risk_score"])
+
         if use_llm and self.llm.enabled and (
             in_grey_zone or marco_gap or weak_keywords
         ):
             llm_result = self.llm.analyze(text)
             if llm_result is not None:
-                # When the heuristic gave 0 but LLM activated as a safety
-                # net, trust the LLM 100% — there's nothing to merge.
-                # Otherwise, average heuristic and LLM 50/50.
-                if score_is_zero:
-                    final_score = max(0.0, min(1.0, llm_result["risk_score"]))
+                llm_score = float(llm_result["risk_score"])
+                # 3-way merge weights. With Bayesiano available, redistribute
+                # so the LLM keeps a strong vote (zero-recovery) while the
+                # learned signal also gets a say:
+                #   heurístico 50% + bayesiano 20% + LLM 30%   (all 3)
+                #   heurístico  0% + bayesiano  0% + LLM 100%  (heur=0, no bayes)
+                #   heurístico  0% + bayesiano 30% + LLM 70%   (heur=0, with bayes)
+                #   heurístico 50% + LLM 50%                   (no bayes data)
+                if score_is_zero and bayesian_score is None:
+                    final_score = max(0.0, min(1.0, llm_score))
+                elif score_is_zero and bayesian_score is not None:
+                    final_score = max(0.0, min(1.0, bayesian_score * 0.30 + llm_score * 0.70))
+                elif bayesian_score is not None:
+                    final_score = max(0.0, min(1.0, weighted * 0.50 + bayesian_score * 0.20 + llm_score * 0.30))
                 else:
-                    final_score = max(
-                        0.0,
-                        min(1.0, (weighted + llm_result["risk_score"]) / 2),
-                    )
+                    final_score = max(0.0, min(1.0, (weighted + llm_score) / 2))
                 llm_used = True
                 llm_rationale = llm_result["rationale"]
                 # Auto-tuner signal: when Claude and the heuristic disagree
@@ -253,6 +295,21 @@ class Pipeline:
                             "feedback save failed: %s", e
                         )
 
+        # If the LLM did not fire but Bayesiano has data, blend it in:
+        #   heurístico 70% + bayesiano 30%
+        # This catches false negatives that the LLM gate would have skipped
+        # (text < 30 chars, no money/threat keyword).
+        if not llm_used and bayesian_score is not None:
+            if score_is_zero:
+                # Trust Bayesiano fully — heurístico had nothing.
+                final_score = max(0.0, min(1.0, bayesian_score))
+            else:
+                final_score = max(0.0, min(1.0, weighted * 0.70 + bayesian_score * 0.30))
+
+        # bayesian_payload was assembled above as bayesian_early (None when
+        # the Bayesiano had insufficient data) — reuse it.
+        bayesian_payload = bayesian_early
+
         result = self._finalize(
             risk_score=final_score,
             phase_scores=phase_scores,
@@ -266,6 +323,7 @@ class Pipeline:
             text=text,
             session_id=session_id,
             source_type=source_type,
+            bayesian_payload=bayesian_payload,
         )
         self._maybe_tune()
         return result
@@ -347,6 +405,7 @@ class Pipeline:
         text: str,
         session_id: str | None,
         source_type: str,
+        bayesian_payload: dict | None = None,
     ) -> dict[str, Any]:
         risk_level = risk_level_for(risk_score)
         escalation = None
@@ -394,6 +453,7 @@ class Pipeline:
             "escalation": escalation,
             "llm_used": llm_used,
             "llm_rationale": llm_rationale,
+            "bayesian": bayesian_payload,
             "text_hash": text_hash(text),
             "summary": anonymized_summary(text, categories),
         }
