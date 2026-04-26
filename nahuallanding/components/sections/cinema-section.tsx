@@ -150,7 +150,15 @@ export function CinemaSection() {
 
           <p className="mt-6 text-xs md:text-sm text-[#f5f0eb]/45">
             Si prefieres no verlo, no hace falta. El sistema entero ya
-            quedó documentado arriba.
+            quedó documentado arriba. ¿Lo prefieres en YouTube?{" "}
+            <a
+              href="https://youtu.be/iWrl7spPu5o"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#c16a4c] hover:text-[#d4845a] underline-offset-4 hover:underline transition-colors"
+            >
+              youtu.be/iWrl7spPu5o
+            </a>
           </p>
         </div>
       </div>

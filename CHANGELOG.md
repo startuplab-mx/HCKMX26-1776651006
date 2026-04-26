@@ -3,6 +3,9 @@
 Cronología de la sesión de hardening + deploy a producción
 (25-26 abril 2026).
 
+🎬 **Video pitch (1:35 min):** <https://youtu.be/iWrl7spPu5o>
+
+
 ## [v1.5.0] — Apr 26 morning · "Security + UX hardening pass"
 
 Ronda de auditoría dirigida. Seis olas, todas con tests de regresión

@@ -6,6 +6,8 @@
 
 Construido para **Hackathon 404: Threat Not Found** (24-26 abril 2026) — U.S. Embassy (INL) + StartupLab MX.
 
+🎬 **Video pitch (1:35 min):** [Nahual, por qué importas — YouTube](https://youtu.be/iWrl7spPu5o)
+
 ---
 
 ## ¿Qué hace?
