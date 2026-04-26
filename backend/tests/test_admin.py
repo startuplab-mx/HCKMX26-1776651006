@@ -121,3 +121,47 @@ def test_admin_metrics_no_pii(tmp_path):
         assert all(
             k not in body for k in ("session_id", "phone", "text_hash", "ip", "user_id")
         )
+
+
+# ---------------- /admin/runtime-info ----------------
+
+
+def test_admin_runtime_info_aggregates_all_views(tmp_path):
+    with _client(tmp_path) as c:
+        # Create 2 alerts so recent_alerts has content.
+        c.post("/alert", json={"text": "te voy a matar"})
+        c.post("/alert", json={"text": "hola amigo"})
+        body = c.get("/admin/runtime-info").json()
+        # All 5 sub-blocks present.
+        for k in ("version", "dataset", "bayesian", "metrics", "recent_alerts"):
+            assert k in body
+        # Version block.
+        assert body["version"]["environment"] in ("development", "production", "")
+        # Dataset block — sane counts.
+        assert body["dataset"]["total_patterns"] > 500
+        assert all(
+            p in body["dataset"]["phases"]
+            for p in ("phase1", "phase2", "phase3", "phase4")
+        )
+        # Bayesian — may be None when model file is missing.
+        if body["bayesian"] is not None:
+            assert body["bayesian"]["total_docs"] >= 0
+            assert "classes" in body["bayesian"]
+        # Metrics block.
+        assert body["metrics"]["alert_total"] >= 2
+        # Recent alerts: 2 we just created, schema only has safe fields.
+        assert len(body["recent_alerts"]) >= 2
+        for r in body["recent_alerts"]:
+            for forbidden in ("text_hash", "summary", "session_id", "contact_phone"):
+                assert forbidden not in r, f"{forbidden} leaked in recent_alerts"
+
+
+def test_admin_runtime_info_no_pii(tmp_path):
+    with _client(tmp_path) as c:
+        c.post("/alert", json={"text": "manda fotos o las publico"})
+        body = c.get("/admin/runtime-info").json()
+        # Stringified body must not contain any sub-string that looks like PII.
+        import json as _json
+        s = _json.dumps(body, ensure_ascii=False)
+        for term in ("manda fotos", "las publico"):
+            assert term not in s, f"PII leak: {term!r} found in /admin/runtime-info"

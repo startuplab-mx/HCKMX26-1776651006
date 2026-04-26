@@ -16,6 +16,9 @@
   "dependencies": {
     "@remotion/bundler": "^4.0.451",
     "@remotion/cli": "^4.0.451",
+    "@remotion/motion-blur": "4.0.451",
+    "@remotion/noise": "4.0.451",
+    "@remotion/transitions": "4.0.451",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "react": "^19.2.5",
