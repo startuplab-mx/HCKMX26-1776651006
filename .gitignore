@@ -83,3 +83,13 @@ nahuallanding/.vercel/
 # Bot WhatsApp auth
 bot/auth_info_baileys/
 pitch/nahual_pitch.exe
+
+# Demo video raw masters (GitHub blocks files >100MB; the transcoded
+# 51MB mp4 lives in nahuallanding/public/video/ and IS committed).
+demo-video/*.mov
+demo-video/*.MOV
+demo-video/*.mp3
+demo-video/clip*.mp4
+demo-video/nahual-demo.mp4
+demo-video/*.png
+demo-video/node_modules/
