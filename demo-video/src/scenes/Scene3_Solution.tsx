@@ -6,6 +6,10 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
+import { FilmGrain } from "../components/FilmGrain";
+import { ParticleField } from "../components/ParticleField";
+
+const NAHUAL_LETTERS = "NAHUAL".split("");
 
 const Pillar: React.FC<{
   icon: string;
@@ -79,11 +83,19 @@ export const Scene3_Solution: React.FC = () => {
   // Shield logo animation
   const logoScale = spring({ frame, fps, durationInFrames: 30 });
 
-  // Title text
-  const titleOpacity = interpolate(frame, [30, 55], [0, 1], {
+  // Letter-by-letter reveal for "NAHUAL"
+  const letterDelay = 6; // frames between each letter
+  const letterStart = 30;
+
+  // Glow rings expanding from logo
+  const ringCount = 3;
+  const ringStart = 50;
+
+  // Subtitle
+  const subtitleOpacity = interpolate(frame, [80, 110], [0, 1], {
     extrapolateRight: "clamp",
   });
-  const titleY = interpolate(frame, [30, 55], [20, 0], {
+  const subtitleY = interpolate(frame, [80, 110], [20, 0], {
     extrapolateRight: "clamp",
   });
 
@@ -94,7 +106,7 @@ export const Scene3_Solution: React.FC = () => {
   });
 
   // Fade out
-  const fadeOut = interpolate(frame, [430, 450], [1, 0], {
+  const fadeOut = interpolate(frame, [395, 420], [1, 0], {
     extrapolateRight: "clamp",
     extrapolateLeft: "clamp",
   });
@@ -113,39 +125,100 @@ export const Scene3_Solution: React.FC = () => {
         position: "relative",
       }}
     >
-      {/* Nahual shield logo */}
+      <FilmGrain opacity={0.03} />
+      <ParticleField count={35} />
+
+      {/* Shield logo with glow rings */}
       <div
         style={{
+          position: "relative",
           transform: `scale(${logoScale})`,
-          fontSize: 64,
           marginBottom: 10,
+          zIndex: 10,
         }}
       >
-        🛡️
+        {/* Glow rings */}
+        {Array.from({ length: ringCount }).map((_, i) => {
+          const ringFrame = frame - ringStart - i * 20;
+          const ringScale = ringFrame > 0
+            ? interpolate(ringFrame, [0, 60], [0.5, 2.5 + i * 0.8], { extrapolateRight: "clamp" })
+            : 0;
+          const ringOpacity = ringFrame > 0
+            ? interpolate(ringFrame, [0, 60], [0.6, 0], { extrapolateRight: "clamp" })
+            : 0;
+
+          return (
+            <div
+              key={i}
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                width: 80,
+                height: 80,
+                borderRadius: "50%",
+                border: `2px solid ${COLORS.cobreGlow}`,
+                transform: `translate(-50%, -50%) scale(${ringScale})`,
+                opacity: ringOpacity,
+                pointerEvents: "none",
+              }}
+            />
+          );
+        })}
+        <div style={{ fontSize: 64, position: "relative", zIndex: 2 }}>🛡️</div>
       </div>
 
-      {/* Title */}
+      {/* Title — letter-by-letter */}
       <div
         style={{
-          opacity: titleOpacity,
-          transform: `translateY(${titleY}px)`,
           textAlign: "center",
           marginBottom: 80,
+          zIndex: 10,
         }}
       >
         <div
           style={{
-            fontSize: 64,
+            fontSize: 72,
             fontWeight: 900,
-            color: COLORS.cobre,
-            letterSpacing: 6,
+            letterSpacing: 8,
             marginBottom: 16,
+            display: "flex",
+            justifyContent: "center",
           }}
         >
-          NAHUAL
+          {NAHUAL_LETTERS.map((letter, i) => {
+            const lFrame = frame - letterStart - i * letterDelay;
+            const lOpacity = interpolate(lFrame, [0, 8], [0, 1], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+            });
+            const lY = interpolate(lFrame, [0, 8], [20, 0], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+            });
+            const glowPulse =
+              lFrame > 10 ? 6 + 4 * Math.sin((frame - letterStart) * 0.06 + i * 0.5) : 0;
+
+            return (
+              <span
+                key={i}
+                style={{
+                  color: COLORS.cobre,
+                  opacity: lOpacity,
+                  transform: `translateY(${lY}px)`,
+                  display: "inline-block",
+                  textShadow: `0 0 ${glowPulse}px ${COLORS.cobreGlow}`,
+                }}
+              >
+                {letter}
+              </span>
+            );
+          })}
         </div>
         <div
           style={{
+            opacity: subtitleOpacity,
+            transform: `translateY(${subtitleY}px)`,
             fontSize: 28,
             fontWeight: 300,
             color: COLORS.cream,
@@ -163,25 +236,26 @@ export const Scene3_Solution: React.FC = () => {
           display: "flex",
           gap: 80,
           justifyContent: "center",
+          zIndex: 10,
         }}
       >
         <Pillar
           icon="💬"
           title="Bot de WhatsApp"
           subtitle="Canal reactivo"
-          delay={120}
+          delay={140}
         />
         <Pillar
           icon="🔍"
           title="Extension de navegador"
           subtitle="Deteccion proactiva"
-          delay={170}
+          delay={190}
         />
         <Pillar
           icon="📊"
           title="Panel de inteligencia"
           subtitle="Dataset abierto"
-          delay={220}
+          delay={240}
         />
       </div>
 
@@ -196,9 +270,10 @@ export const Scene3_Solution: React.FC = () => {
           fontSize: 22,
           color: COLORS.cobreLight,
           fontWeight: 600,
+          zIndex: 10,
         }}
       >
-        <span>870 patrones verificados</span>
+        <span>900 patrones verificados</span>
         <span style={{ color: COLORS.cream, opacity: 0.3 }}>|</span>
         <span>4 capas cognitivas</span>
         <span style={{ color: COLORS.cream, opacity: 0.3 }}>|</span>

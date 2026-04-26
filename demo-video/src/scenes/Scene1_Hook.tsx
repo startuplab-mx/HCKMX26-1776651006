@@ -6,14 +6,18 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
+import { FilmGrain } from "../components/FilmGrain";
+import { ParticleField } from "../components/ParticleField";
+import { AnimatedCounter } from "../components/AnimatedCounter";
+import { GlowText } from "../components/GlowText";
 
 const StatBlock: React.FC<{
-  value: string;
+  children: React.ReactNode;
   label: string;
   color: string;
   opacity: number;
   scale: number;
-}> = ({ value, label, color, opacity, scale }) => (
+}> = ({ children, label, color, opacity, scale }) => (
   <div
     style={{
       opacity,
@@ -21,18 +25,18 @@ const StatBlock: React.FC<{
       display: "flex",
       alignItems: "center",
       gap: 24,
-      marginBottom: 20,
+      marginBottom: 24,
     }}
   >
     <span
       style={{
-        fontSize: 72,
+        fontSize: 76,
         fontWeight: 900,
         color,
         letterSpacing: -2,
       }}
     >
-      {value}
+      {children}
     </span>
     <span
       style={{
@@ -51,60 +55,55 @@ export const Scene1_Hook: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Headline fade in
-  const headlineOpacity = interpolate(frame, [0, 40], [0, 1], {
+  // Headline fade in (0-50)
+  const headlineOpacity = interpolate(frame, [0, 50], [0, 1], {
     extrapolateRight: "clamp",
   });
-  const headlineY = interpolate(frame, [0, 40], [30, 0], {
+  const headlineY = interpolate(frame, [0, 50], [30, 0], {
     extrapolateRight: "clamp",
   });
   // Headline fades out before stats
-  const headlineFadeOut = interpolate(frame, [80, 100], [1, 0], {
+  const headlineFadeOut = interpolate(frame, [100, 130], [1, 0], {
     extrapolateRight: "clamp",
     extrapolateLeft: "clamp",
   });
 
-  // Stat 1: +20.6%
-  const stat1Spring = spring({ frame: frame - 100, fps, durationInFrames: 30 });
-  const stat1Value = interpolate(frame, [100, 160], [0, 20.6], {
-    extrapolateRight: "clamp",
-    extrapolateLeft: "clamp",
-  });
-
-  // Stat 2: +56%
-  const stat2Spring = spring({ frame: frame - 180, fps, durationInFrames: 30 });
-  const stat2Value = interpolate(frame, [180, 230], [0, 56], {
-    extrapolateRight: "clamp",
-    extrapolateLeft: "clamp",
-  });
-
-  // Stat 3: 22.9M
-  const stat3Spring = spring({ frame: frame - 260, fps, durationInFrames: 30 });
-  const stat3Value = interpolate(frame, [260, 310], [0, 22.9], {
-    extrapolateRight: "clamp",
-    extrapolateLeft: "clamp",
-  });
+  // Stat springs (staggered)
+  const stat1Spring = spring({ frame: frame - 140, fps, durationInFrames: 30 });
+  const stat2Spring = spring({ frame: frame - 210, fps, durationInFrames: 30 });
+  const stat3Spring = spring({ frame: frame - 280, fps, durationInFrames: 30 });
 
   // Stats fade out
-  const statsFadeOut = interpolate(frame, [340, 360], [1, 0], {
+  const statsFadeOut = interpolate(frame, [380, 410], [1, 0], {
     extrapolateRight: "clamp",
     extrapolateLeft: "clamp",
   });
 
-  // Final question
-  const questionOpacity = interpolate(frame, [370, 400], [0, 1], {
+  // Final question with screen shake + red flash
+  const questionOpacity = interpolate(frame, [430, 460], [0, 1], {
     extrapolateRight: "clamp",
     extrapolateLeft: "clamp",
   });
   const questionScale = spring({
-    frame: frame - 370,
+    frame: frame - 430,
     fps,
     durationInFrames: 20,
     config: { mass: 0.5, damping: 10 },
   });
 
+  // Screen shake effect on "¿Quién los protege?"
+  const shakeActive = frame >= 430 && frame < 470;
+  const shakeX = shakeActive ? Math.sin(frame * 1.2) * 6 : 0;
+  const shakeY = shakeActive ? Math.cos(frame * 1.5) * 4 : 0;
+
+  // Red flash at impact moment
+  const redFlash = interpolate(frame, [430, 440, 460], [0, 0.25, 0], {
+    extrapolateRight: "clamp",
+    extrapolateLeft: "clamp",
+  });
+
   // Final fade to black
-  const fadeToBlack = interpolate(frame, [430, 450], [0, 1], {
+  const fadeToBlack = interpolate(frame, [510, 540], [0, 1], {
     extrapolateRight: "clamp",
     extrapolateLeft: "clamp",
   });
@@ -121,20 +120,25 @@ export const Scene1_Hook: React.FC = () => {
         padding: 120,
         background: COLORS.darkGray,
         position: "relative",
+        transform: `translate(${shakeX}px, ${shakeY}px)`,
       }}
     >
+      <FilmGrain opacity={0.04} />
+      <ParticleField count={40} />
+
       {/* Headline */}
-      {frame < 100 && (
+      {frame < 130 && (
         <div
           style={{
             opacity: headlineOpacity * headlineFadeOut,
             transform: `translateY(${headlineY}px)`,
-            fontSize: 36,
+            fontSize: 38,
             color: COLORS.cream,
             textAlign: "center",
             lineHeight: 1.5,
             maxWidth: 1100,
             fontWeight: 300,
+            zIndex: 10,
           }}
         >
           Esta semana, Infobae reporto que el crimen organizado traslado el
@@ -146,48 +150,91 @@ export const Scene1_Hook: React.FC = () => {
         </div>
       )}
 
-      {/* Stats */}
-      {frame >= 100 && frame < 360 && (
-        <div style={{ opacity: statsFadeOut }}>
+      {/* Animated Stats */}
+      {frame >= 140 && frame < 410 && (
+        <div style={{ opacity: statsFadeOut, zIndex: 10 }}>
           <StatBlock
-            value={`+${stat1Value.toFixed(1)}%`}
             label="Reclutamiento de adolescentes (REDIM 2025)"
             color={COLORS.red}
             opacity={stat1Spring}
             scale={stat1Spring}
-          />
+          >
+            <AnimatedCounter
+              to={20.6}
+              startFrame={140}
+              duration={60}
+              decimals={1}
+              prefix="+"
+              suffix="%"
+              style={{ color: "inherit", fontSize: "inherit", fontWeight: "inherit" }}
+            />
+          </StatBlock>
           <StatBlock
-            value={`+${Math.round(stat2Value)}%`}
             label="Sextorsion digital (Consejo Ciudadano)"
             color={COLORS.yellow}
             opacity={stat2Spring}
             scale={stat2Spring}
-          />
+          >
+            <AnimatedCounter
+              to={56}
+              startFrame={210}
+              duration={50}
+              prefix="+"
+              suffix="%"
+              style={{ color: "inherit", fontSize: "inherit", fontWeight: "inherit" }}
+            />
+          </StatBlock>
           <StatBlock
-            value={`${stat3Value.toFixed(1)}M`}
             label="Menores conectados a internet (INEGI)"
             color={COLORS.cobre}
             opacity={stat3Spring}
             scale={stat3Spring}
-          />
+          >
+            <AnimatedCounter
+              to={22.9}
+              startFrame={280}
+              duration={50}
+              decimals={1}
+              suffix="M"
+              style={{ color: "inherit", fontSize: "inherit", fontWeight: "inherit" }}
+            />
+          </StatBlock>
         </div>
       )}
 
       {/* Final question */}
-      {frame >= 370 && (
+      {frame >= 430 && (
         <div
           style={{
             opacity: questionOpacity,
             transform: `scale(${questionScale})`,
-            fontSize: 80,
-            fontWeight: 900,
-            color: COLORS.cream,
             textAlign: "center",
+            zIndex: 10,
           }}
         >
-          Quien los protege?
+          <GlowText
+            text="¿Quien los protege?"
+            fontSize={84}
+            color={COLORS.cream}
+            glowColor={COLORS.cobreGlow}
+          />
         </div>
       )}
+
+      {/* Red flash overlay */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: COLORS.red,
+          opacity: redFlash,
+          pointerEvents: "none",
+          zIndex: 90,
+        }}
+      />
 
       {/* Fade to black overlay */}
       <div
@@ -199,6 +246,7 @@ export const Scene1_Hook: React.FC = () => {
           bottom: 0,
           background: "black",
           opacity: fadeToBlack,
+          zIndex: 95,
         }}
       />
     </div>
