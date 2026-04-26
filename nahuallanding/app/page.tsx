@@ -7,6 +7,7 @@ import { HeroSection } from "@/components/sections/hero-section";
 import { ImpactSourcesSection } from "@/components/sections/impact-sources-section";
 import { LiveDemoSection } from "@/components/sections/live-demo-section";
 import { OutputsSection } from "@/components/sections/outputs-section";
+import { PlainTechSection } from "@/components/sections/plain-tech-section";
 import { ProblemSection } from "@/components/sections/problem-section";
 import { RoadmapTeamSection } from "@/components/sections/roadmap-team-section";
 import { SolutionSection } from "@/components/sections/solution-section";
@@ -23,6 +24,7 @@ export default function HomePage() {
       <ArchitectureSection />
       <ClassifierSection />
       <AdvancedFeaturesSection />
+      <PlainTechSection />
       <FlowSection />
       <OutputsSection />
       <RoadmapTeamSection />

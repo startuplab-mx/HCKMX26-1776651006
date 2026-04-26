@@ -372,7 +372,69 @@ Disponibles en cualquier estado del FSM (slash opcional):
 
 ---
 
-## Mejoras estructurales recientes (Apr 25, 2026)
+## Hardening + UX-polish round (Apr 26, 2026)
+
+Sexta tanda de mejoras post-deploy, todas con tests de regresión nuevos
+(163/163 verdes):
+
+1. **Webhooks firmados con HMAC-SHA256.** El header
+   `X-Nahual-Signature: sha256=<hex>` permite al receptor (panel,
+   tutor, otro servicio) validar criptográficamente que la alerta no
+   fue manipulada en tránsito. Antes mandábamos un secreto estático en
+   un header, igual de débil que un password en URL. Configurado vía
+   `NAHUAL_WEBHOOK_SECRET`.
+2. **Magic-byte validation en `/transcribe` y `/ocr`.** Antes de
+   reenviar un archivo a Groq Whisper o Claude Vision verificamos los
+   primeros bytes contra firmas conocidas (Ogg `OggS`, MP3 `ID3`/`FF FB`,
+   WAV `RIFF`, M4A `ftyp`, WebM, FLAC; PNG, JPEG `FF D8 FF`, GIF `GIF87/89`,
+   WebP). Defensa en profundidad contra polyglots / archivos disfrazados.
+3. **Rate-limit con audit trail en `/feedback`.** 3 submissions por
+   `(IP, alert_id)` cada 10 min; 4ta devuelve `429 + Retry-After`.
+   Sin esto un atacante podía flood-ear "deny" para envenenar al
+   auto-tuner + Bayesiano (que entrena `seguro` en cada deny). El
+   `_client_ip(request)` honra `X-Forwarded-For` solo cuando el peer
+   inmediato es loopback (Nginx local) — bloquea spoofing directo.
+   Cada feedback aceptado emite `INFO: feedback id=X type=Y ip=Z ua=...`.
+4. **ReDoS guard en el clasificador heurístico.**
+   `MAX_INPUT_CHARS=4000` capa input antes de tocar las 900+ regex
+   (un mensaje de WhatsApp normal cabe; un paste hostil de 1 MB ya no
+   corre 900 escaneos sobre un megabyte). El compilador descarta
+   silenciosamente patrones con backtracking catastrófico — `(a+)+`,
+   `(a*)*`, `(a|b)*`, `.+.+` — en caso de que el dataset de research
+   regrese mañana con un mal patrón mecánicamente generado.
+5. **Bayesian persistence hardening.**
+   `_MAX_TOKENS_PER_DOC=5000` capa la generación de n-gramas (un paste
+   gigante ya no aloja 3M de strings y OOM al worker). El save atómico
+   ahora usa tmp por-PID + `fsync` antes del rename — un power-loss
+   entre el write y el rename ya no surfacea un model file de cero
+   bytes en el siguiente boot.
+6. **Bot: opt-out de la notificación a tutor.** En el state `notify`,
+   si el menor responde "ahorita no", "luego", "primero el reporte",
+   "no tengo un adulto", "sin tutor"… → el bot acepta el opt-out,
+   surface el PDF + Línea de la Vida + 088, y bouncea a
+   `ask_contribute`. Antes era un dead-end: cualquier mensaje que no
+   fuera un teléfono daba "Número no válido", trampeando a usuarios
+   en pánico que no querían involucrar a un adulto YET.
+7. **Bot: distress y soporte sin gating de FSM.** Si el menor escribe
+   "me quiero morir" / "necesito ayuda" / "estoy asustado" en
+   *cualquier* state (incluso `ask_contribute`, `notify`,
+   `confirm_transcription`), el bot prioriza la respuesta empática +
+   Línea de la Vida (800-911-2000) antes que cualquier otro flujo.
+   Antes el match estaba gateado a `['inicio', 'recibir_msg']`, lo
+   que era un regression de life-safety.
+8. **Bot: variantes para evitar sonido robótico.** 5 variantes para el
+   "Recibido…", 4 taglines para SEGURO, 3 variantes para los prompts
+   "Responde sí o no". El veredicto + score se mantienen estables —
+   solo rota el lenguaje de cierre.
+9. **Panel: API base auto-detect.** El panel deployado ya **no requiere
+   inyección manual** de `window.NAHUAL_API_URL`. `_resolveApiBase()`
+   detecta `localhost`/`127.0.0.1`/`file://` para dev y hace
+   same-origin (`""`) para prod. Antes el panel servido en
+   `159.223.187.6` defaulteaba a `http://localhost:8000` desde el
+   browser del operador → cada `fetch` pegaba al localhost del propio
+   usuario → la tabla nunca se actualizaba.
+
+## Mejoras estructurales (Apr 25, 2026)
 
 Cinco capas de mejora aplicadas tras testing en vivo de Marco + audits:
 

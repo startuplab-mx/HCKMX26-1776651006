@@ -44,18 +44,39 @@ GET  /contributions/stats             (público)
 POST /analyze                         (manual analyze textbox)
 ```
 
-## API base config
+## API base config (auto-detect)
 
-```html
-<script>
-  window.NAHUAL_API_URL = "";  // empty = same-origin via Nginx
-  window.NAHUAL_API_KEY = "nahual-hackathon-2026";
-</script>
+A partir de `7970804` (Apr 26 2026) el panel **ya no necesita configuración
+explícita** para distinguir local vs producción:
+
+```js
+// js/app.js
+function _resolveApiBase() {
+  if (typeof window.NAHUAL_API_URL === 'string') return window.NAHUAL_API_URL;
+  const host = location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1' || host === '') {
+    return 'http://localhost:8000';   // dev
+  }
+  return '';                          // prod → same-origin via Nginx
+}
 ```
 
-Override at deploy time vía:
-- `<script>` antes de `js/app.js`
-- `localStorage.setItem('nahual_api_key', '...')`
+| Cómo se sirve el panel | API base resultante |
+|---|---|
+| `python -m http.server 3000` (local) | `http://localhost:8000` |
+| Abrir `index.html` desde el filesystem | `http://localhost:8000` |
+| Detrás de Nginx en `159.223.187.6` | `""` (relative → same-origin) |
+| Override explícito | `<script>window.NAHUAL_API_URL = "https://api.example.com";</script>` |
+
+> **Bug fix Apr 26:** versiones anteriores defaulteaban a `http://localhost:8000`
+> incluso desde un browser remoto, lo que hacía que el panel **nunca se
+> actualizara** en producción (cada `fetch()` pegaba al localhost del propio
+> usuario). El boot banner en consola muestra qué base resolvió:
+> `[nahual-panel] API base="(same-origin)" · refresh=5000ms · key=present`.
+
+Override de la API key (endpoints protegidos `/alerts*`, `/sessions/*`, etc.):
+- `<script>window.NAHUAL_API_KEY = '...'</script>` antes de `js/app.js`
+- `localStorage.setItem('nahual_api_key', '...')` desde DevTools
 
 ## Setup local
 

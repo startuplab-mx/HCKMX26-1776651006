@@ -1,7 +1,82 @@
 # 📋 NAHUAL — CHANGELOG
 
 Cronología de la sesión de hardening + deploy a producción
-(25 abril 2026, ~12:00 → 23:30 CST).
+(25-26 abril 2026).
+
+## [v1.5.0] — Apr 26 morning · "Security + UX hardening pass"
+
+Ronda de auditoría dirigida. Seis olas, todas con tests de regresión
+nuevos. **163/163 verde** (subió +5 desde 158).
+
+### Wave 1 — Webhook HMAC + magic bytes + life-safety FSM (`45a140d`)
+* `webhooks.py`: signature `X-Nahual-Signature: sha256=<hex>` con HMAC
+  sobre el payload. Antes mandábamos un secret estático = mismo nivel
+  que un password en URL.
+* `main.py`: `_detect_audio_magic()` y `_detect_image_magic()` validan
+  los primeros bytes del archivo contra firmas conocidas (Ogg, MP3,
+  WAV, M4A, WebM, FLAC, PNG, JPEG, GIF, WebP) **antes** de reenviar a
+  Groq/Anthropic. Defensa en profundidad contra polyglots.
+* `flowController.js`: removí el gate `['inicio','recibir_msg']` de
+  DISTRESS_RE/SUPPORT_RE — **regression de life-safety**. Ahora si el
+  menor escribe "me quiero morir" en *cualquier* state, el bot
+  prioriza Línea de la Vida antes que el flujo actual.
+* Panel: WCAG touch targets 44×44 en mobile, table min-width 760px,
+  modal close con `tabindex` + `aria-label`, "Backend desconectado"
+  banner en la tabla cuando `CONSEC_FAILS ≥ 2`.
+
+### Wave 2 — `/feedback` rate-limit + audit (`b543ae5`)
+* 3 submissions per `(IP, alert_id)` per 10 min, configurable vía
+  `FEEDBACK_RATE_LIMIT_MAX` / `FEEDBACK_RATE_WINDOW_S`. 4ta = 429 +
+  `Retry-After`. Bloquea poisoning del auto-tuner + Bayesiano.
+* `_client_ip()` honra `X-Forwarded-For` solo si el peer inmediato es
+  loopback (Nginx) — bloquea spoofing directo a uvicorn.
+* Audit log: `INFO: feedback id=X type=Y alert=Z ip=W ua=...` (sin PII).
+* Tests: `test_feedback_rate_limit_kicks_in_after_max`.
+
+### Wave 3 — ReDoS guard heurístico (`119b581`)
+* `MAX_INPUT_CHARS=4000` en `classify()` antes de tocar 900+ regex.
+  Un paste hostil de 1 MB ya no fuerza 900 escaneos sobre un megabyte.
+* `_looks_redos_dangerous()`: descarta silenciosamente patrones con
+  formas catastróficas — `(a+)+`, `(a*)*`, `(a|b)*`, `.+.+` — al
+  compilar. Insurance contra regresiones del dataset research.
+* Tests: `test_hostile_long_input_is_bounded` (50KB en <2s),
+  `test_redos_audit_drops_dangerous_research_patterns`.
+
+### Wave 4 — Bayesian persistence (`119b581`)
+* `_MAX_TOKENS_PER_DOC=5000` en `_tokenize` — un paste gigante ya no
+  aloja 3M de strings y tira al worker.
+* `_save_unlocked`: tmp por-PID (anti-clobber en systemd reload) +
+  `f.flush()` + `os.fsync()` antes del `os.replace`. Power-loss entre
+  write y rename ya no surfacea zero-byte model.
+* Tests: `test_tokenize_caps_huge_input`,
+  `test_atomic_save_no_partial_file_on_kill`.
+
+### Wave 5 — Bot variability + opt-out (`4a3b100`)
+* `NO_GUARDIAN_RE`: matchea "ahorita no", "luego", "más tarde",
+  "primero el reporte", "no quiero avisar", "no tengo un adulto",
+  "sin tutor"… Antes el state `notify` era un dead-end: cualquier
+  mensaje no-teléfono daba "Número no válido", trampeando a usuarios
+  que NO denegaban el verdict, solo no querían involucrar a un adulto
+  ahora mismo.
+* `notifyOptOut`: nuevo bloque con PDF reminder + Línea de la Vida +
+  088 + invitación a contribuir anónimamente. Bouncea a
+  `ask_contribute`.
+* `MESSAGES.ynPrompt()`: 3 variantes para "responde sí o no". Usado en
+  `confirm_transcription` + `ask_contribute`.
+* `resultadoSeguro`: 4 taglines rotativos. Score + verdict estables.
+
+### Wave 6 — Panel API base auto-detect (`7970804`)
+* **Bug crítico que Marco reportó:** "el panel no se está actualizando".
+* Causa: `app.js` defaulteaba `API = 'http://localhost:8000'` cuando
+  `window.NAHUAL_API_URL` era `undefined`. El panel servido en
+  `159.223.187.6` desde un browser remoto pegaba al localhost del
+  *operador*, sin backend ahí → `fetch()` falla → tabla nunca se
+  actualiza.
+* Fix: `_resolveApiBase()` autodetecta basado en `location.hostname`.
+  `localhost`/`127.0.0.1`/`file://` → `http://localhost:8000`. Otra
+  cosa → `""` (same-origin) → Nginx proxea correctamente.
+* Boot banner: `[nahual-panel] API base="..." · refresh=Xms · key=...`
+  para debugging futuro de 10 segundos.
 
 ## [v1.4.1] — Apr 25 night · "240-corpus iterations + landing refresh"
 

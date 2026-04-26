@@ -51,6 +51,17 @@ export type AdvancedFeature = {
   description: string;
 };
 
+export type PlainTechItem = {
+  id: string;
+  title: string;
+  /** Plain-Spanish explanation of what the user/operator gains. */
+  layman: string;
+  /** Hands-on technical detail for engineers (file paths, primitives).
+   *  Optional — some items are pure UX/legal and don't have a stack
+   *  trace to attach. The card hides the toggle when this is absent. */
+  technical?: string;
+};
+
 export const site = {
   name: "Nahual",
   repoUrl: "https://github.com/cocopsn/nahuallanding-demo",
@@ -541,6 +552,12 @@ export const site = {
       title: "Trazabilidad Forense Automática",
       icon: "scale",
       description: "No solo predice riesgo; lo mapea legalmente. Cada fase referencia los artículos aplicables: LGDNNA (Art. 47, 101 Bis 2), CPF Art. 209 Sextus (propuesto), Ley Olimpia, LGAMVLV 20 Quáter, LGPSEDMTP 10. Compila un reporte PDF con folio NAH-2026-XXXX listo para abrir carpeta en Policía Cibernética 088."
+    },
+    {
+      id: "hardening",
+      title: "Hardening en producción (Apr 26)",
+      icon: "shield",
+      description: "9 olas de auditoría desplegadas a producción: webhooks firmados con HMAC-SHA256, magic-byte validation antes de Whisper/Vision, rate-limit anti-poisoning del auto-tuner (3/(IP, alert_id)/10min), ReDoS guard (cap 4000 chars + audit estático de patrones catastróficos), Bayesian persistence con tmp por-PID + fsync, life-safety FSM sin gating por estado, opt-out del notify que evita dead-ends, 4 taglines rotativos para SEGURO, panel API base auto-detect. 163/163 tests verde."
     }
   ] satisfies AdvancedFeature[],
   liveDemo: {
@@ -550,5 +567,89 @@ export const site = {
     botPhoneIntl: "5218445387404",
     waLink: "https://wa.me/5218445387404?text=Hola%20Nahual",
     note: "Sistema en producción 24/7. Mánda \"hola\" al número del bot para probar el flujo completo."
-  }
+  },
+  // "Cómo funciona por dentro" — explica capas técnicas en lenguaje
+  // plano + ficha técnica para engineers. Cada item refleja una
+  // ola de hardening real (commits 45a140d, b543ae5, 119b581, 4a3b100,
+  // 7970804) que llegó a prod entre 25-26 abril 2026.
+  plainTech: [
+    {
+      id: "override",
+      title: "Detección de peligro inminente (Override)",
+      layman:
+        "Cuando un mensaje cruza una línea — una amenaza directa de muerte, una orden para enviar fotos íntimas — el sistema NO promedia con el resto de señales. Se dispara ALARMA inmediata aunque el resto del mensaje suene casual. Las víctimas no llegan al peligro paso a paso ordenado: a veces el agresor salta directo a la amenaza.",
+      technical:
+        "Si phase3 (coerción) o phase4 (explotación) individualmente alcanzan score ≥ 0.80 en `pipeline.py`, se ignora el promedio ponderado (P1×0.15 + P2×0.25 + P3×0.35 + P4×0.25) y se eleva risk_score a 1.0 con override_triggered=True. La regla es non-negotiable y testeada en tests/test_classifier.py."
+    },
+    {
+      id: "four-layers",
+      title: "Cuatro cerebros revisando el mismo mensaje",
+      layman:
+        "En vez de confiar en un solo modelo, Nahual pasa cada mensaje por cuatro filtros distintos que trabajan en paralelo: (1) un diccionario afinado con 900 frases reales del crimen organizado mexicano, (2) un modelo estadístico que aprende de cada feedback, (3) Claude (la IA de Anthropic) cuando hay duda contextual, y (4) un detector de patrones que rastrea si la conversación está escalando. Si tres de cuatro disienten, el panel lo muestra para que un humano decida.",
+      technical:
+        "Capa 0: override estático. Capa 1: HeuristicClassifier en classifier/heuristic.py — 900 regex compilados con normalización de chat MX (xq→porque, q→que, 15 mil → 15000), whitelist contextual, contextual_boost 1.30×/1.50× para combos peligrosos. Capa 1.5: NaiveBayesClassifier (n-gramas 1+2+3, smoothing Laplace, 1031 docs entrenados, vocab 6104). Capa 2: claude-sonnet-4-5-20250929 en zona gris (0.3-0.6) o cuando heur=0+texto>30 chars. Capa 3: EscalationDetector rastrea velocity + phase progression en sesión multi-mensaje. Merge: heur 50% + bayes 20% + LLM 30%."
+    },
+    {
+      id: "privacy",
+      title: "Nunca guardamos tu mensaje original",
+      layman:
+        "Lo que mandas se borra al instante. Solo conservamos un código irreversible (como una huella digital) y un resumen sin nombres ni datos personales. Si un día nos hackean — o un juez ordena entregar conversaciones — no hay nada que entregar. Tu privacidad no depende de prometerla, depende de que el sistema técnicamente no pueda traicionarla.",
+      technical:
+        "SHA-256 del texto + summary anonimizado + lista de pattern_ids que matchearon. Eso es TODO lo que se persiste en SQLite. Audio/imagen se reenvía a Groq Whisper / Anthropic Vision y el byte stream se descarta inmediatamente — no hay archivo intermedio en disco. El modelo Pydantic de /contribute usa `extra=\"forbid\"` que rechaza con HTTP 422 cualquier campo desconocido. Cumple Art. 16 CPEUM, LFPDPPP y LGDNNA."
+    },
+    {
+      id: "webhook-hmac",
+      title: "Avisos al adulto de confianza, criptográficamente firmados",
+      layman:
+        "Cuando el bot avisa a un papá/mamá/tutor, ese mensaje va con una firma criptográfica que solo nuestro servidor puede generar. Si alguien intercepta el aviso e intenta cambiarle el texto — o suplantar al sistema enviando un aviso falso — la firma deja de cuadrar y el receptor lo detecta. Es la misma tecnología que usan los bancos para no dejar que nadie modifique una transferencia en tránsito.",
+      technical:
+        "HMAC-SHA256 sobre el payload completo en webhooks.py: `X-Nahual-Signature: sha256=<hex>` + `X-Nahual-Signature-Algo: hmac-sha256`. Configurado vía NAHUAL_WEBHOOK_SECRET. Reemplaza el shared-secret estático que pasaba en plain text antes de Apr 26."
+    },
+    {
+      id: "magic-bytes",
+      title: "Verificamos que un audio sea audio (y no un virus disfrazado)",
+      layman:
+        "Antes de mandar tu audio o foto a la IA que lo procesa, miramos los primeros bytes del archivo y comparamos contra firmas conocidas. Un atacante podría renombrar un script de Python como \"audio.ogg\" y mandárnoslo esperando que lo reenviemos a Groq. Con esto, el sistema dice \"esto no huele a audio\" antes de que cualquier servicio externo lo toque.",
+      technical:
+        "_AUDIO_SIGNATURES y _IMAGE_SIGNATURES en main.py: cubre Ogg (`OggS`), MP3 (`ID3`/`FF FB`/`FF F3`), WAV (`RIFF...WAVE`), M4A (`ftyp`), WebM (`1A 45 DF A3`), FLAC (`fLaC`), PNG (`89 50 4E 47`), JPEG (`FF D8 FF`), GIF87a/89a, WebP (`RIFF...WEBP`). MIME normalization adicional para `audio/ogg; codecs=opus` y `image/jpeg;charset=binary` que WhatsApp manda."
+    },
+    {
+      id: "feedback-rl",
+      title: "Anti-envenenamiento del modelo que aprende",
+      layman:
+        "El sistema aprende: cada vez que un usuario dice \"esto NO era peligro\", el modelo se reentrena para no equivocarse igual la próxima. Pero un atacante podría hacer un script que mande 10,000 \"esto no era peligro\" sobre amenazas REALES para volver al sistema ciego. Detectamos esos patrones de spam y los bloqueamos: máximo 3 feedbacks por persona por alerta cada 10 minutos.",
+      technical:
+        "_feedback_rate_check() en main.py: sliding-window dict-of-deques con clave `(client_ip, alert_id)`. _client_ip() honra X-Forwarded-For solo cuando el peer inmediato es loopback (Nginx) — bloquea spoofing directo a uvicorn. 4ta submission devuelve 429 con header Retry-After. Audit log: `INFO: feedback id=X type=Y alert=Z ip=W ua=...`. Configurable vía FEEDBACK_RATE_LIMIT_MAX / FEEDBACK_RATE_WINDOW_S."
+    },
+    {
+      id: "redos",
+      title: "Mensajes gigantes no pueden colapsar el sistema",
+      layman:
+        "Hay un truco viejo de internet — un \"mensaje\" de 1 MB con un patrón malicioso puede congelar al servidor que lo analiza durante horas, dejando a todos los demás usuarios sin servicio. Cortamos cualquier mensaje a 4,000 caracteres antes de analizarlo (un WhatsApp normal cabe ahí) y revisamos automáticamente que ningún patrón de búsqueda nuevo tenga la forma peligrosa que causa congelamientos.",
+      technical:
+        "MAX_INPUT_CHARS=4000 capa input en `classify()` antes de los 900+ `re.search()`. _looks_redos_dangerous() audita cada patrón al compilar y descarta `(...+)+`, `(...*)*`, `(...|...)*`, `.+.+`. _MAX_TOKENS_PER_DOC=5000 en bayesian.py capa la generación de n-gramas (sin esto, un paste de 1 MB alocaría ~3M de strings y tira al worker)."
+    },
+    {
+      id: "fsm-life-safety",
+      title: "Si dices que necesitas ayuda, el bot escucha primero",
+      layman:
+        "Si en cualquier momento de la conversación el menor escribe \"me quiero morir\" o \"tengo miedo\" o \"necesito ayuda\", el bot pausa lo que esté haciendo y le ofrece la Línea de la Vida (800-911-2000) y el 088. Antes había un bug: si el menor estaba en el paso de \"dame el teléfono del adulto\" y escribía algo de crisis, el bot lo trataba como un teléfono inválido. Ahora es imposible que el menor quede atrapado.",
+      technical:
+        "DISTRESS_RE y SUPPORT_RE en bot/handlers/flowController.js fired ANTES del switch del current_step — sin gates por estado. Adicional: NO_GUARDIAN_RE matchea \"ahorita no\" / \"luego\" / \"sin tutor\" / \"primero el reporte\" en el state `notify`, evitando el dead-end donde cualquier mensaje no-teléfono daba \"Número no válido\". Bouncea a ask_contribute con notifyOptOut block (PDF + Línea de la Vida + 088 + invitación a contribuir)."
+    },
+    {
+      id: "self-learning",
+      title: "El sistema mejora con cada uso, sin reentrenamiento manual",
+      layman:
+        "Cada vez que tú o un operador del panel dicen \"sí, esto era peligro\" o \"no, falsa alarma\", el sistema ajusta automáticamente los pesos. No hay un científico de datos sentado reentrenando un modelo cada noche — el aprendizaje es continuo. En 24 horas de uso real, el sistema queda calibrado al lenguaje específico de tu región.",
+      technical:
+        "AutoTuner en classifier/precision.py ajusta weight overrides por pattern_id (clip [0.0, 1.5]) basado en ratio de confirms vs denies. NaiveBayesClassifier.train_one() corre en cada feedback (atomic-save cada 10 trains). Surrogate text: summary + reconstructed why-list (NO el original — privacy by design). Endpoint /precision/state expone qué patrones subieron/bajaron de peso."
+    },
+    {
+      id: "legal-traceability",
+      title: "Cada alerta lleva el marco legal mexicano que la respalda",
+      layman:
+        "Un PDF auto-generado por cada alerta. Trae el folio (NAH-2026-XXXX), los artículos del Código Penal Federal y la LGDNNA que aplican al caso, las autoridades a las que se debe escalar (088, FEVIMTRA, Comisión de Búsqueda) con sus teléfonos y horarios, los derechos de la víctima, y las acciones recomendadas paso a paso. La intención es que cuando un tutor lo lleva a Policía Cibernética, ya tiene la carpeta lista — no es \"ayuda, mi hijo recibió un mensaje raro\", es \"infracción al Art. 209 Sextus CPF, anexo evidencia\"."
+    }
+  ] satisfies PlainTechItem[]
 };
