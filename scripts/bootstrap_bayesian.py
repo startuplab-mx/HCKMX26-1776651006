@@ -85,6 +85,34 @@ SAFE_PHRASES = [
     "te quiero mucho",
     "como te fue en el partido",
     "estoy trabajando en mi proyecto de ciencias",
+    # Casual money / spending — distinguir de extorsión.
+    "me sacaron 500 pesos del monedero",
+    "me robaron la cartera ayer",
+    "me cobraron 200 pesos por el envio",
+    "tengo que pagar la luz",
+    "me debe 100 pesos mi amigo",
+    "compre un cafe de 50 pesos",
+    "le pague la pizza a mi novia",
+    "me regalaron un pastel",
+    "le voy a comprar un regalo a mi mama",
+    "ayer fui al super con mi papa",
+    "tengo que ahorrar para los tenis",
+    "cuanto cuesta el helado",
+    "que caro esta el cine ahora",
+    "me prestaron 200 pesos en la cooperativa",
+    "me cobraron de mas en la tienda",
+    # Emocional/ adolescente normal
+    "estoy triste pero ya se me pasara",
+    "me peleé con mi mejor amigo",
+    "no puedo dormir tengo insomnio",
+    "extrano a mi abuela",
+    "me siento solo a veces",
+    # Más videojuegos / streaming
+    "voy a stream en twitch",
+    "subi un video a youtube",
+    "no me gusta el nuevo update de fortnite",
+    "ya termine el pase de batalla",
+    "me dieron item raro en el dungeon",
 ]
 
 
