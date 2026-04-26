@@ -51,6 +51,29 @@ PHASE_DISPLAY = {
 # phase and triggers override; multi-pattern accumulation simply clamps to 1.0.
 SATURATION = 1.0
 
+# Hard upper bound on the input the heuristic will scan. WhatsApp's per-
+# message ceiling is ~4 KB; pastes from copy/paste of long screenshots
+# rarely exceed that. We truncate here as a defense-in-depth bound on
+# regex backtracking time — a 1 MB hostile paste would otherwise force
+# every one of the 900+ patterns to scan a megabyte of text per request.
+MAX_INPUT_CHARS = 4000
+
+# Catastrophic-backtracking smoke test: scan pattern source for the
+# classic redos shapes — nested unbounded quantifiers ((a+)+, (a*)*),
+# alternation with quantifier ((a|b)*), or `.{n,}` followed by a
+# quantifier. None of our hand-curated patterns hit this; the guard
+# exists because phaseN_research.json is mechanically generated from
+# Marco's CSV and could regress in the future.
+_REDOS_SMELLS: tuple[re.Pattern[str], ...] = (
+    re.compile(r"\([^)]*[+*]\s*\)\s*[+*]"),     # (...+)+ / (...+)*
+    re.compile(r"\([^)]*\|[^)]*\)\s*[+*]"),     # (a|b)* / (a|b)+
+    re.compile(r"\.[+*]\s*\.[+*]"),             # .+.+ / .*.*
+)
+
+
+def _looks_redos_dangerous(pattern_src: str) -> bool:
+    return any(rx.search(pattern_src) for rx in _REDOS_SMELLS)
+
 
 # Generic, human-readable explanation per phase. Used as a fallback when a
 # pattern's JSON entry doesn't carry an `explanation` field. The bot turns
@@ -240,6 +263,12 @@ class HeuristicClassifier:
             # match the normalized input. Stripping accents inside character
             # classes (e.g. d(o|ó)nde → d(o|o)nde) is a match-wise no-op.
             pattern = _normalize(pattern)
+            # ReDoS audit: only meaningful on regex-flagged entries, since
+            # literal patterns went through re.escape() and cannot contain
+            # quantifiers. Drop dangerous shapes silently — production must
+            # never hang on a single hostile message.
+            if is_regex and _looks_redos_dangerous(pattern):
+                continue
             try:
                 compiled = re.compile(pattern, re.IGNORECASE)
             except re.error:
@@ -355,6 +384,14 @@ class HeuristicClassifier:
     def classify(
         self, text: str, weight_overrides: Any = None
     ) -> dict[str, Any]:
+        # Defense-in-depth: cap input length BEFORE normalization. A 1 MB
+        # hostile paste would otherwise force every regex in the dataset to
+        # scan a megabyte per request — even safe patterns become an O(n)
+        # × 900 fan-out. WhatsApp messages are bounded to ~4 KB anyway, and
+        # legitimate pastes from screenshots rarely exceed that. Emoji
+        # scoring uses the same bound below.
+        if len(text) > MAX_INPUT_CHARS:
+            text = text[:MAX_INPUT_CHARS]
         normalized = _normalize(text)
         per_phase: dict[str, float] = {}
         matched_per_phase: dict[str, list[str]] = {}

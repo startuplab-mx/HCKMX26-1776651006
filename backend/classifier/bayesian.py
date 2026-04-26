@@ -61,6 +61,11 @@ _MIN_DOCS_FOR_PREDICTION = 5
 _AUTOSAVE_EVERY = 10
 # Frecuencia mínima para que un feature aparezca en top_features (evita ruido).
 _TOP_FEATURE_MIN_COUNT = 2
+# Hard cap on tokens emitted per call to _tokenize. A 1 MB pasted file
+# would otherwise produce ~3 million n-grams and OOM the worker. WhatsApp
+# messages cap at ~4 KB / ~700 tokens; legitimate research-paper paragraphs
+# stay under 2k tokens. We round up generously.
+_MAX_TOKENS_PER_DOC = 5000
 
 
 def _normalize(text: str) -> str:
@@ -244,13 +249,23 @@ class NaiveBayesClassifier:
     # -------- Internals --------
 
     def _tokenize(self, text: str) -> list[str]:
-        """Return n-grams (1,2,3) from normalized text."""
+        """Return n-grams (1,2,3) from normalized text.
+
+        Bounded by _MAX_TOKENS_PER_DOC to keep memory predictable: a
+        1 MB hostile paste from /feedback would otherwise allocate ~3M
+        n-gram strings and OOM the worker. We trim *words* before
+        emitting n-grams so the n-gram count stays O(N).
+        """
         norm = _normalize(text)
         if not norm or len(norm) < 3:
             return []
         words = norm.split()
         if not words:
             return []
+        # Bound work per call. A huge paste at /feedback would otherwise
+        # blow up training time + RAM linearly with input size.
+        if len(words) > _MAX_TOKENS_PER_DOC:
+            words = words[:_MAX_TOKENS_PER_DOC]
         features: list[str] = list(words)  # unigrams
         for i in range(len(words) - 1):
             features.append(f"{words[i]}_{words[i + 1]}")
@@ -269,14 +284,35 @@ class NaiveBayesClassifier:
         }
         try:
             self.model_path.parent.mkdir(parents=True, exist_ok=True)
-            # Atomic write: tmp then rename so a crash never leaves a partial file.
-            tmp = self.model_path.with_suffix(self.model_path.suffix + ".tmp")
+            # Atomic write: tmp then rename so a crash never leaves a partial
+            # file. Use a per-PID tmp suffix so two concurrent processes
+            # (e.g. systemd reload while a worker is mid-train) don't clobber
+            # each other's partial files.
+            tmp = self.model_path.with_suffix(
+                self.model_path.suffix + f".tmp.{os.getpid()}"
+            )
             with tmp.open("w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False)
+                # fsync the file's contents to disk before the rename so
+                # a power loss between rename + sync can't surface a
+                # zero-byte model on next boot.
+                f.flush()
+                try:
+                    os.fsync(f.fileno())
+                except (OSError, AttributeError):
+                    # Some filesystems (CIFS, /tmp on test runners) reject
+                    # fsync; the rename below is still atomic via os.replace
+                    # so durability is best-effort.
+                    pass
             os.replace(tmp, self.model_path)
         except Exception:
-            # Persist is best-effort; if we crash here the next train_one retries.
-            pass
+            # Persist is best-effort; if we crash here the next train_one
+            # retries. Best-effort tmp cleanup so we don't leak files.
+            try:
+                if "tmp" in locals() and tmp.exists():
+                    tmp.unlink()
+            except Exception:
+                pass
 
     def _load(self) -> None:
         if not self.model_path.exists():

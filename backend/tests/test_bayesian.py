@@ -100,6 +100,44 @@ def test_persistence_roundtrip(tmp_path):
     assert r["predicted_class"] == "coercion"
 
 
+def test_tokenize_caps_huge_input(tmp_path):
+    """A 200k-word paste must NOT explode memory or run forever. The
+    cap (_MAX_TOKENS_PER_DOC) bounds the n-gram count to O(N)."""
+    import time
+    from classifier.bayesian import NaiveBayesClassifier, _MAX_TOKENS_PER_DOC
+
+    bayes = NaiveBayesClassifier(model_path=tmp_path / "huge.json")
+    huge_text = "matar amenaza " * 100_000  # 200k tokens, ~1.4 MB
+    t0 = time.perf_counter()
+    feats = bayes._tokenize(huge_text)
+    elapsed = time.perf_counter() - t0
+    # n-gram fanout is roughly 3x the word count (1+2+3 grams), capped:
+    # so feats len is bounded ~3 * _MAX_TOKENS_PER_DOC.
+    assert len(feats) <= 3 * _MAX_TOKENS_PER_DOC
+    assert elapsed < 2.0, f"tokenize took {elapsed:.3f}s"
+
+
+def test_atomic_save_no_partial_file_on_kill(tmp_path):
+    """If a tmp file is left behind from a prior crash, the next save
+    must still succeed and produce a clean model."""
+    from classifier.bayesian import NaiveBayesClassifier
+
+    p = tmp_path / "atomic.json"
+    bayes = NaiveBayesClassifier(model_path=p)
+    bayes.train_many([("te voy a matar", "coercion")] * 6)
+    bayes.save()
+    assert p.exists()
+    # Simulate a stale tmp from a prior crashed process.
+    stale = p.with_suffix(p.suffix + f".tmp.{os.getpid()}")
+    stale.write_text('{"corrupt')  # half-written JSON
+    # New save must overwrite the model atomically.
+    bayes.train_one("manda fotos o las publico", "explotacion")
+    bayes.save()
+    # The committed file is well-formed JSON with our data.
+    data = json.loads(p.read_text(encoding="utf-8"))
+    assert data["total_docs"] == 7
+
+
 def test_get_stats_shape(tmp_path):
     from classifier.bayesian import NaiveBayesClassifier
 
