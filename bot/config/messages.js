@@ -210,7 +210,9 @@ export const MESSAGES = {
   falsoPositivoReconocido: [
     '🙏 Entendido, gracias por la corrección.',
     '',
-    'Esto nos ayuda a mejorar la precisión del sistema. Cada corrección de un usuario ajusta automáticamente los patrones del clasificador.',
+    'Esto nos ayuda a mejorar — el clasificador heurístico baja el peso de los patrones que matcharon, y el modelo Bayesiano aprende a asociar estos n-gramas con la clase "seguro". Cada corrección hace al sistema un poquito más preciso para el siguiente usuario.',
+    '',
+    'Tu privacidad sigue intacta: no se guardó el texto del mensaje, solo los pattern_ids que fueron ajustados.',
     '',
     '¿Hay algo más que quieras analizar?',
   ].join('\n'),
