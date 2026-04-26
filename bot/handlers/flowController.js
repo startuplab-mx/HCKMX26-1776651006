@@ -82,6 +82,14 @@ const AFFIRM_NO_CONTEXT_RE = /^\s*(s[ií]|claro|obvio|por\s+supuesto|dale|seguro
 const DENY_ALERT_RE =
   /^\s*(no\s+es|no\s+es\s+cierto|me\s+equivoqu[eé]|fals[oa]|no\s+(es\s+)?peligro|esto\s+no\s+es|exager(o|aste)|fui\s+yo)\s*[!.]?\s*$/i;
 
+// User wants to skip the guardian-notify step but DOES NOT deny the verdict.
+// "Ahorita no", "luego le aviso", "no quiero avisar", "primero el reporte".
+// Without this, panicked users were trapped in 'notify' because they didn't
+// want to involve an adult right now (or didn't know which one), and every
+// message after that was met with "Número no válido".
+const NO_GUARDIAN_RE =
+  /^\s*(no\s+quiero\s+(avisar|notificar|involucrar(lo|la)?|involucrado|meterlo)|no\s+(quiero|puedo)\s+(ahorita|ahora|todav[ií]a)|ahor(a|ita)?\s+no|todav[ií]a\s+no|despu[eé]s|luego|m[aá]s\s+tarde|primero\s+(el\s+)?reporte|s[oó]lo\s+(el\s+)?reporte|sin\s+(adulto|tutor)|no\s+tengo\s+(adulto|tutor|un\s+adulto))\s*[!.]?\s*$/i;
+
 function looksLikeGreeting(text) {
   return text.length < 30 && GREETING_RE.test(text.trim());
 }
@@ -200,8 +208,10 @@ async function handleConfirmTranscription(sock, jid, text) {
     setStep(jid, 'recibir_msg');
     return;
   }
+  // Variant Y/N prompt with the specific call to action appended so the
+  // user knows which question we're re-asking.
   await sock.sendMessage(jid, {
-    text: 'Responde *sí* para que lo analice o *no* para descartarlo.',
+    text: `${MESSAGES.ynPrompt()} (sí = analizar, no = descartar)`,
   });
 }
 
@@ -361,10 +371,21 @@ export async function advance(sock, jid, text) {
         return;
       }
 
+      // User wants to skip the guardian step but ISN'T denying the verdict
+      // — "ahorita no", "luego", "primero el reporte", "no tengo un
+      // adulto". Honour the opt-out: surface the PDF + emergency lines,
+      // bounce to ask_contribute. Life-safety info is still front and
+      // center; we just don't trap them here.
+      if (NO_GUARDIAN_RE.test(text)) {
+        await sock.sendMessage(jid, { text: MESSAGES.notifyOptOut });
+        setStep(jid, 'ask_contribute');
+        return;
+      }
+
       const digits = text.replace(/[^\d]/g, '');
       if (digits.length < 10) {
         await sock.sendMessage(jid, {
-          text: 'Número no válido. Mándame +52 con 10 dígitos, escribe "no" si te equivocaste, o "reporte" para el PDF.',
+          text: 'Número no válido. Mándame +52 con 10 dígitos, escribe "ahorita no" si prefieres saltar este paso, o "reporte" para el PDF.',
         });
         return;
       }
@@ -470,7 +491,7 @@ export async function advance(sock, jid, text) {
         return;
       }
       await sock.sendMessage(jid, {
-        text: 'Responde *sí* para contribuir anónimamente o *no* para terminar.',
+        text: `${MESSAGES.ynPrompt()} (sí = contribuir anónimamente, no = terminar)`,
       });
       return;
 

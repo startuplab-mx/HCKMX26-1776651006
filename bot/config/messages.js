@@ -76,13 +76,25 @@ export const MESSAGES = {
     'OK, no analicé ese mensaje. Mándame texto o intenta de nuevo cuando quieras.',
 
   // Resultados ---------------------------------------------------------
-  resultadoSeguro: (score) =>
-    [
+  // Tagline pool for SEGURO. The verdict + score stay constant; only the
+  // closing empathetic line rotates so a user pasting many messages
+  // doesn't see the same boilerplate every time.
+  _resultadoSeguroTaglines: [
+    'No detecté señales claras de reclutamiento. Aun así, si algo te incomoda, confía en tu instinto y platícalo con alguien de confianza.',
+    'No vi patrones de riesgo en este mensaje. Si tu intuición te dice lo contrario, escúchala — puedes mandarme otra parte de la conversación.',
+    'Aquí no salen banderas rojas. Recuerda que los reclutadores muchas veces avanzan poco a poco — si te llegan más mensajes raros, mándamelos.',
+    'Sin señales claras de peligro. Si la persona te empieza a pedir secrecía, datos personales o cambiar de plataforma, eso sí cuéntamelo.',
+  ],
+  resultadoSeguro(score) {
+    const taglines = this._resultadoSeguroTaglines;
+    const tagline = taglines[Math.floor(Math.random() * taglines.length)];
+    return [
       '✅ *Mensaje SEGURO*',
       `Riesgo: ${(score * 100).toFixed(0)}%`,
       '',
-      'No detecté señales claras de reclutamiento. Aun así, si algo te incomoda, confía en tu instinto y platícalo con alguien de confianza.',
-    ].join('\n'),
+      tagline,
+    ].join('\n');
+  },
 
   resultadoAtencion: (score, fase) =>
     [
@@ -116,6 +128,35 @@ export const MESSAGES = {
 
   pedirContacto:
     'Mándame el número del adulto de confianza con el formato +52XXXXXXXXXX (10 dígitos con clave país).',
+
+  // When the user opts out of the guardian-notify step. We DO NOT block
+  // the flow — they can still get the PDF report and contribute. The
+  // urgency is preserved (088 + Línea de la Vida) without being
+  // moralistic about their decision not to involve an adult.
+  notifyOptOut: [
+    'Entendido. No mando el aviso al adulto.',
+    '',
+    'Tu reporte ya está listo:',
+    '• Escribe *reporte* para descargar el PDF y guardarlo / reenviarlo cuando estés list@.',
+    '',
+    '*Si necesitas ayuda inmediata:*',
+    '📞 *Línea de la Vida* — *800-911-2000* (24/7, gratis, anónimo, sin juicio)',
+    '🚨 *088* — Policía Cibernética',
+    '',
+    'Cuando puedas, ¿te animas a aportar de forma anónima? (sólo nivel y plataforma — nada de tu identidad).',
+  ].join('\n'),
+
+  // Variant pool for "Responde sí o no" prompts. Used when the FSM is
+  // waiting for a yes/no and gets something else.
+  _ynPromptVariants: [
+    'Necesito un *sí* o un *no* para seguir 🙂',
+    'Para avanzar, ¿*sí* o *no*?',
+    '¿Lo confirmas? Responde *sí* o *no*.',
+  ],
+  ynPrompt() {
+    const v = this._ynPromptVariants;
+    return v[Math.floor(Math.random() * v.length)];
+  },
 
   notificacionTutor: (nivel, plataforma) =>
     [
