@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
-import { FilmGrain } from "../components/FilmGrain";
+
 import { PhoneMockup } from "../components/PhoneMockup";
 import { ScoreThermometer } from "../components/ScoreThermometer";
 
@@ -241,8 +241,6 @@ export const Scene5_BotDemo: React.FC = () => {
         position: "relative",
       }}
     >
-      <FilmGrain opacity={0.03} />
-
       {/* LEFT — Phone mockup */}
       <div
         style={{

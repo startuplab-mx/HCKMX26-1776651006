@@ -46,13 +46,35 @@ def _configured_urls() -> list[str]:
     return [u.strip() for u in raw.split(",") if u.strip()]
 
 
-def _headers() -> dict[str, str]:
+def _headers(payload_bytes: bytes | None = None) -> dict[str, str]:
+    """Build webhook headers. When `NAHUAL_WEBHOOK_SECRET` is set, sign the
+    payload with HMAC-SHA256 (industry standard à la GitHub/Stripe) instead
+    of just dropping the static secret in a header.
+
+    The receiver verifies by recomputing HMAC(secret, body) and comparing
+    in constant time. A static secret was an auth bypass: anyone who
+    learned it (logs, screenshots, GitHub leak) could forge events.
+    """
     headers = {
         "Content-Type": "application/json",
         "User-Agent": "Nahual-Webhook/1.0",
     }
     secret = os.getenv("NAHUAL_WEBHOOK_SECRET")
-    if secret:
+    if secret and payload_bytes is not None:
+        import hashlib
+        import hmac
+        sig = hmac.new(
+            secret.encode("utf-8"),
+            payload_bytes,
+            hashlib.sha256,
+        ).hexdigest()
+        # GitHub-style header: 'sha256=<hex>'
+        headers["X-Nahual-Signature"] = f"sha256={sig}"
+        headers["X-Nahual-Signature-Algo"] = "hmac-sha256"
+    elif secret:
+        # Backwards-compat fallback when the caller didn't pass the
+        # raw bytes (shouldn't happen post-fix). Static secret is the
+        # WORST case; we keep this branch for resiliency, never reach.
         headers["X-Nahual-Signature"] = secret
     return headers
 
@@ -90,11 +112,16 @@ def _post_one(url: str, payload: dict[str, Any], *, max_retries: int = 3) -> Non
     Caller still gets fire-and-forget semantics because dispatch() runs us
     in a daemon thread.
     """
+    import json as _json
+    # Serialize once so the HMAC signature is computed over EXACTLY the
+    # bytes the receiver will see. (httpx's json= path serializes
+    # internally; passing content= guarantees byte-level fidelity.)
+    payload_bytes = _json.dumps(payload, ensure_ascii=False).encode("utf-8")
     backoff = (1.0, 2.0, 4.0)  # seconds between retries
     for attempt in range(max_retries):
         try:
             with httpx.Client(timeout=WEBHOOK_TIMEOUT_S) as client:
-                r = client.post(url, json=payload, headers=_headers())
+                r = client.post(url, content=payload_bytes, headers=_headers(payload_bytes))
             if r.status_code < 400:
                 return  # success
             # 4xx is a permanent error — retrying won't help.

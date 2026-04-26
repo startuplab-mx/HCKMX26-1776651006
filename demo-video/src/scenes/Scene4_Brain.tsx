@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
-import { FilmGrain } from "../components/FilmGrain";
+
 import { ScoreThermometer } from "../components/ScoreThermometer";
 import { GlowText } from "../components/GlowText";
 
@@ -83,8 +83,6 @@ export const Scene4_Brain: React.FC = () => {
         position: "relative",
       }}
     >
-      <FilmGrain opacity={0.03} />
-
       {/* LEFT — Cognitive Layers */}
       <div
         style={{

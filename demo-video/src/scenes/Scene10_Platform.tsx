@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
-import { FilmGrain } from "../components/FilmGrain";
+
 import { ParticleField } from "../components/ParticleField";
 import { AnimatedCounter } from "../components/AnimatedCounter";
 
@@ -106,7 +106,6 @@ export const Scene10_Platform: React.FC = () => {
         position: "relative",
       }}
     >
-      <FilmGrain opacity={0.03} />
       <ParticleField count={30} />
 
       {/* LEFT — Map */}

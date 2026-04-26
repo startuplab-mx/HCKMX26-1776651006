@@ -240,13 +240,22 @@ function showOverlay(phase, snippet) {
       ? 'Hola Nahual, recibí un mensaje con señales de coerción/amenaza. ¿Me ayudas?'
       : 'Hola Nahual, recibí un mensaje con señales de explotación/sextorsión. ¿Me ayudas?';
   const waLink = `https://wa.me/${BOT_PHONE}?text=${encodeURIComponent(greeting)}`;
+  // Build the snippet block with explicit truncation hint when the
+  // original is longer than 140 chars — otherwise users may dismiss
+  // a real threat thinking the visible text is the whole message.
+  const snippetTrimmed = snippet.slice(0, 140);
+  const snippetHtml = snippet.length > 140
+    ? `<p class="nahual-snippet">"${escapeHtml(snippetTrimmed)}<strong>…</strong>"</p>
+       <p class="nahual-snippet-note">Primeros 140 de ${snippet.length} caracteres.</p>`
+    : `<p class="nahual-snippet">"${escapeHtml(snippetTrimmed)}"</p>`;
+
   overlay.innerHTML = `
     <div class="nahual-card" role="dialog" aria-label="Alerta Nahual">
       <div class="nahual-header">🛡️ Nahual Shield</div>
       <div class="nahual-body">
         <p><strong>Detectamos un patrón de ${phase === 'coercion' ? 'COERCIÓN' : 'EXPLOTACIÓN'}.</strong></p>
         <p>Esto puede ser reclutamiento criminal o sextorsión. No estás solo/a.</p>
-        <p class="nahual-snippet">"${escapeHtml(snippet.slice(0, 140))}…"</p>
+        ${snippetHtml}
       </div>
       <div class="nahual-actions">
         <a class="nahual-btn primary" href="${waLink}" target="_blank" rel="noopener">Reportar al bot</a>

@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
-import { FilmGrain } from "../components/FilmGrain";
+
 import { ParticleField } from "../components/ParticleField";
 import { AnimatedCounter } from "../components/AnimatedCounter";
 import { GlowText } from "../components/GlowText";
@@ -123,7 +123,6 @@ export const Scene1_Hook: React.FC = () => {
         transform: `translate(${shakeX}px, ${shakeY}px)`,
       }}
     >
-      <FilmGrain opacity={0.04} />
       <ParticleField count={40} />
 
       {/* Headline */}

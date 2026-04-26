@@ -52,7 +52,7 @@ def test_transcribe_503_when_groq_key_missing(tmp_path):
     with client:
         r = client.post(
             "/transcribe",
-            files={"file": ("audio.ogg", b"\x00\x01\x02", "audio/ogg")},
+            files={"file": ("audio.ogg", b"OggS\x00\x02", "audio/ogg")},
         )
         assert r.status_code == 503
 
@@ -83,7 +83,7 @@ def test_transcribe_returns_text_when_groq_ok(tmp_path):
     with client, patch.object(httpx.AsyncClient, "post", new=fake_post):
         r = client.post(
             "/transcribe",
-            files={"file": ("audio.ogg", b"\x00\x01\x02", "audio/ogg")},
+            files={"file": ("audio.ogg", b"OggS\x00\x02", "audio/ogg")},
         )
         assert r.status_code == 200
         body = r.json()
@@ -99,7 +99,7 @@ def test_ocr_503_when_anthropic_key_missing(tmp_path):
     with client:
         r = client.post(
             "/ocr",
-            files={"file": ("img.png", b"\x89PNG\r\n", "image/png")},
+            files={"file": ("img.png", b"\x89PNG\r\n\x1a\n\x00\x00", "image/png")},
         )
         assert r.status_code == 503
 
@@ -130,7 +130,7 @@ def test_ocr_returns_extracted_text(tmp_path):
     with client, patch.object(httpx.AsyncClient, "post", new=fake_post):
         r = client.post(
             "/ocr",
-            files={"file": ("img.png", b"\x89PNG\r\n", "image/png")},
+            files={"file": ("img.png", b"\x89PNG\r\n\x1a\n\x00\x00", "image/png")},
         )
         assert r.status_code == 200
         assert r.json()["text"] == "deposita 500 spei"
@@ -152,7 +152,7 @@ def test_ocr_no_text_returns_empty_string(tmp_path):
     with client, patch.object(httpx.AsyncClient, "post", new=fake_post):
         r = client.post(
             "/ocr",
-            files={"file": ("img.png", b"\x89PNG\r\n", "image/png")},
+            files={"file": ("img.png", b"\x89PNG\r\n\x1a\n\x00\x00", "image/png")},
         )
         assert r.status_code == 200
         assert r.json()["text"] == ""

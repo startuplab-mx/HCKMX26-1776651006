@@ -50,8 +50,16 @@ export const MESSAGES = {
   imagenError:
     'No pude procesar la imagen. Intenta enviarme el texto copiado directamente.',
 
-  rechazoMultimedia:
-    'Por ahora sólo puedo analizar *texto*, *audios* y *capturas de pantalla*. Stickers, videos, GIFs y documentos los estoy aprendiendo todavía 🙈.\n\nSi el contenido es urgente: llama al *088* (Policía Cibernética) o al *911*.',
+  rechazoMultimedia: [
+    'Por ahora sólo puedo analizar *texto*, *audios* y *capturas de pantalla*. Stickers, videos, GIFs y documentos los estoy aprendiendo todavía 🙈.',
+    '',
+    '*Cómo seguir:*',
+    '• Si es un *video o GIF*: hazle screenshot al frame que tenga el texto y mándamelo.',
+    '• Si es un *documento*: copia el contenido y mándalo como texto.',
+    '• Si es un *sticker* o solo emojis: mándame el contexto en texto.',
+    '',
+    'Si el contenido es urgente: llama al *088* (Policía Cibernética, 24/7) o al *911*.',
+  ].join('\n'),
 
   confirmarTranscripcion: (text) => {
     const preview = text.length > 500 ? `${text.slice(0, 500)}…` : text;
@@ -95,12 +103,15 @@ export const MESSAGES = {
       '',
       'Lo que recibiste tiene señales claras de reclutamiento criminal o amenaza directa.',
       '',
+      '*Si te sientes abrumado/a o necesitas hablar YA con alguien, llama:*',
+      '📞 *Línea de la Vida* — *800-911-2000* (24/7, gratis, anónimo, sin juicio)',
+      '',
       'No estás solo/a. Voy a ayudarte:',
       '1️⃣ Avisar a un adulto de confianza',
-      '2️⃣ Generar un reporte para la Policía Cibernética',
+      '2️⃣ Generar un reporte para la Policía Cibernética (088)',
       '3️⃣ Bloquear al contacto que te escribió',
       '',
-      '¿Me das el WhatsApp de un adulto de confianza para avisarle de inmediato? (sólo nivel de alerta, NO el mensaje)',
+      'Cuando estés listo/a, ¿me das el WhatsApp de un adulto de confianza para avisarle de inmediato? (sólo nivel de alerta, NO el mensaje original)',
     ].join('\n'),
 
   pedirContacto:
@@ -225,9 +236,7 @@ export const MESSAGES = {
   falsoPositivoReconocido: [
     '🙏 Entendido, gracias por la corrección.',
     '',
-    'Esto nos ayuda a mejorar — el clasificador heurístico baja el peso de los patrones que matcharon, y el modelo Bayesiano aprende a asociar estos n-gramas con la clase "seguro". Cada corrección hace al sistema un poquito más preciso para el siguiente usuario.',
-    '',
-    'Tu privacidad sigue intacta: no se guardó el texto del mensaje, solo los pattern_ids que fueron ajustados.',
+    'Esto ayuda a proteger a más jóvenes — cada corrección hace al sistema un poquito más preciso para el siguiente usuario. Tu privacidad sigue intacta: no se guardó el texto del mensaje.',
     '',
     '¿Hay algo más que quieras analizar?',
   ].join('\n'),

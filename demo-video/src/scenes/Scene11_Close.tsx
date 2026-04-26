@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
-import { FilmGrain } from "../components/FilmGrain";
+
 import { ParticleField } from "../components/ParticleField";
 import { GlowText } from "../components/GlowText";
 
@@ -81,7 +81,6 @@ export const Scene11_Close: React.FC = () => {
         overflow: "hidden",
       }}
     >
-      <FilmGrain opacity={0.04} />
       <ParticleField count={50} />
 
       {/* Background gradient orbs */}

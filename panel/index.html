@@ -80,8 +80,18 @@
         .survey-banner { gap: 12px; padding: 12px; }
         .survey-num { font-size: 22px; }
         .survey-source { display: none; }
-        table th, table td { padding: 6px 8px !important; font-size: 12px; }
+        table th, table td { padding: 8px 10px !important; font-size: 12px; }
+        /* WCAG: minimum 44×44 touch target for mobile. The desktop-tight
+           btn-sm (4px padding) was ~24px tall — failed accessibility +
+           caused mis-clicks on dense alert rows. */
+        .btn-sm { padding: 10px 12px !important; min-height: 44px; font-size: 12px; }
+        /* Force horizontal scroll on the alerts table so 9 columns stay
+           readable instead of squished to <30px each. */
+        table { min-width: 760px; }
+        .test-box textarea { min-height: 100px; }
       }
+      /* Make sure the alerts card itself can scroll horizontally too. */
+      .card.rounded-lg.overflow-x-auto { -webkit-overflow-scrolling: touch; }
     </style>
   </head>
   <body class="min-h-screen">

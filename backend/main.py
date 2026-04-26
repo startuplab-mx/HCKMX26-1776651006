@@ -748,6 +748,63 @@ def _normalize_mime(raw: str | None, default: str) -> str:
     """
     m = (raw or default).split(";")[0].strip().lower()
     return m or default
+
+
+# Magic-byte signatures so we don't trust the Content-Type header alone.
+# Defense against: a .zip / .exe renamed to .wav with a fake header
+# being forwarded to Groq Whisper or Claude Vision (wasted spend +
+# upstream parser surface).
+_AUDIO_SIGNATURES = (
+    (b"OggS", "audio/ogg"),       # Ogg containers (Opus / Vorbis)
+    (b"ID3", "audio/mpeg"),       # MP3 with ID3v2 tag
+    (b"\xff\xfb", "audio/mpeg"),  # MP3 frame sync (no ID3)
+    (b"\xff\xf3", "audio/mpeg"),  # MP3 alt frame sync
+    (b"\xff\xf2", "audio/mpeg"),  # MP3 alt frame sync
+    (b"RIFF", "audio/wav"),       # WAV / WebP-audio
+    (b"\x1aE\xdf\xa3", "audio/webm"),  # EBML (matroska/webm)
+    (b"fLaC", "audio/flac"),
+    # MP4/M4A: 'ftyp' at offset 4 (not 0). Handled below.
+)
+_IMAGE_SIGNATURES = (
+    (b"\x89PNG\r\n\x1a\n", "image/png"),
+    (b"\xff\xd8\xff", "image/jpeg"),                # JPEG SOI + APP marker
+    (b"GIF87a", "image/gif"),
+    (b"GIF89a", "image/gif"),
+    (b"RIFF", "image/webp"),                        # then 'WEBP' at offset 8
+    (b"\x00\x00\x00 ftypheic", "image/heic"),       # HEIC: 'ftyp' at offset 4
+    (b"\x00\x00\x00 ftypheix", "image/heic"),
+    (b"\x00\x00\x00 ftypmif1", "image/heic"),       # HEIF master image
+)
+
+
+def _detect_audio_magic(blob: bytes) -> str | None:
+    """Return canonical mime if `blob` looks like a known audio container."""
+    if not blob or len(blob) < 4:
+        return None
+    for sig, mime in _AUDIO_SIGNATURES:
+        if blob.startswith(sig):
+            return mime
+    # MP4/M4A: 'ftyp' box at offset 4-8.
+    if len(blob) >= 12 and blob[4:8] == b"ftyp":
+        return "audio/mp4"
+    return None
+
+
+def _detect_image_magic(blob: bytes) -> str | None:
+    if not blob or len(blob) < 8:
+        return None
+    for sig, mime in _IMAGE_SIGNATURES:
+        if blob.startswith(sig):
+            # WEBP: also verify the WEBP marker at offset 8
+            if mime == "image/webp" and blob[8:12] != b"WEBP":
+                continue
+            return mime
+    # HEIC fallback: ftyp box with heic-family brand
+    if len(blob) >= 12 and blob[4:8] == b"ftyp":
+        brand = blob[8:12]
+        if brand in (b"heic", b"heix", b"mif1", b"msf1", b"heim"):
+            return "image/heic"
+    return None
 MAX_AUDIO_BYTES = 10 * 1024 * 1024   # 10 MB
 MAX_IMAGE_BYTES = 8 * 1024 * 1024    # 8 MB
 
@@ -774,6 +831,17 @@ async def transcribe_audio(file: UploadFile = File(...)):
     mime = _normalize_mime(file.content_type, "audio/ogg")
     if mime not in ALLOWED_AUDIO_MIME:
         raise HTTPException(415, f"unsupported audio type {mime!r}")
+
+    # Magic-byte verification: a .zip renamed to .wav with a fake
+    # Content-Type would otherwise be forwarded to Groq Whisper. Reject
+    # uploads where the content doesn't match a known audio container.
+    detected = _detect_audio_magic(audio_bytes[:32])
+    if detected is None:
+        raise HTTPException(
+            415,
+            "audio bytes don't match any known container (Ogg/MP3/WAV/MP4/WebM/FLAC)",
+        )
+
     timeout = float(os.getenv("STT_TIMEOUT_SECONDS", "15"))
 
     try:
@@ -816,6 +884,16 @@ async def ocr_image(file: UploadFile = File(...)):
     media_type = _normalize_mime(file.content_type, "image/png")
     if media_type not in ALLOWED_IMAGE_MIME:
         raise HTTPException(415, f"unsupported image type {media_type!r}")
+
+    # Magic-byte verification: only forward to Claude Vision if the
+    # bytes actually start with a known image-format signature. Defense
+    # against renamed binaries / parser fingerprinting attacks.
+    detected = _detect_image_magic(image_bytes[:32])
+    if detected is None:
+        raise HTTPException(
+            415,
+            "image bytes don't match any known format (PNG/JPEG/WebP/GIF/HEIC)",
+        )
 
     b64 = base64.b64encode(image_bytes).decode("ascii")
     model = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-5-20250929")

@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
-import { FilmGrain } from "../components/FilmGrain";
+
 import { BrowserMockup } from "../components/BrowserMockup";
 
 const PLATFORMS_COMPAT = [
@@ -76,8 +76,6 @@ export const Scene7_Extension: React.FC = () => {
         padding: 60,
       }}
     >
-      <FilmGrain opacity={0.03} />
-
       {/* Title */}
       <div
         style={{

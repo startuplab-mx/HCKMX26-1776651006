@@ -40,7 +40,7 @@ export const NahualDemo: React.FC = () => {
           <Scene1_Hook />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
-          presentation={clockWipe()}
+          presentation={clockWipe({ width: 1920, height: 1080 })}
           timing={linearTiming({ durationInFrames: TRANSITION_FRAMES })}
         />
 
@@ -94,7 +94,7 @@ export const NahualDemo: React.FC = () => {
           <Scene7_Extension />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
-          presentation={clockWipe()}
+          presentation={clockWipe({ width: 1920, height: 1080 })}
           timing={linearTiming({ durationInFrames: TRANSITION_FRAMES })}
         />
 

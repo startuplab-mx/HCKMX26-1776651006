@@ -282,14 +282,22 @@ export async function advance(sock, jid, text) {
     return;
   }
 
-  // Distress / SOS — empathy first, then offer a path.
-  if (DISTRESS_RE.test(text) && ['inicio', 'recibir_msg'].includes(session.current_step)) {
+  // Distress / SOS — life-safety: ALWAYS surface crisis support FIRST,
+  // regardless of FSM state. A user in 'ask_contribute' or 'notify' state
+  // who suddenly says "me quiero morir" must NOT have that text routed
+  // to /analyze — it would be classified as a threat instead of a cry
+  // for help. (UX audit Apr 26: this used to be gated behind
+  // ['inicio', 'recibir_msg'] only — life-safety regression.)
+  if (DISTRESS_RE.test(text)) {
     await sock.sendMessage(jid, { text: MESSAGES.distress });
-    setStep(jid, 'recibir_msg'); // ready for the actual sus message
+    // Reset to recibir_msg so the next message is treated as the actual
+    // suspicious content the user wants help with.
+    setStep(jid, 'recibir_msg');
     return;
   }
-  // "Quiero platicar / desahogarme" — acknowledge + offer.
-  if (SUPPORT_RE.test(text) && session.current_step === 'inicio') {
+  // "Quiero platicar / desahogarme" — acknowledge + offer. Same rule:
+  // emotional support shouldn't be gated on FSM state.
+  if (SUPPORT_RE.test(text)) {
     await sock.sendMessage(jid, { text: MESSAGES.soporte });
     setStep(jid, 'recibir_msg');
     return;

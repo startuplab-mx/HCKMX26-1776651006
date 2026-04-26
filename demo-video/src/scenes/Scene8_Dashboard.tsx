@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
-import { FilmGrain } from "../components/FilmGrain";
+
 import { DashboardMockup } from "../components/DashboardMockup";
 import { AnimatedCounter } from "../components/AnimatedCounter";
 
@@ -127,8 +127,6 @@ export const Scene8_Dashboard: React.FC = () => {
         position: "relative",
       }}
     >
-      <FilmGrain opacity={0.03} />
-
       <div
         style={{
           opacity: dashSpring,

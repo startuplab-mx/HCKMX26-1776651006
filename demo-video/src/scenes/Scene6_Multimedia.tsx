@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
-import { FilmGrain } from "../components/FilmGrain";
+
 
 // Waveform bars
 const WaveformBar: React.FC<{ index: number; active: boolean }> = ({
@@ -96,8 +96,6 @@ export const Scene6_Multimedia: React.FC = () => {
         padding: 80,
       }}
     >
-      <FilmGrain opacity={0.03} />
-
       {/* Title */}
       <div
         style={{

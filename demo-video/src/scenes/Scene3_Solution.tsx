@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
-import { FilmGrain } from "../components/FilmGrain";
+
 import { ParticleField } from "../components/ParticleField";
 
 const NAHUAL_LETTERS = "NAHUAL".split("");
@@ -125,7 +125,6 @@ export const Scene3_Solution: React.FC = () => {
         position: "relative",
       }}
     >
-      <FilmGrain opacity={0.03} />
       <ParticleField count={35} />
 
       {/* Shield logo with glow rings */}

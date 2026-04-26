@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
-import { FilmGrain } from "../components/FilmGrain";
+
 
 // Recruitment phases timeline
 const PHASES = [
@@ -111,8 +111,6 @@ export const Scene2_Problem: React.FC = () => {
         position: "relative",
       }}
     >
-      <FilmGrain opacity={0.03} />
-
       {/* Title */}
       <div
         style={{

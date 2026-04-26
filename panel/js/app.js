@@ -220,11 +220,40 @@ function renderLegalRow(legal) {
     </tr>`;
 }
 
+// Tiny toast for non-PELIGRO actions (status updates, errors, etc).
+// Lighter than showPeligroToast() — no audio, 4s auto-dismiss.
+function showToast(text, kind = 'info') {
+  const stack = document.getElementById('toast-stack');
+  if (!stack) return;
+  const t = document.createElement('div');
+  t.className = 'toast';
+  const color = kind === 'error' ? '#EF4444' : kind === 'success' ? '#22C55E' : '#C16A4C';
+  t.style.borderColor = color;
+  t.style.borderLeftColor = color;
+  t.innerHTML = `<div class="toast-body">${esc(text)}</div>`;
+  t.addEventListener('click', () => t.remove());
+  stack.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+const STATUS_VERBS = {
+  reviewed: 'marcada como Revisada',
+  dismissed: 'Descartada',
+  escalated: 'Escalada',
+  pending: 'movida a Pendiente',
+};
+
 async function patchStatus(id, status) {
-  await jsend(`/alerts/${id}`, 'PATCH', {
-    status,
-    reviewer: localStorage.getItem('nahual_reviewer') || 'panel',
-  });
+  try {
+    await jsend(`/alerts/${id}`, 'PATCH', {
+      status,
+      reviewer: localStorage.getItem('nahual_reviewer') || 'panel',
+    });
+    const folio = `NAH-2026-${String(id).padStart(4, '0')}`;
+    showToast(`✓ ${folio} ${STATUS_VERBS[status] || status}`, 'success');
+  } catch (e) {
+    showToast(`Error al actualizar: ${e.message}`, 'error');
+  }
 }
 
 async function escalate(id) {
@@ -493,7 +522,9 @@ function showPeligroToast(alert) {
   } catch {}
   t.addEventListener('click', () => t.remove());
   stack.appendChild(t);
-  setTimeout(() => t.remove(), 8000);
+  // PELIGRO toast lives 15s (was 8s) — operator may be on another tab
+  // when a critical alert lands; 8s wasn't enough.
+  setTimeout(() => t.remove(), 15000);
 }
 
 async function refresh() {
@@ -556,6 +587,17 @@ async function refresh() {
     CONSEC_FAILS += 1;
     if (CONSEC_FAILS === 1) setHealthPill('degraded', 'reconectando…');
     else setHealthPill('down', 'desconectado');
+    // Surface the backend outage in the alerts table so the operator sees
+    // a clear ⚠️ instead of a silent stale view. Otherwise an empty table
+    // looks identical to "no alerts" — dangerous during a real incident.
+    const body = document.getElementById('alerts-body');
+    if (body && CONSEC_FAILS >= 2) {
+      body.innerHTML = `
+        <tr><td colspan="9" class="px-4 py-10 text-center text-sm" style="color:#EF4444">
+          ⚠️ Backend desconectado · datos no actualizados<br/>
+          <span class="text-xs" style="color:rgba(255,255,255,0.5)">El panel sigue intentando reconectar cada ${REFRESH_MS / 1000}s.</span>
+        </td></tr>`;
+    }
     console.error(err);
   }
 }
@@ -607,7 +649,7 @@ async function runTestAnalysis() {
     const r = await fetch(`${API}/analyze`, {
       method: 'POST',
       headers: authHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ text, use_llm: false }),
+      body: JSON.stringify({ text, use_llm: true }),
     });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const a = await r.json();
@@ -621,12 +663,20 @@ async function runTestAnalysis() {
     const ids = (a.pattern_ids || []).slice(0, 6).join(', ') || '—';
     const cats = (a.categories || []).join(', ') || '—';
     const why = (a.why || []).slice(0, 4).map((w) => `   • ${w}`).join('\n') || '   —';
+    // Show which layers contributed — the judge can see at a glance
+    // whether this verdict came from the heuristic alone or whether the
+    // LLM/Bayesian rescued it from a false negative.
+    const bay = a.bayesian
+      ? `🧠 Bayesiano: ${a.bayesian.predicted_class} (${(a.bayesian.risk_score * 100).toFixed(0)}%, conf ${(a.bayesian.confidence * 100).toFixed(0)}%)`
+      : '🧠 Bayesiano: insufficient_data';
+    const llm = a.llm_used ? '🤖 LLM (Sonnet 4.5): ACTIVADO' : '⚡ Heurístico solo';
     out.textContent =
       `${a.risk_level}   ${pct}%   ${a.override_triggered ? 'OVERRIDE' : ''}\n` +
       `Fase dominante: ${a.phase_detected || '—'}\n` +
       `Phases:  ${phases}\n` +
       `Categorías: ${cats}\n` +
       `Pattern IDs: ${ids}\n` +
+      `${llm}\n${bay}\n` +
       `Por qué:\n${why}`;
   } catch (err) {
     out.className = 'test-result error';
@@ -693,7 +743,7 @@ function showDeepCheckModal(info, errMsg) {
     <div style="background:#2F353A;border:1px solid #C16A4C;border-radius:12px;padding:24px;min-width:380px;max-width:560px;color:#fff;box-shadow:0 20px 60px rgba(0,0,0,0.6)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
         <h3 style="margin:0;font-size:16px;color:#C16A4C">🔬 Deep Healthcheck</h3>
-        <button id="deep-modal-close" style="background:transparent;border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:999px;width:28px;height:28px;cursor:pointer">×</button>
+        <button id="deep-modal-close" tabindex="0" aria-label="Cerrar" style="background:transparent;border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:999px;width:32px;height:32px;cursor:pointer;font-size:16px">×</button>
       </div>
       ${body}
       <div style="margin-top:18px;font-size:11px;color:rgba(255,255,255,0.4)">DB · Anthropic · Groq · live ping</div>

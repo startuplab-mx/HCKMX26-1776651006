@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { COLORS } from "../colors";
-import { FilmGrain } from "../components/FilmGrain";
+
 import { GlowText } from "../components/GlowText";
 
 const HASH_TARGET = "a7f3b2e1c9d4f6a8b0e2c5d7f1a3b9e4";
@@ -92,8 +92,6 @@ export const Scene9_Privacy: React.FC = () => {
         padding: 80,
       }}
     >
-      <FilmGrain opacity={0.03} />
-
       {/* Title */}
       <div
         style={{
