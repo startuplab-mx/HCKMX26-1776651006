@@ -1,0 +1,114 @@
+n,phrase,expected_level,expected_phase,category,notes,actual_level,actual_score,override,llm_used,bayesian_score,bayesian_class,verdict
+1,te pago 15000 a la semana de halcón,ATENCION_OR_PELIGRO,1,aggressor_canon,money+role,ATENCION,0.370,False,False,0.300,captacion,PASS
+2,te ofrezco chamba fácil,ATENCION_OR_PELIGRO,1,aggressor_canon,fake_job,ATENCION,0.405,False,False,0.415,captacion,PASS
+3,hay jale para ti,ATENCION_OR_PELIGRO,1,cartel_jerga,jale=trabajo,ATENCION,0.350,False,False,0.350,captacion,PASS
+4,se solicita gente para la mana,ATENCION_OR_PELIGRO,1,cartel_jerga,mana=cartel,ATENCION,0.300,False,False,0.300,captacion,PASS
+5,trabajo para las 4 letras,ATENCION_OR_PELIGRO,1,cartel_jerga,4letras=cartel,ATENCION,0.301,False,False,0.301,captacion,PASS
+6,me ofrecieron 15000 pesos a la semana,ATENCION_OR_PELIGRO,1,victim_offer,money_received,ATENCION,0.370,False,False,0.300,captacion,PASS
+7,me ofrecieron jale en TikTok,ATENCION_OR_PELIGRO,1,victim_offer,platform+jale,ATENCION,0.370,False,False,0.300,captacion,PASS
+8,alguien me escribió ofreciendo dinero,ATENCION_OR_PELIGRO,1,victim_offer,stranger_offer,ATENCION,0.313,False,False,0.313,captacion,PASS
+9,un desconocido me contactó por Instagram,ATENCION_OR_PELIGRO,1,victim_offer,stranger_platform,ATENCION,0.300,False,False,0.300,captacion,PASS
+10,me ofrecieron lana fácil,ATENCION_OR_PELIGRO,1,victim_jerga,money_slang,ATENCION,0.370,False,False,0.300,captacion,PASS
+11,me prometieron pago semanal,ATENCION_OR_PELIGRO,1,victim_offer,promise,ATENCION,0.301,False,False,0.305,captacion,PASS
+12,me invitaron a un jale,ATENCION_OR_PELIGRO,1,victim_jerga,invitation,ATENCION,0.370,False,False,0.300,captacion,PASS
+13,vi un anuncio de dinero fácil en redes,ATENCION_OR_PELIGRO,1,victim_ad,platform_ad,ATENCION,0.370,False,False,0.300,captacion,PASS
+14,me agregaron de la nada y me ofrecieron trabajo,ATENCION_OR_PELIGRO,1,victim_offer,stranger_addd,ATENCION,0.370,False,False,0.300,captacion,PASS
+15,me dijeron que ganaba 20 mil semanales,ATENCION_OR_PELIGRO,1,victim_offer,promise_high,ATENCION,0.300,False,False,0.300,captacion,PASS
+16,me ofresieron 15 mil x semana,ATENCION_OR_PELIGRO,1,typo_chat,ofresieron+x,ATENCION,0.301,False,False,0.301,captacion,PASS
+17,me ofrecio chamba xq necesito feria,ATENCION_OR_PELIGRO,1,typo_chat,xq+feria,ATENCION,0.305,False,False,0.305,captacion,PASS
+18,k onda con el jale,ATENCION_OR_PELIGRO,1,chat_abbr,k=que,ATENCION,0.317,False,False,0.317,seguro,PASS
+19,me dijo q hay billete,ATENCION_OR_PELIGRO,1,chat_abbr,q=que,ATENCION,0.426,False,False,0.488,captacion,PASS
+20,toy buscando jale rapido,ATENCION_OR_PELIGRO,1,chat_abbr,toy=estoy,ATENCION,0.395,False,False,0.395,captacion,PASS
+21,vrdd hay paga buena,ATENCION_OR_PELIGRO,1,chat_abbr,vrdd=verdad,ATENCION,0.353,False,False,0.353,captacion,PASS
+22,dame DM para pasarte la info,ATENCION_OR_PELIGRO,1,social_dm,dm_recruit,ATENCION,0.301,False,False,0.301,captacion,PASS
+23,escribeme al privado y te paso,ATENCION_OR_PELIGRO,1,social_dm,privado_recruit,ATENCION,0.372,False,False,0.307,captacion,PASS
+24,info en bio para los que se animen,ATENCION_OR_PELIGRO,1,social_bio,bio_recruit,ATENCION,0.371,False,False,0.303,captacion,PASS
+25,checate la bio,ATENCION_OR_PELIGRO,1,social_bio,bio_redirect,ATENCION,0.373,False,False,0.310,captacion,PASS
+26,hay billete para ti,ATENCION_OR_PELIGRO,1,jerga_money,billete,ATENCION,0.393,False,False,0.376,captacion,PASS
+27,te paso lana facil,ATENCION_OR_PELIGRO,1,jerga_money,lana,ATENCION,0.371,False,False,0.304,captacion,PASS
+28,hay feria semanal segura,ATENCION_OR_PELIGRO,1,jerga_money,feria,ATENCION,0.396,False,False,0.386,captacion,PASS
+29,ganas 30 mil al mes garantizado,ATENCION_OR_PELIGRO,1,money_promise,guaranteed,ATENCION,0.371,False,False,0.302,captacion,PASS
+30,te pagamos por viaje 5 mil,ATENCION_OR_PELIGRO,1,money_promise,per_trip,ATENCION,0.301,False,False,0.301,captacion,PASS
+31,buena paga semanal hospedaje y comida,ATENCION_OR_PELIGRO,1,fronts_falsos,extras_included,ATENCION,0.304,False,False,0.304,captacion,PASS
+32,vacaciones equipo táctico calzado y ropa,ATENCION_OR_PELIGRO,1,cartel_oferta,tactical_gear,ATENCION,0.437,False,False,0.524,explotacion,PASS
+33,te damos casa carro y mujeres,ATENCION_OR_PELIGRO,1,cartel_oferta,lifestyle_lure,ATENCION,0.617,False,False,0.617,explotacion,PASS
+34,la firma cuida a los suyos,ATENCION_OR_PELIGRO,1,cartel_jerga,firma=cartel,ATENCION,0.300,False,False,0.300,captacion,PASS
+35,la empresa te da seguridad,ATENCION_OR_PELIGRO,1,cartel_eufemismo,empresa=cartel,ATENCION,0.344,False,False,0.344,captacion,PASS
+36,se busca puchador para el barrio,ATENCION_OR_PELIGRO,1,cartel_jerga,puchador=vendedor,ATENCION,0.370,False,False,0.300,captacion,PASS
+37,solicitamos halcones de confianza,ATENCION_OR_PELIGRO,1,cartel_jerga,halcon=vigia,ATENCION,0.394,False,False,0.379,captacion,PASS
+38,se necesita puntero del barrio,ATENCION_OR_PELIGRO,1,cartel_jerga,puntero,ATENCION,0.371,False,False,0.304,captacion,PASS
+39,tenemos estaca abierta en el punto,ATENCION_OR_PELIGRO,1,cartel_jerga,estaca,PELIGRO,0.800,False,False,0.800,explotacion,PASS
+40,eres bueno para el jale duro,ATENCION_OR_PELIGRO,1,cartel_jerga,jale_duro,ATENCION,0.370,False,False,0.300,captacion,PASS
+41,le entras al jale o no,ATENCION_OR_PELIGRO,1,cartel_jerga,presion_decision,ATENCION,0.380,False,False,0.334,captacion,PASS
+42,te metes con la firma o que,ATENCION_OR_PELIGRO,1,cartel_jerga,presion_firma,ATENCION,0.372,False,False,0.307,captacion,PASS
+43,se busca chofer particular urgente,ATENCION_OR_PELIGRO,1,fronts_falsos,chofer_front,ATENCION,0.370,False,False,0.300,captacion,PASS
+44,guardia de seguridad pago diario en efectivo,ATENCION_OR_PELIGRO,1,fronts_falsos,guardia_front,ATENCION,0.370,False,False,0.300,captacion,PASS
+45,modelos para evento privado,ATENCION_OR_PELIGRO,1,fronts_falsos,modelo_front,ATENCION,0.370,False,False,0.301,captacion,PASS
+46,limpieza casa rancho buen pago,ATENCION_OR_PELIGRO,1,fronts_falsos,rancho_front,ATENCION,0.371,False,False,0.302,captacion,PASS
+47,mesera para fiesta privada vip,ATENCION_OR_PELIGRO,1,fronts_falsos,vip_front,ATENCION,0.370,False,False,0.300,captacion,PASS
+48,promotora de antros viernes y sabados,ATENCION_OR_PELIGRO,1,fronts_falsos,antros_front,ATENCION,0.372,False,False,0.308,captacion,PASS
+49,sin experiencia te capacitamos,ATENCION_OR_PELIGRO,1,fronts_falsos,capacitacion_front,ATENCION,0.371,False,False,0.302,captacion,PASS
+50,apoyamos a madres solteras y estudiantes,ATENCION_OR_PELIGRO,1,fronts_falsos,vulnerable_targeting,ATENCION,0.353,False,False,0.353,captacion,PASS
+51,nos vemos al rancho mañana,ATENCION_OR_PELIGRO,1,topologia_narco,rancho,ATENCION,0.352,False,False,0.352,captacion,PASS
+52,te recogemos para llevarte al monte,ATENCION_OR_PELIGRO,1,topologia_narco,monte,ATENCION,0.326,False,False,0.326,captacion,PASS
+53,vamos a la finca el sabado,ATENCION_OR_PELIGRO,1,topologia_narco,finca,SEGURO,0.075,False,False,0.075,seguro,FAIL_FN
+54,si voy al rancho me pagan,ATENCION_OR_PELIGRO,1,topologia_narco,rancho_recibida,ATENCION,0.371,False,False,0.303,captacion,PASS
+55,el punto te queda cerca,ATENCION_OR_PELIGRO,1,topologia_narco,punto,PELIGRO,0.849,False,False,0.849,explotacion,PASS
+56,te paso 5 mil robux si me das tus datos,ATENCION_OR_PELIGRO,1,roblox_grooming,robux_quid,ATENCION,0.387,False,False,0.387,captacion,PASS
+57,eres muy maduro para tu edad,ATENCION_OR_PELIGRO,1,grooming_edad,age_flattery,ATENCION,0.425,False,False,0.483,enganche,PASS
+58,vamos a Discord para hablar mejor,ATENCION_OR_PELIGRO,1,cambio_canal,discord_pivot,ATENCION,0.430,False,False,0.500,enganche,PASS
+59,dame tu user de Roblox y te regalo,ATENCION_OR_PELIGRO,1,roblox_grooming,user_collect,ATENCION,0.501,False,False,0.501,enganche,PASS
+60,tu mamá no se enteraría,ATENCION_OR_PELIGRO,1,grooming_secreto,secrecy_explicit,PELIGRO,0.707,False,False,0.707,coercion,PASS
+61,pásate a Telegram para hablar a solas,ATENCION_OR_PELIGRO,2,aggressor_canon,telegram_pivot,ATENCION,0.430,False,False,0.500,enganche,PASS
+62,no le digas a nadie de esto,ATENCION_OR_PELIGRO,2,aggressor_canon,secrecy,ATENCION,0.360,False,False,0.500,enganche,PASS
+63,dame tu ubicación en vivo,ATENCION_OR_PELIGRO,2,aggressor_canon,location_request,ATENCION,0.430,False,False,0.500,enganche,PASS
+64,cuál es la dirección de tu casa,ATENCION_OR_PELIGRO,2,aggressor_canon,address_request,ATENCION,0.430,False,False,0.500,enganche,PASS
+65,vámonos a Signal que es más privado,ATENCION_OR_PELIGRO,2,aggressor_canon,signal_pivot,ATENCION,0.506,False,False,0.506,enganche,PASS
+66,me pidieron que me pasara a Telegram,ATENCION_OR_PELIGRO,2,victim_reception,telegram_received,ATENCION,0.430,False,False,0.500,enganche,PASS
+67,me dijeron que no le contara a nadie,ATENCION_OR_PELIGRO,2,victim_reception,secrecy_received,ATENCION,0.501,False,False,0.501,enganche,PASS
+68,me pidieron mi ubicación,ATENCION_OR_PELIGRO,2,victim_reception,location_received,ATENCION,0.430,False,False,0.500,enganche,PASS
+69,me preguntaron donde vivo,ATENCION_OR_PELIGRO,2,victim_reception,address_received,ATENCION,0.529,False,False,0.529,enganche,PASS
+70,me pidieron mi escuela,ATENCION_OR_PELIGRO,2,victim_reception,school_received,ATENCION,0.360,False,False,0.500,enganche,PASS
+71,me pidieron mi número de teléfono,ATENCION_OR_PELIGRO,2,victim_reception,phone_received,ATENCION,0.500,False,False,0.500,enganche,PASS
+72,me dijeron que era nuestro secreto,ATENCION_OR_PELIGRO,2,victim_reception,secret_received,ATENCION,0.501,False,False,0.501,enganche,PASS
+73,me presionaron para responder rapido,ATENCION_OR_PELIGRO,2,victim_reception,pressure_received,ATENCION,0.360,False,False,0.499,enganche,PASS
+74,me agregaron a un grupo extraño,ATENCION_OR_PELIGRO,2,victim_reception,group_added,ATENCION,0.430,False,False,0.500,enganche,PASS
+75,me dijeron que no avisara a mis papás,ATENCION_OR_PELIGRO,2,victim_reception,parents_secrecy,ATENCION,0.431,False,False,0.502,enganche,PASS
+76,vamos a Snapchat porque desaparece,ATENCION_OR_PELIGRO,2,ephemeral_pivot,snap_disappear,ATENCION,0.501,False,False,0.501,enganche,PASS
+77,pásamelo por DM porque aquí no,ATENCION_OR_PELIGRO,2,channel_pivot,dm_pivot,ATENCION,0.586,False,False,0.586,enganche,PASS
+78,me pidieron pasarme a Snap,ATENCION_OR_PELIGRO,2,ephemeral_pivot,snap_received,ATENCION,0.512,False,False,0.512,enganche,PASS
+79,"aquí nadie nos ve, dime",ATENCION_OR_PELIGRO,2,false_privacy,isolation_promise,ATENCION,0.430,False,False,0.500,enganche,PASS
+80,vamos a un chat secreto,ATENCION_OR_PELIGRO,2,channel_pivot,secret_chat,ATENCION,0.500,False,False,0.500,enganche,PASS
+81,borra los mensajes después,ATENCION_OR_PELIGRO,2,evidence_destruction,delete_after,ATENCION,0.494,False,False,0.494,enganche,PASS
+82,usa modo incógnito,ATENCION_OR_PELIGRO,2,evidence_destruction,incognito,ATENCION,0.639,False,False,0.639,explotacion,PASS
+83,apaga la ubicación de tu celular,ATENCION_OR_PELIGRO,2,evidence_destruction,location_off,ATENCION,0.515,False,False,0.515,enganche,PASS
+84,mándame foto de la fachada de tu casa,ATENCION_OR_PELIGRO,2,pii_collection,facade_photo,ATENCION,0.430,False,False,0.500,enganche,PASS
+85,dame el nombre completo de tu mamá,ATENCION_OR_PELIGRO,2,pii_collection,mother_name,ATENCION,0.500,False,False,0.500,enganche,PASS
+86,a qué hora sales de la escuela,ATENCION_OR_PELIGRO,2,pii_schedule,school_schedule,PELIGRO,0.718,False,False,0.718,coercion,PASS
+87,por dónde caminas a tu casa,ATENCION_OR_PELIGRO,2,pii_schedule,route_mapping,PELIGRO,0.711,False,False,0.711,coercion,PASS
+88,tu papá tiene dinero,ATENCION_OR_PELIGRO,2,pii_economic,family_economic,PELIGRO,0.721,False,False,0.721,coercion,PASS
+89,vives sola con tu mamá,ATENCION_OR_PELIGRO,2,pii_household,household_mapping,PELIGRO,0.782,False,False,0.782,coercion,PASS
+90,a qué se dedican tus papás,ATENCION_OR_PELIGRO,2,pii_household,parents_job,ATENCION,0.508,False,False,0.508,enganche,PASS
+91,cuántos hermanos tienes,ATENCION_OR_PELIGRO,2,pii_household,siblings,ATENCION,0.525,False,False,0.525,enganche,PASS
+92,nadie te entiende como yo,ATENCION_OR_PELIGRO,2,false_friendship,isolation_emotional,ATENCION,0.507,False,False,0.507,enganche,PASS
+93,yo sí te valoro,ATENCION_OR_PELIGRO,2,false_friendship,value_promise,ATENCION,0.563,False,False,0.563,enganche,PASS
+94,yo te cuido mejor que tu familia,ATENCION_OR_PELIGRO,2,false_friendship,family_replacement,ATENCION,0.515,False,False,0.515,enganche,PASS
+95,eres especial para mí,ATENCION_OR_PELIGRO,2,false_friendship,specialness,ATENCION,0.518,False,False,0.518,enganche,PASS
+96,confía solo en mí,ATENCION_OR_PELIGRO,2,false_friendship,trust_isolation,SEGURO,0.278,False,False,0.278,seguro,FAIL_FN
+97,apurate que no tenemos tiempo,ATENCION_OR_PELIGRO,2,pressure_tactic,time_pressure,PELIGRO,0.734,False,False,0.734,coercion,PASS
+98,decide ya o pierdes la oportunidad,ATENCION_OR_PELIGRO,2,pressure_tactic,ultimatum,PELIGRO,0.736,False,False,0.736,coercion,PASS
+99,no me hagas perder la paciencia,ATENCION_OR_PELIGRO,2,pressure_tactic,patience_threat,PELIGRO,0.729,False,False,0.729,coercion,PASS
+100,contesta rapido si quieres entrar,ATENCION_OR_PELIGRO,2,pressure_tactic,quick_response,ATENCION,0.628,False,False,0.628,coercion,PASS
+101,te voy a matar,PELIGRO,3,death_threat,canonical,PELIGRO,1.000,True,False,0.800,coercion,PASS
+102,te vamos a matar si te rajas,PELIGRO,3,death_threat,conditional,PELIGRO,0.795,False,False,0.795,coercion,PASS
+103,te voy a desaparecer,PELIGRO,3,death_threat,disappear,PELIGRO,0.800,False,False,0.800,coercion,PASS
+104,te voy a dar piso,PELIGRO,3,death_threat,jerga_dar_piso,PELIGRO,1.000,True,False,0.800,coercion,PASS
+105,te ponemos en bolsa negra,PELIGRO,3,death_threat,jerga_bolsa,PELIGRO,1.000,True,False,0.798,coercion,PASS
+106,te toca el levantón,PELIGRO,3,death_threat,jerga_levanton,PELIGRO,1.000,True,False,0.868,explotacion,PASS
+107,ya estás en la lista,PELIGRO,3,marked_for_death,list,ATENCION,0.567,False,False,0.567,coercion,FAIL_FN
+108,ya estás marcado,PELIGRO,3,marked_for_death,marked,PELIGRO,0.741,False,False,0.741,coercion,PASS
+109,te vamos a tronar,PELIGRO,3,death_threat,jerga_tronar,PELIGRO,1.000,True,False,0.747,coercion,PASS
+110,te toca dar el viaje,PELIGRO,3,death_threat,jerga_viaje,ATENCION,0.478,False,False,0.894,explotacion,FAIL_FN
+111,me van a matar,PELIGRO,3,victim_threat,received_death,PELIGRO,1.000,True,False,0.800,coercion,PASS
+112,me dijeron que me iban a matar,PELIGRO,3,victim_threat,received_past,PELIGRO,1.000,True,False,0.800,coercion,PASS
+113,me amenazaron de muerte,PELIGRO,3,victim_threat,threat_explicit,PELIGRO,1.000,True,False,0.800,coercion,PASS
