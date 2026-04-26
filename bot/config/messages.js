@@ -36,7 +36,7 @@ export const MESSAGES = {
     'No pude procesar la imagen. Intenta enviarme el texto copiado directamente.',
 
   rechazoMultimedia:
-    'Por ahora sólo puedo analizar texto, audios y capturas. Stickers y videos los estoy aprendiendo todavía 🙈.',
+    'Por ahora sólo puedo analizar *texto*, *audios* y *capturas de pantalla*. Stickers, videos, GIFs y documentos los estoy aprendiendo todavía 🙈.\n\nSi el contenido es urgente: llama al *088* (Policía Cibernética) o al *911*.',
 
   confirmarTranscripcion: (text) => {
     const preview = text.length > 500 ? `${text.slice(0, 500)}…` : text;
