@@ -568,10 +568,21 @@ async function refreshDatasetStats() {
       el.innerHTML =
         `<span class="accent font-semibold">${info.total_patterns}</span> patrones · ` +
         `<span class="accent font-semibold">${info.high_confidence_patterns}</span> alta-conf`;
-      el.title =
-        Object.entries(info.phases)
-          .map(([k, v]) => `${v.name}: ${v.patterns}`)
-          .join('  ·  ') + `  ·  override≥${info.override_threshold}`;
+      // Tooltip: per-phase counts + bayesian summary if available.
+      let tooltipBits = Object.entries(info.phases).map(
+        ([k, v]) => `${v.name}: ${v.patterns}`,
+      );
+      tooltipBits.push(`override≥${info.override_threshold}`);
+      // Pull bayesian stats lazily — non-fatal if missing.
+      try {
+        const bay = await jget('/bayesian/stats');
+        if (bay && bay.available !== false) {
+          tooltipBits.push(
+            `bayesian: ${bay.total_training_examples} docs · vocab ${bay.vocabulary_size}`,
+          );
+        }
+      } catch {}
+      el.title = tooltipBits.join('  ·  ');
     }
   } catch {
     // Non-critical; the panel still works without dataset stats.
