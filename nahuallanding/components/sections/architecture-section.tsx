@@ -7,8 +7,8 @@ export function ArchitectureSection() {
     <SectionShell
       id="arquitectura"
       eyebrow="Arquitectura"
-      title="Modular. Escalable. Open source."
-      copy="La arquitectura prioriza trazabilidad, bajo costo operativo y explicación comprensible del riesgo. Todo lo esencial cabe en una cadena clara de captura, clasificación, evidencia y monitoreo."
+      title="4 capas cognitivas. Modular. Open source."
+      copy="Cada capa aporta una señal independiente: un heurístico determinista de 900 patrones, un clasificador Bayesiano que aprende del feedback, un LLM que entiende contexto sutil, y un detector de trayectoria que ve la progresión entre mensajes. Ninguna capa puede engañar a las otras. Todo cabe en 1 GB de RAM, sin GPU."
     >
       <Reveal>
         <ArchitectureDiagram />

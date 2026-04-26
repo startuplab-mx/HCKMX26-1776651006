@@ -16,6 +16,22 @@ export function FooterSection() {
           </div>
           <div className="flex flex-wrap gap-3">
             <a
+              href={site.liveDemo.waLink}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-[rgba(193,106,76,0.4)] bg-[rgba(193,106,76,0.15)] px-4 py-2 text-sm font-semibold text-cream transition hover:bg-[rgba(193,106,76,0.25)]"
+            >
+              Probar en WhatsApp
+            </a>
+            <a
+              href={site.liveDemo.panelUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-[rgba(245,240,235,0.12)] px-4 py-2 text-sm font-semibold text-cream transition hover:border-[rgba(193,106,76,0.28)] hover:text-cobre-light"
+            >
+              Panel live
+            </a>
+            <a
               href={site.repoUrl}
               target="_blank"
               rel="noreferrer"
@@ -28,12 +44,6 @@ export function FooterSection() {
               className="rounded-full border border-[rgba(245,240,235,0.12)] px-4 py-2 text-sm font-semibold text-cream transition hover:border-[rgba(193,106,76,0.28)] hover:text-cobre-light"
             >
               Arquitectura
-            </a>
-            <a
-              href="mailto:equipo@nahual.ai"
-              className="rounded-full border border-[rgba(245,240,235,0.12)] px-4 py-2 text-sm font-semibold text-cream transition hover:border-[rgba(193,106,76,0.28)] hover:text-cobre-light"
-            >
-              Contacto
             </a>
           </div>
         </div>

@@ -107,8 +107,136 @@ n,phrase,expected_level,expected_phase,category,notes,actual_level,actual_score,
 106,te toca el levantón,PELIGRO,3,death_threat,jerga_levanton,PELIGRO,1.000,True,False,0.868,explotacion,PASS
 107,ya estás en la lista,PELIGRO,3,marked_for_death,list,ATENCION,0.567,False,False,0.567,coercion,FAIL_FN
 108,ya estás marcado,PELIGRO,3,marked_for_death,marked,PELIGRO,0.741,False,False,0.741,coercion,PASS
-109,te vamos a tronar,PELIGRO,3,death_threat,jerga_tronar,PELIGRO,1.000,True,False,0.747,coercion,PASS
-110,te toca dar el viaje,PELIGRO,3,death_threat,jerga_viaje,ATENCION,0.478,False,False,0.894,explotacion,FAIL_FN
+109,te vamos a tronar,PELIGRO,3,death_threat,jerga_tronar,PELIGRO,1.000,True,False,0.742,coercion,PASS
+110,te toca dar el viaje,PELIGRO,3,death_threat,jerga_viaje,PELIGRO,1.000,True,False,0.835,coercion,PASS
 111,me van a matar,PELIGRO,3,victim_threat,received_death,PELIGRO,1.000,True,False,0.800,coercion,PASS
 112,me dijeron que me iban a matar,PELIGRO,3,victim_threat,received_past,PELIGRO,1.000,True,False,0.800,coercion,PASS
 113,me amenazaron de muerte,PELIGRO,3,victim_threat,threat_explicit,PELIGRO,1.000,True,False,0.800,coercion,PASS
+114,me amenazaron con matarme,PELIGRO,3,victim_threat,threat_with_murder,PELIGRO,1.000,True,False,0.800,coercion,PASS
+115,me van a desaparecer si no respondo,PELIGRO,3,victim_threat_conditional,disappear_received,PELIGRO,1.000,True,False,0.800,coercion,PASS
+116,me dijeron que ya saben demasiado,PELIGRO,3,knowledge_threat,knows_too_much,PELIGRO,1.000,True,False,0.800,coercion,PASS
+117,me dijeron que no hay vuelta atras,PELIGRO,3,no_escape,no_return,PELIGRO,1.000,True,False,0.800,coercion,PASS
+118,me amenazaron si hablo,PELIGRO,3,silence_threat,speak_threat,PELIGRO,1.000,True,False,0.800,coercion,PASS
+119,alguien me dijo que me iban a desaparecer si no coopero,PELIGRO,3,victim_threat_conditional,long_form,PELIGRO,1.000,True,False,0.800,coercion,PASS
+120,me tienen amenazado,PELIGRO,3,ongoing_threat,active_state,PELIGRO,1.000,True,False,0.798,coercion,PASS
+121,me tienen vigilado,PELIGRO,3,surveillance,active_surveillance,PELIGRO,1.000,True,False,0.798,coercion,PASS
+122,saben donde vivo,PELIGRO,3,doxx_received,doxxed,PELIGRO,1.000,True,False,0.781,coercion,PASS
+123,saben donde estudio,PELIGRO,3,doxx_received,school_doxx,PELIGRO,1.000,True,False,0.793,coercion,PASS
+124,me siguieron hasta mi casa,PELIGRO,3,physical_following,followed_home,PELIGRO,1.000,True,False,0.798,coercion,PASS
+125,me obligaron a hacer cosas,PELIGRO,3,coercion_obligacion,forced,PELIGRO,1.000,True,False,0.900,explotacion,PASS
+126,tengo mucho miedo,ATENCION_OR_PELIGRO,distress,distress_fear,fear_state,ATENCION,0.515,False,False,0.783,coercion,PASS
+127,tengo miedo de que me hagan algo,PELIGRO,distress,distress_anticipation,fear_specific,PELIGRO,1.000,True,False,0.800,coercion,PASS
+128,estoy aterrado,ATENCION_OR_PELIGRO,distress,distress_terror,terror,ATENCION,0.389,False,False,0.598,coercion,PASS
+129,estoy asustada porque no me dejan en paz,PELIGRO,distress,distress_followup,harassment_state,PELIGRO,1.000,True,False,0.800,coercion,PASS
+130,creo que me van a hacer algo,PELIGRO,distress,distress_anticipation,anticipation,PELIGRO,1.000,True,False,0.800,coercion,PASS
+131,siento que estoy en peligro,PELIGRO,distress,distress_self_assess,self_assess,PELIGRO,1.000,True,False,0.784,coercion,PASS
+132,no puedo dormir del miedo,ATENCION_OR_PELIGRO,distress,distress_physiological,insomnia_fear,ATENCION,0.446,False,False,0.785,coercion,PASS
+133,me siento atrapado,ATENCION_OR_PELIGRO,distress,distress_trapped,trapped,ATENCION,0.445,False,False,0.783,coercion,PASS
+134,me siento atrapada y sola,PELIGRO,distress,distress_isolation,alone_trapped,PELIGRO,1.000,True,False,0.800,coercion,PASS
+135,ya no se que hacer,ATENCION_OR_PELIGRO,distress,distress_helpless,helpless,PELIGRO,0.765,False,False,0.765,coercion,PASS
+136,si no respondo me van a,PELIGRO,3,conditional_threat,incomplete_threat,PELIGRO,1.000,True,False,0.800,coercion,PASS
+137,si no contesto me van a buscar,PELIGRO,3,conditional_threat,search_threat,PELIGRO,1.000,True,False,0.800,coercion,PASS
+138,si no voy me van a matar,PELIGRO,3,conditional_threat,go_or_die,PELIGRO,1.000,True,False,0.800,coercion,PASS
+139,si no pago me van a hacer daño,PELIGRO,3,conditional_threat,pay_or_harm,PELIGRO,1.000,True,False,0.800,coercion,PASS
+140,si no obedeces hay consecuencias,PELIGRO,3,conditional_threat,obey_or_else,PELIGRO,0.799,False,False,0.799,coercion,PASS
+141,si me rajo me matan,PELIGRO,3,conditional_threat,betray_or_die,PELIGRO,1.000,True,False,0.798,coercion,PASS
+142,si hablo me desaparecen,PELIGRO,3,silence_or_die,speak_die,PELIGRO,0.755,False,False,0.755,coercion,PASS
+143,si me ignoras subo todo,PELIGRO,3,publish_threat,ignore_publish,PELIGRO,0.790,False,False,0.790,coercion,PASS
+144,si no me contestas rapido publico tus fotos,PELIGRO,3,sextort_conditional,fast_or_publish,PELIGRO,0.800,False,False,0.800,coercion,PASS
+145,una sola palabra y se acabó,PELIGRO,3,silence_or_die,one_word,PELIGRO,1.000,True,False,0.799,coercion,PASS
+146,me tienen viendo todo el tiempo,ATENCION_OR_PELIGRO,3,surveillance,constant_watch,PELIGRO,1.000,True,False,0.775,coercion,PASS
+147,hay un carro afuera de mi casa todos los días,PELIGRO,3,stalking,vehicle_outside,PELIGRO,1.000,True,False,0.800,coercion,PASS
+148,vi al mismo tipo en la escuela y en la casa,PELIGRO,3,stalking,same_person,PELIGRO,1.000,True,False,0.800,coercion,PASS
+149,me han llamado de números desconocidos,ATENCION_OR_PELIGRO,3,harassment,unknown_numbers,ATENCION,0.404,False,False,0.404,captacion,PASS
+150,alguien comparte mi ubicación,PELIGRO,3,stalking,location_shared,PELIGRO,1.000,True,False,0.780,coercion,PASS
+151,manda fotos sin ropa,PELIGRO,4,sextort_request,nude_request,PELIGRO,0.833,False,False,0.833,coercion,PASS
+152,mandame nudes ahora,PELIGRO,4,sextort_request,nudes_now,PELIGRO,0.712,False,False,0.712,coercion,PASS
+153,manda video sin ropa,PELIGRO,4,sextort_request,video_request,PELIGRO,0.793,False,False,0.793,explotacion,PASS
+154,mandame fotos o las publico en tu escuela,PELIGRO,4,sextort_threat,publish_school,PELIGRO,0.801,False,False,0.801,coercion,PASS
+155,si no mandas las publico todas,PELIGRO,4,sextort_threat,publish_all,PELIGRO,0.800,False,False,0.800,coercion,PASS
+156,voy a mostrar tus fotos a tu mamá,PELIGRO,4,sextort_family,mother_show,PELIGRO,1.000,True,False,0.800,coercion,PASS
+157,le voy a mandar todo a tu papá,PELIGRO,4,sextort_family,father_show,PELIGRO,0.799,False,False,0.799,coercion,PASS
+158,voy a publicar el video,PELIGRO,4,sextort_publish,video_publish,PELIGRO,0.772,False,False,0.772,coercion,PASS
+159,te subo a páginas porno,PELIGRO,4,sextort_porn,porn_upload,PELIGRO,1.000,True,False,0.800,coercion,PASS
+160,le mando todo a tus contactos,PELIGRO,4,sextort_contacts,contacts_share,PELIGRO,0.742,False,False,0.742,coercion,PASS
+161,me piden fotos íntimas,PELIGRO,4,victim_sextort_request,intimate_received,PELIGRO,0.802,False,False,0.802,coercion,PASS
+162,me piden nudes amenazandome,PELIGRO,4,victim_sextort_threat,nudes_threatened,PELIGRO,1.000,True,False,0.898,explotacion,PASS
+163,me amenazan con publicar mis fotos,PELIGRO,4,victim_sextort_threat,publish_received,PELIGRO,1.000,True,False,0.800,coercion,PASS
+164,me amenazan con publicar mis videos,PELIGRO,4,victim_sextort_threat,video_publish_received,PELIGRO,1.000,True,False,0.800,coercion,PASS
+165,me dicen que si no mando me publican,PELIGRO,4,victim_sextort_conditional,publish_conditional,PELIGRO,1.000,True,False,0.800,coercion,PASS
+166,me chantajearon con fotos mías,PELIGRO,4,victim_sextort_blackmail,blackmailed,PELIGRO,1.000,True,False,0.800,coercion,PASS
+167,me extorsionan con mis fotos,PELIGRO,4,victim_extortion,extorted,PELIGRO,0.796,False,False,0.796,coercion,PASS
+168,me piden video llamada sin ropa,PELIGRO,4,victim_sextort_video,video_call,PELIGRO,1.000,True,False,0.800,coercion,PASS
+169,me hicieron deepfakes con mis fotos,PELIGRO,4,victim_deepfake,deepfake_received,PELIGRO,0.759,False,False,0.759,coercion,PASS
+170,me sacaron videos sin permiso,PELIGRO,4,victim_csam,non_consensual,PELIGRO,1.000,True,False,0.900,explotacion,PASS
+171,ve armado mañana,PELIGRO,4,operative_order,armed_order,PELIGRO,1.000,True,False,0.684,explotacion,PASS
+172,trae la coca al punto,PELIGRO,4,drug_transport,coca_transport,PELIGRO,1.000,True,False,0.899,explotacion,PASS
+173,tienes que levantar a alguien,PELIGRO,4,kidnap_order,kidnap,PELIGRO,1.000,True,False,0.884,explotacion,PASS
+174,vamos al punto a vender,PELIGRO,4,drug_sales,sell_at_point,PELIGRO,0.889,False,False,0.889,explotacion,PASS
+175,te toca cargar piedra,PELIGRO,4,drug_transport,piedra_transport,PELIGRO,1.000,True,False,0.899,explotacion,PASS
+176,hay que callar al cuervo,PELIGRO,4,silencing_order,silence_order,PELIGRO,1.000,True,False,0.899,explotacion,PASS
+177,le sacas el alma,PELIGRO,4,kill_order_jerga,soul_extract,PELIGRO,1.000,True,False,0.881,explotacion,PASS
+178,hay que limpiar el punto,PELIGRO,4,removal_order,clean_point,PELIGRO,1.000,True,False,0.900,explotacion,PASS
+179,vas a halconear hoy,PELIGRO,4,halcon_order,halconeo_order,PELIGRO,1.000,True,False,0.898,explotacion,PASS
+180,vas a vender en la prepa,PELIGRO,4,school_sales,school_drug_sales,PELIGRO,0.897,False,False,0.897,explotacion,PASS
+181,me obligaron a llevar algo al punto,PELIGRO,4,victim_operative,forced_transport,PELIGRO,1.000,True,False,0.900,explotacion,PASS
+182,me obligaron a vender droga en la escuela,PELIGRO,4,victim_operative,forced_school_sales,PELIGRO,1.000,True,False,0.830,coercion,PASS
+183,me obligaron a reclutar a mis amigos,PELIGRO,4,victim_recruit,forced_recruit,PELIGRO,1.000,True,False,0.888,explotacion,PASS
+184,me forzaron a hacer cosas peligrosas,PELIGRO,4,victim_operative,forced_dangerous,PELIGRO,1.000,True,False,0.899,explotacion,PASS
+185,me hicieron entregar paquetes,PELIGRO,4,victim_operative,forced_delivery,PELIGRO,0.820,False,False,0.820,explotacion,PASS
+186,deposita 5000 pesos a esta cuenta,PELIGRO,4,payment_demand,deposit_demand,PELIGRO,1.000,True,False,0.900,explotacion,PASS
+187,transfiere 10 mil ahora mismo,PELIGRO,4,payment_demand,transfer_demand,PELIGRO,0.890,False,False,0.890,explotacion,PASS
+188,paga gift card de Amazon o subo todo,PELIGRO,4,giftcard_extort,giftcard_amazon,PELIGRO,1.000,True,False,0.900,explotacion,PASS
+189,me piden gift card de Steam,PELIGRO,4,giftcard_extort_received,giftcard_steam,PELIGRO,0.899,False,False,0.899,explotacion,PASS
+190,dame los datos de tu tarjeta,PELIGRO,4,card_phishing,card_request,PELIGRO,1.000,True,False,0.877,explotacion,PASS
+191,hola que onda,SEGURO,safe,greeting,casual,SEGURO,0.011,False,False,0.011,seguro,PASS
+192,buenas tardes amigo,SEGURO,safe,greeting,polite,SEGURO,0.030,False,False,0.030,seguro,PASS
+193,nos vemos mañana,SEGURO,safe,scheduling,tomorrow,SEGURO,0.023,False,False,0.023,seguro,PASS
+194,vienes al cumple el sabado,SEGURO,safe,scheduling,birthday,SEGURO,0.000,False,False,0.000,seguro,PASS
+195,vamos al cine este finde,SEGURO,safe,scheduling,cinema,SEGURO,0.280,False,False,0.000,seguro,PASS
+196,como estuvo tu dia,SEGURO,safe,casual,day_check,SEGURO,0.010,False,False,0.010,seguro,PASS
+197,estoy bien gracias,SEGURO,safe,casual,small_talk,SEGURO,0.004,False,False,0.004,seguro,PASS
+198,que vas a hacer,SEGURO,safe,casual,plans,ATENCION,0.473,False,False,0.473,coercion,FAIL_FP
+199,estoy aburrido,SEGURO,safe,casual,bored,SEGURO,0.080,False,False,0.080,seguro,PASS
+200,ya merito llegamos,SEGURO,safe,casual,almost_there,SEGURO,0.044,False,False,0.044,seguro,PASS
+201,tengo mucha tarea,SEGURO,safe,school,homework,SEGURO,0.282,False,False,0.008,seguro,PASS
+202,me reprobaron en mate,SEGURO,safe,school,failed_math,SEGURO,0.005,False,False,0.005,seguro,PASS
+203,saque buena nota en historia,SEGURO,safe,school,good_grade,SEGURO,0.000,False,False,0.000,seguro,PASS
+204,el examen estuvo facil,SEGURO,safe,school,easy_exam,SEGURO,0.002,False,False,0.002,seguro,PASS
+205,la clase de inglés me aburre,SEGURO,safe,school,boring_class,SEGURO,0.021,False,False,0.000,seguro,PASS
+206,voy a estudiar para el final,SEGURO,safe,school,studying,SEGURO,0.000,False,False,0.000,seguro,PASS
+207,el maestro me regañó,SEGURO,safe,school,teacher_scold,SEGURO,0.005,False,False,0.005,seguro,PASS
+208,ya termine la tarea,SEGURO,safe,school,homework_done,SEGURO,0.000,False,False,0.000,seguro,PASS
+209,mi mamá no me deja salir,SEGURO,safe,family,mom_no_out,SEGURO,0.004,False,False,0.004,seguro,PASS
+210,mi papá esta enojado,SEGURO,safe,family,dad_angry,SEGURO,0.000,False,False,0.000,seguro,PASS
+211,mi hermana me molesta,SEGURO,safe,family,sister_annoy,SEGURO,0.003,False,False,0.003,seguro,PASS
+212,voy con mis tios el domingo,SEGURO,safe,family,uncles_visit,SEGURO,0.280,False,False,0.000,seguro,PASS
+213,mi abuela me hizo de comer,SEGURO,safe,family,grandma_cooked,SEGURO,0.280,False,False,0.000,seguro,PASS
+214,me voy con mis primos,SEGURO,safe,family,cousins_outing,SEGURO,0.000,False,False,0.000,seguro,PASS
+215,me sacaron 500 pesos del monedero,SEGURO,safe,casual_money,wallet_stolen,SEGURO,0.000,False,False,0.000,seguro,PASS
+216,me robaron la cartera ayer,SEGURO,safe,casual_money,wallet_pickpocket,SEGURO,0.000,False,False,0.000,seguro,PASS
+217,me cobraron 200 pesos por el envio,SEGURO,safe,casual_money,shipping_cost,SEGURO,0.000,False,False,0.000,seguro,PASS
+218,compre un cafe de 50 pesos,SEGURO,safe,casual_money,coffee_bought,SEGURO,0.000,False,False,0.000,seguro,PASS
+219,le pague 100 pesos a mi amigo,SEGURO,safe,casual_money,friend_paid,SEGURO,0.000,False,False,0.000,seguro,PASS
+220,tengo que ahorrar para los tenis,SEGURO,safe,casual_money,saving_shoes,SEGURO,0.280,False,False,0.000,seguro,PASS
+221,cuanto cuesta el helado,SEGURO,safe,casual_money,ice_cream_price,SEGURO,0.000,False,False,0.000,seguro,PASS
+222,me prestaron 200 pesos en la cooperativa,SEGURO,safe,casual_money,loan_coop,SEGURO,0.000,False,False,0.000,seguro,PASS
+223,me regalaron mi mesada,SEGURO,safe,casual_money,allowance,SEGURO,0.001,False,False,0.001,seguro,PASS
+224,voy al super con mi papá,SEGURO,safe,casual_money,supermarket,SEGURO,0.000,False,False,0.000,seguro,PASS
+225,me ganaron en free fire,SEGURO,safe,gaming,lost_match,SEGURO,0.028,False,False,0.028,seguro,PASS
+226,subi de rango en valorant,SEGURO,safe,gaming,ranked_up,SEGURO,0.280,False,False,0.001,seguro,PASS
+227,vamos a jugar minecraft,SEGURO,safe,gaming,play_invite,SEGURO,0.008,False,False,0.008,seguro,PASS
+228,estoy en la final del torneo de fifa,SEGURO,safe,gaming,tournament,SEGURO,0.000,False,False,0.000,seguro,PASS
+229,ya termine el pase de batalla,SEGURO,safe,gaming,battle_pass_done,SEGURO,0.000,False,False,0.000,seguro,PASS
+230,me dieron item raro en el dungeon,SEGURO,safe,gaming,rare_item,SEGURO,0.280,False,False,0.000,seguro,PASS
+231,voy a stream en twitch,SEGURO,safe,gaming,stream,SEGURO,0.000,False,False,0.000,seguro,PASS
+232,subi un video a youtube,SEGURO,safe,gaming,youtube,SEGURO,0.000,False,False,0.000,seguro,PASS
+233,vi el capítulo de narcos en netflix,SEGURO,safe,media,narcos_series,SEGURO,0.000,False,False,0.000,seguro,PASS
+234,estoy viendo stranger things,SEGURO,safe,media,stranger_things,SEGURO,0.280,False,False,0.001,seguro,PASS
+235,vi la nueva pelicula de marvel,SEGURO,safe,media,marvel_movie,SEGURO,0.000,False,False,0.000,seguro,PASS
+236,que peli vamos a ver,SEGURO,safe,media,movie_pick,SEGURO,0.000,False,False,0.000,seguro,PASS
+237,la película fue buenísima,SEGURO,safe,media,good_movie,SEGURO,0.001,False,False,0.001,seguro,PASS
+238,voy a ir al gym,SEGURO,safe,sports,gym,SEGURO,0.005,False,False,0.005,seguro,PASS
+239,ganamos el partido ayer,SEGURO,safe,sports,won_match,SEGURO,0.000,False,False,0.000,seguro,PASS
+240,estoy entrenando para el maraton,SEGURO,safe,sports,training,SEGURO,0.000,False,False,0.000,seguro,PASS
+o,PASS

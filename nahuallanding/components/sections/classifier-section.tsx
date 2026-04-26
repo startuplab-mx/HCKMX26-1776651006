@@ -15,8 +15,8 @@ export function ClassifierSection() {
     <SectionShell
       id="clasificador"
       eyebrow="El clasificador"
-      title="122 patrones. 4 fases. Detección en milisegundos."
-      copy="Nahual pondera señales por fase, pero también reconoce umbrales de peligro inminente. El objetivo no es solo etiquetar, sino orientar la respuesta correcta en tiempo real."
+      title="900 patrones. 4 fases. Detección en milisegundos."
+      copy="Nahual pondera señales por fase con un dataset bilingüe (lenguaje del agresor + reportes de la víctima), reconoce umbrales de peligro inminente y aplica un override automático cuando coerción o explotación cruzan el 80%. El objetivo no es solo etiquetar — es orientar la respuesta correcta en tiempo real."
     >
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="grid gap-4 md:grid-cols-2">
