@@ -1,7 +1,66 @@
 # 📋 NAHUAL — CHANGELOG
 
 Cronología de la sesión de hardening + deploy a producción
-(25 abril 2026, ~12:00 → 15:30 CST).
+(25 abril 2026, ~12:00 → 18:00 CST).
+
+## [v1.4.0] — Apr 25 evening · "4-layer cognitive classifier"
+
+Después del cierre de v1.3 surgió un análisis estructural que reveló
+3 gaps fundamentales: dataset perspectiva-agresor, LLM solo en zona
+gris, sin normalización chat MX. Se implementaron 7 capas de
+corrección + un clasificador Bayesiano completo.
+
+### Highlights v1.4
+
+* **CAPA A — LLM activation extendida** (`pipeline.py`): además de la
+  zona gris (0.3-0.6), el LLM ahora activa cuando score=0 + texto>30
+  chars, o cuando score<0.3 + keywords de dinero/trabajo/amenaza.
+  Cuando heur=0 y LLM activa, peso 100% LLM (no merge con 0).
+* **CAPA C — `_normalize_advanced`** (`heuristic.py`): chat MX
+  abbreviations (x→por, q→que, pa→para, toy→estoy, xq→porque),
+  números escritos (quince mil → 15000), formato dinero
+  (15 mil → 15000, $15.000 → $15000), typos (ofresieron → ofrecieron).
+* **CAPAS B+D+E — +102 patrones**:
+  - phase1: +34 (victim offers, money no-$, social DM hooks)
+  - phase2: +17 (PII pulls recibidos, cambio canal, secrecía)
+  - phase3: +31 (received threats, conditional, distress, vigilancia)
+  - phase4: +20 (forced ops, sextortion victim, deepfake CSAM, recruit-pares)
+  - 5 universal money regexes for $-less formats
+* **CAPA F — Whitelist expandida**: trabajo legítimo, dinero casual,
+  videojuegos, series, noticias, memes, escuela. +33 entradas/fase.
+* **CAPA G — `_contextual_boost`**: 1.30× para 3+ categorías distintas,
+  1.50× para danger combos (`{oferta_economica, perfilamiento}`,
+  `{amenaza, orden_directa}`, `{sextorsion_recibida, sextorsion_chantaje}`).
+* **CAPA 1.5 — Bayesiano** (`bayesian.py`): Naive Bayes incremental
+  con n-gramas (1,2,3), Laplace smoothing, persistencia JSON atómica,
+  RLock thread-safe. 911 docs entrenados (836 patrones + 75 safe),
+  vocab 5701. 0 dependencias nuevas. Aprende de cada feedback.
+  - Endpoints: `GET /bayesian/stats`, `POST /bayesian/predict`
+  - Auto-feed: `confirm` → train(fase), `deny` → train("seguro")
+  - 9 tests nuevos en `test_bayesian.py` (cold start, train, predict,
+    persist, endpoints, pipeline integration)
+
+### Resultados v1.4
+
+* **Dataset**: 768 → 870 patrones (+102, 460 high-confidence)
+* **Pytest**: 147 → 156 tests (+9 bayesian)
+* **Score comparison** structural verification suite (sin LLM):
+  - Antes: 16/20 (80%)
+  - Después: **20/20 (100%)** ← bayesiano rescata 4 falsos negativos
+* **Self-feed**: 192 frases candidatas curadas de Infobae/Proceso/etc;
+  91 testeadas en producción; 8 false negatives PRE-deploy ahora son
+  ATENCION/PELIGRO post-deploy.
+
+### Commits v1.4
+
+```
+d5eb140  TRACK 1 + TRACK 2 deliverables: self-feed CSV + bayesian deployed
+20b5607  polish: bootstrap safe phrases + score_comparison harness
+a8da2bb  feat(bayesian): Capa 1.5 — Naive Bayes incremental classifier
+60eae46  structural-fix: 7-layer classifier overhaul (CAPAS A-G)
+```
+
+---
 
 ## [v1.3.0] — Apr 25, 2026 · "production-hardened"
 

@@ -208,13 +208,13 @@ INICIO → BIENVENIDA → RECIBIR_MSG → ANALIZANDO → RESULT_SAFE/ATTENTION/D
 
 ## KEYWORDS — STATUS
 
-**Dataset is COMPLETE and in production.** 768 patterns total, 433 high-confidence (weight ≥ 0.8), 14 emojis.
+**Dataset is COMPLETE and in production.** 870 patterns total, 460 high-confidence (weight ≥ 0.8), 14 emojis.
 
 ```
-phase1_captacion.json   260 patterns (high=117)  Captación
-phase2_enganche.json    172 patterns (high= 59)  Enganche
-phase3_coercion.json    194 patterns (high=171)  Coerción ← override-prone
-phase4_explotacion.json 142 patterns (high= 86)  Explotación
+phase1_captacion.json   294 patterns (high=130)  Captación
+phase2_enganche.json    189 patterns (high= 70)  Enganche
+phase3_coercion.json    225 patterns (high=180)  Coerción ← override-prone
+phase4_explotacion.json 162 patterns (high= 80)  Explotación
 emojis_narco.json        14 emojis
 ```
 
@@ -224,9 +224,54 @@ critical because users paste mensajes recibidos OR describe what happened.
 
 Sources: Marco's curated patterns (374 originales) + alta-confidence subset
 of CSV expansion (189) + audit additions (sextortion, Roblox grooming,
-Mexican slang lana/billete/feria, cartel jerga halcón/puchador/punto).
+Mexican slang lana/billete/feria, cartel jerga halcón/puchador/punto) +
+structural audit (perspectiva-víctima, distress, money sin $) +
+selffeed (cartel slogans testeados contra producción).
 
-ETL: `scripts/etl_dataset.py` (one-shot, idempotent).
+ETL: `scripts/etl_dataset.py`, `scripts/add_audit_patterns.py`,
+`scripts/add_structural_patterns.py` (all idempotent).
+
+## BAYESIAN LAYER (Capa 1.5)
+
+**`backend/classifier/bayesian.py`** — Naive Bayes incremental with
+n-grams (1, 2, 3), Laplace smoothing, atomic JSON persistence,
+RLock-protected. 0 deps beyond stdlib.
+
+```
+total_training_examples: 911
+vocabulary_size:         5701
+class_distribution:
+  seguro          75   (50 base + 25 casual money/spending)
+  captacion      264
+  enganche       189
+  coercion       222
+  explotacion    161
+```
+
+Bootstrap: `scripts/bootstrap_bayesian.py` reads all 4 phaseN_*.json
+plus 75 hand-picked safe phrases. Persists to
+`backend/classifier/bayesian_model.json`.
+
+Auto-feed from `/feedback`:
+* `confirm` → `train_one(surrogate_text, alert.phase_detected)`
+* `deny` / `operator_fp` → `train_one(surrogate_text, "seguro")`
+
+`surrogate_text` is built from the alert's anonymized summary +
+reconstructed why-list — original text never leaves the wire.
+
+Pipeline merge math:
+* heur=0, no Bayes data            → LLM 100%
+* heur=0, Bayes ready              → Bayes 30% + LLM 70%
+* heur>0, Bayes ready, LLM fired   → Heur 50% + Bayes 20% + LLM 30%
+* heur>0, Bayes ready, no LLM      → Heur 70% + Bayes 30%
+* Bayes insufficient_data          → unchanged from before
+
+Endpoints:
+* `GET /bayesian/stats` — counts, top features per class
+* `POST /bayesian/predict` — pure Bayesian (debug/comparison)
+
+Score-comparison vs heurístico-only on the structural verification suite:
+**16/20 (80%) → 20/20 (100%)** without needing the LLM.
 
 ## DEPLOYMENT — PRODUCTION
 

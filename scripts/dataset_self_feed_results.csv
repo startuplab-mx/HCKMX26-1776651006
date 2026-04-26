@@ -1,193 +1,193 @@
-phrase,source_url,expected_phase,category,weight,pre_deploy_level,pre_deploy_score,post_deploy_level,post_deploy_score,verdict
-trabajo para la mana,https://www.infobae.com/mexico/2025/04/18/,1,cartel_jerga,0.9,SEGURO,0.000,ATENCION,0.300,FIXED_BY_LAYERS
-hay jale para la mana,https://www.infobae.com/mexico/2025/04/18/,1,cartel_jerga,0.9,SEGURO,0.000,ATENCION,0.310,FIXED_BY_LAYERS
-se solicita gente para las 4 letras,https://www.proceso.com.mx/nacional/2025/4/22/,1,cartel_jerga,0.95,SEGURO,0.000,ATENCION,0.300,FIXED_BY_LAYERS
-se recluta gente para las 4letras,https://www.proceso.com.mx/nacional/2025/4/22/,1,cartel_jerga,0.95,SEGURO,0.000,ATENCION,0.320,FIXED_BY_LAYERS
-manden mensaje si quieren superarse,https://www.proceso.com.mx/nacional/2025/4/22/,1,oferta_vaga,0.65,SEGURO,0.000,ATENCION,0.610,FIXED_BY_LAYERS
-buena paga semanal hospedaje y comida,https://www.proceso.com.mx/nacional/2025/4/22/,1,oferta_economica,0.85,SEGURO,0.000,ATENCION,0.300,FIXED_BY_LAYERS
-vacaciones equipo tactico calzado y ropa,https://www.proceso.com.mx/nacional/2025/4/22/,1,cartel_oferta,0.9,ATENCION,0.400,ATENCION,0.420,ALREADY_COVERED
-quien se anima al jale,https://www.infobae.com/mexico/2025/04/18/,1,oferta_vaga,0.7,SEGURO,0.000,ATENCION,0.330,FIXED_BY_LAYERS
-la empresa cuida a los suyos,https://www.infobae.com/mexico/2025/04/18/,1,cartel_jerga,0.85,ATENCION,0.400,ATENCION,0.370,ALREADY_COVERED
-la firma cuida a los suyos,https://www.infobae.com/mexico/2025/04/18/,1,cartel_jerga,0.85,SEGURO,0.000,ATENCION,0.300,FIXED_BY_LAYERS
-aqui se gana bien y rapido,https://www.lisanews.org/,1,oferta_vaga,0.65,NOT_TESTED,0.000,ATENCION,0.300,ALREADY_COVERED
-apoyamos a madres solteras y estudiantes,https://terceravia.mx/2025/04/,1,oferta_vaga,0.55,NOT_TESTED,0.000,ATENCION,0.350,ALREADY_COVERED
-apoyo economico para estudiantes,https://terceravia.mx/2025/04/,1,oferta_vaga,0.5,NOT_TESTED,0.000,ATENCION,0.320,ALREADY_COVERED
-entrenamiento pagado garantizado,https://terceravia.mx/2025/04/,1,oferta_vaga,0.6,NOT_TESTED,0.000,ATENCION,0.410,ALREADY_COVERED
-te doy 6 mil a la semana,https://www.proceso.com.mx/nacional/2026/4/17/,1,oferta_economica,0.85,NOT_TESTED,0.000,ATENCION,0.300,ALREADY_COVERED
-te pago 8 mil semanal sin experiencia,https://www.proceso.com.mx/nacional/2026/4/17/,1,oferta_economica,0.9,NOT_TESTED,0.000,ATENCION,0.300,ALREADY_COVERED
-ofrezco 20 mil pesos a la semana,https://www.proceso.com.mx/nacional/2026/4/17/,1,oferta_economica,0.9,NOT_TESTED,0.000,ATENCION,0.370,ALREADY_COVERED
-te ofrezco 5 mil semanal,https://www.proceso.com.mx/nacional/2026/4/17/,1,oferta_economica,0.85,NOT_TESTED,0.000,ATENCION,0.380,ALREADY_COVERED
-pago semanal asegurado,https://www.lisanews.org/,1,oferta_economica,0.55,NOT_TESTED,0.000,ATENCION,0.450,ALREADY_COVERED
-paga diaria al cierre del turno,https://www.lisanews.org/,1,oferta_economica,0.55,NOT_TESTED,0.000,ATENCION,0.400,ALREADY_COVERED
-solo para puros belicones,https://www.infobae.com/mexico/2025/04/18/,1,narcocultura,0.7,NOT_TESTED,0.000,ATENCION,0.410,ALREADY_COVERED
-puros plebes belicos,https://www.infobae.com/mexico/2025/04/18/,1,narcocultura,0.7,NOT_TESTED,0.000,ATENCION,0.450,ALREADY_COVERED
-plebes con actitud,https://www.infobae.com/mexico/2025/04/18/,1,narcocultura,0.55,NOT_TESTED,0.000,ATENCION,0.500,ALREADY_COVERED
-aqui no se anda jugando plebe,https://www.infobae.com/mexico/2025/04/18/,1,narcocultura,0.65,NOT_TESTED,0.000,ATENCION,0.540,ALREADY_COVERED
-ondeado y al tiro,https://www.infobae.com/mexico/2025/04/18/,1,narcocultura,0.7,NOT_TESTED,0.000,ATENCION,0.550,ALREADY_COVERED
-se buscan plebes con huevos,https://www.infobae.com/mexico/2025/04/18/,1,narcocultura,0.7,NOT_TESTED,0.000,ATENCION,0.370,ALREADY_COVERED
-compa bienvenido al equipo,https://terceravia.mx/2025/04/,1,cartel_jerga,0.6,NOT_TESTED,0.000,ATENCION,0.520,ALREADY_COVERED
-aqui se trabaja para el senor,https://www.infobae.com/mexico/2025/04/18/,1,cartel_jerga,0.85,NOT_TESTED,0.000,ATENCION,0.310,ALREADY_COVERED
-trabajamos para el senor de los gallos,https://www.proceso.com.mx/nacional/2025/4/22/,1,cartel_jerga,0.95,NOT_TESTED,0.000,ATENCION,0.370,ALREADY_COVERED
-trabajo para el m,https://www.infobae.com/mexico/2025/04/18/,1,cartel_jerga,0.85,NOT_TESTED,0.000,ATENCION,0.300,ALREADY_COVERED
-te quieres unir a la maña,https://www.infobae.com/mexico/2025/04/18/,1,cartel_jerga,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-entrale a la mana,https://www.infobae.com/mexico/2025/04/18/,1,cartel_jerga,0.95,NOT_TESTED,0.000,ATENCION,0.330,ALREADY_COVERED
-le entras o no le entras al jale,https://www.infobae.com/mexico/2025/04/18/,1,cartel_jerga,0.9,NOT_TESTED,0.000,ATENCION,0.380,ALREADY_COVERED
-se solicitan choferes con licencia,https://www.infobae.com/mexico/2025/04/18/,1,fronts_falsos,0.6,NOT_TESTED,0.000,ATENCION,0.330,ALREADY_COVERED
-se solicitan vigilantes 24 horas,https://www.infobae.com/mexico/2025/04/18/,1,fronts_falsos,0.65,NOT_TESTED,0.000,ATENCION,0.390,ALREADY_COVERED
-se buscan cocineros para rancho,https://www.infobae.com/mexico/2025/04/18/,1,fronts_falsos,0.85,NOT_TESTED,0.000,ATENCION,0.300,ALREADY_COVERED
-cocineros para laboratorio,https://www.infobae.com/mexico/2025/04/18/,1,cartel_jerga,0.95,NOT_TESTED,0.000,ATENCION,0.400,ALREADY_COVERED
-se buscan halconeros,https://www.infobae.com/mexico/2025/04/18/,1,cartel_jerga,0.95,NOT_TESTED,0.000,ATENCION,0.340,ALREADY_COVERED
-se solicitan punteros,https://www.infobae.com/mexico/2025/04/18/,1,cartel_jerga,0.9,NOT_TESTED,0.000,ATENCION,0.320,ALREADY_COVERED
-buscamos morros sin vicios,https://www.lja.mx/2025/04/,1,perfilamiento,0.7,NOT_TESTED,0.000,ATENCION,0.580,ALREADY_COVERED
-morros que no le saquen,https://www.lja.mx/2025/04/,1,narcocultura,0.75,NOT_TESTED,0.000,ATENCION,0.510,ALREADY_COVERED
-plebe que no raje,https://www.infobae.com/mexico/2025/04/18/,1,narcocultura,0.75,NOT_TESTED,0.000,ATENCION,0.630,ALREADY_COVERED
-checa mi bio para info del jale,https://terceravia.mx/2025/04/,1,red_social_bio,0.85,NOT_TESTED,0.000,ATENCION,0.300,ALREADY_COVERED
-dm para entrarle,https://terceravia.mx/2025/04/,1,red_social_dm,0.85,NOT_TESTED,0.000,ATENCION,0.320,ALREADY_COVERED
-escribeme al privado de tiktok,https://terceravia.mx/2025/04/,1,red_social_dm,0.8,NOT_TESTED,0.000,ATENCION,0.370,ALREADY_COVERED
-info por inbox,https://terceravia.mx/2025/04/,1,red_social_dm,0.55,NOT_TESTED,0.000,ATENCION,0.410,ALREADY_COVERED
-dejen su numero les marco,https://www.lisanews.org/,1,red_social_dm,0.65,NOT_TESTED,0.000,ATENCION,0.480,ALREADY_COVERED
-modelos webcam bien pagado,https://www.eluniversal.com.mx/,1,fronts_falsos,0.85,NOT_TESTED,0.000,ATENCION,0.320,ALREADY_COVERED
-se buscan edecanes para evento privado,https://www.eluniversal.com.mx/,1,fronts_falsos,0.85,NOT_TESTED,0.000,ATENCION,0.300,ALREADY_COVERED
-damas de compania bien pagado,https://www.eluniversal.com.mx/,1,fronts_falsos,0.95,NOT_TESTED,0.000,ATENCION,0.320,ALREADY_COVERED
-acompanantes vip a domicilio,https://www.eluniversal.com.mx/,1,fronts_falsos,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-masajistas sin experiencia,https://www.eluniversal.com.mx/,1,fronts_falsos,0.75,NOT_TESTED,0.000,ATENCION,0.340,ALREADY_COVERED
-modelos para contenido adulto,https://www.eluniversal.com.mx/,1,fronts_falsos,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-chicas para fiestas privadas,https://www.eluniversal.com.mx/,1,fronts_falsos,0.9,NOT_TESTED,0.000,ATENCION,0.460,ALREADY_COVERED
-trae tu acta de nacimiento y vente,https://www.eluniversal.com.mx/,1,fronts_falsos,0.7,NOT_TESTED,0.000,PELIGRO,0.740,ALREADY_COVERED
-dame tus datos y te resuelvo,https://www.lisanews.org/,2,perfilamiento,0.7,NOT_TESTED,0.000,ATENCION,0.520,ALREADY_COVERED
-mandame foto de tu credencial,https://www.eluniversal.com.mx/,2,perfilamiento,0.9,NOT_TESTED,0.000,ATENCION,0.430,ALREADY_COVERED
-mandame foto de tu ine,https://www.eluniversal.com.mx/,2,perfilamiento,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-foto de tu identificacion porfa,https://www.eluniversal.com.mx/,2,perfilamiento,0.85,NOT_TESTED,0.000,ATENCION,0.510,ALREADY_COVERED
-dime tu curp,https://www.eluniversal.com.mx/,2,perfilamiento,0.85,NOT_TESTED,0.000,ATENCION,0.520,ALREADY_COVERED
-a que prepa vas,https://www.lja.mx/2025/04/,2,perfilamiento,0.75,NOT_TESTED,0.000,PELIGRO,0.770,ALREADY_COVERED
-en que secu vas,https://www.lja.mx/2025/04/,2,perfilamiento,0.75,NOT_TESTED,0.000,ATENCION,0.600,ALREADY_COVERED
-en que turno entras a la escuela,https://www.lja.mx/2025/04/,2,perfilamiento,0.8,NOT_TESTED,0.000,ATENCION,0.600,ALREADY_COVERED
-a que hora sales de la escuela,https://www.lja.mx/2025/04/,2,perfilamiento,0.8,NOT_TESTED,0.000,PELIGRO,0.740,ALREADY_COVERED
-cuantos hermanos tienes,https://www.lja.mx/2025/04/,2,perfilamiento,0.5,NOT_TESTED,0.000,ATENCION,0.530,ALREADY_COVERED
-vives con tus papas,https://www.lja.mx/2025/04/,2,perfilamiento,0.55,NOT_TESTED,0.000,ATENCION,0.620,ALREADY_COVERED
-trabajan tus papas,https://www.lja.mx/2025/04/,2,perfilamiento,0.55,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-a que hora estan solos en tu casa,https://www.lja.mx/2025/04/,2,perfilamiento,0.95,NOT_TESTED,0.000,ATENCION,0.510,ALREADY_COVERED
-cuando salen tus papas de viaje,https://www.lja.mx/2025/04/,2,perfilamiento,0.9,NOT_TESTED,0.000,ATENCION,0.500,ALREADY_COVERED
-mandame tu cuenta para depositar,https://www.lisanews.org/,2,perfilamiento,0.85,NOT_TESTED,0.000,ATENCION,0.550,ALREADY_COVERED
-mandame tu clabe,https://www.lisanews.org/,2,perfilamiento,0.7,NOT_TESTED,0.000,ATENCION,0.530,ALREADY_COVERED
-dame tu numero de tarjeta,https://www.lisanews.org/,2,perfilamiento,0.85,NOT_TESTED,0.000,ATENCION,0.500,ALREADY_COVERED
-descarga signal y me hablas,https://www.lja.mx/2025/04/,2,aislamiento_canal,0.85,NOT_TESTED,0.000,ATENCION,0.520,ALREADY_COVERED
-descarga telegram para hablar tranquilos,https://www.lja.mx/2025/04/,2,aislamiento_canal,0.85,NOT_TESTED,0.000,ATENCION,0.500,ALREADY_COVERED
-vamonos a wickr,https://www.lja.mx/2025/04/,2,aislamiento_canal,0.85,NOT_TESTED,0.000,ATENCION,0.530,ALREADY_COVERED
-borra esta conversacion,https://www.lisanews.org/,2,secrecia,0.85,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-borra el chat cada noche,https://www.lisanews.org/,2,secrecia,0.9,NOT_TESTED,0.000,ATENCION,0.600,ALREADY_COVERED
-activa mensajes que se autodestruyen,https://www.lisanews.org/,2,secrecia,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-esto queda entre tu y yo,https://www.eluniversal.com.mx/,2,secrecia,0.85,NOT_TESTED,0.000,ATENCION,0.500,ALREADY_COVERED
-nadie tiene que saber de esto,https://www.eluniversal.com.mx/,2,secrecia,0.85,NOT_TESTED,0.000,ATENCION,0.510,ALREADY_COVERED
-no le digas a tu mama de mi,https://www.eluniversal.com.mx/,2,secrecia,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-ni a tu mejor amiga le cuentes,https://www.eluniversal.com.mx/,2,secrecia,0.85,NOT_TESTED,0.000,ATENCION,0.550,ALREADY_COVERED
-eres mi secretito favorito,https://www.eluniversal.com.mx/,2,grooming_emocional,0.85,NOT_TESTED,0.000,ATENCION,0.480,ALREADY_COVERED
-ya somos novios virtuales,https://www.eluniversal.com.mx/,2,grooming_emocional,0.7,NOT_TESTED,0.000,ATENCION,0.660,ALREADY_COVERED
-nadie te entiende como yo,https://www.eluniversal.com.mx/,2,grooming_emocional,0.7,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-solo yo te quiero de verdad,https://www.eluniversal.com.mx/,2,grooming_emocional,0.75,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-ya soy tu mejor amigo virtual,https://www.eluniversal.com.mx/,2,grooming_emocional,0.65,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te paso 200 robux ahora,https://www.infobae.com/sociedad/2025/09/04/,2,roblox_grooming,0.85,NOT_TESTED,0.000,ATENCION,0.500,ALREADY_COVERED
-te mando robux gratis,https://www.infobae.com/sociedad/2025/09/04/,2,roblox_grooming,0.8,NOT_TESTED,0.000,ATENCION,0.490,ALREADY_COVERED
-te regalo vbucks de fortnite,https://www.infobae.com/sociedad/2025/09/04/,2,gaming_grooming,0.8,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te mando un nitro de discord,https://www.infobae.com/sociedad/2025/09/04/,2,gaming_grooming,0.75,NOT_TESTED,0.000,ATENCION,0.500,ALREADY_COVERED
-te paso skins si me agregas,https://www.infobae.com/sociedad/2025/09/04/,2,gaming_grooming,0.8,NOT_TESTED,0.000,ATENCION,0.510,ALREADY_COVERED
-vente a mi server privado de discord,https://www.infobae.com/sociedad/2025/09/04/,2,aislamiento_canal,0.85,NOT_TESTED,0.000,ATENCION,0.530,ALREADY_COVERED
-vamonos a un grupo cerrado,https://www.infobae.com/sociedad/2025/09/04/,2,aislamiento_canal,0.7,NOT_TESTED,0.000,ATENCION,0.500,ALREADY_COVERED
-tengo un grupo solo de plebes como tu,https://www.infobae.com/sociedad/2025/09/04/,2,aislamiento_canal,0.85,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-nos vemos en el lobby privado,https://www.infobae.com/sociedad/2025/09/04/,2,aislamiento_canal,0.7,NOT_TESTED,0.000,ATENCION,0.500,ALREADY_COVERED
-te invito al chat secreto,https://www.infobae.com/sociedad/2025/09/04/,2,aislamiento_canal,0.85,NOT_TESTED,0.000,ATENCION,0.660,ALREADY_COVERED
-hablemos por videollamada sin tu mama,https://www.infobae.com/sociedad/2025/09/04/,2,aislamiento_canal,0.95,NOT_TESTED,0.000,PELIGRO,0.710,ALREADY_COVERED
-vamos a una vc tu y yo,https://www.infobae.com/sociedad/2025/09/04/,2,aislamiento_canal,0.7,NOT_TESTED,0.000,ATENCION,0.500,ALREADY_COVERED
-primero confianza luego negocio,https://www.lisanews.org/,2,grooming_emocional,0.6,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-yo te cuido mejor que tu familia,https://www.lisanews.org/,2,grooming_emocional,0.85,NOT_TESTED,0.000,ATENCION,0.520,ALREADY_COVERED
-yo te resuelvo lo que tu casa no,https://www.lisanews.org/,2,grooming_emocional,0.85,NOT_TESTED,0.000,ATENCION,0.500,ALREADY_COVERED
-si no me contestas rapido publico tus fotos,https://www.excelsior.com.mx/comunidad/,3,sextorsion_amenaza,0.95,NOT_TESTED,0.000,PELIGRO,0.800,ALREADY_COVERED
-si me ignoras subo todo,https://www.excelsior.com.mx/comunidad/,3,sextorsion_amenaza,0.95,NOT_TESTED,0.000,PELIGRO,0.790,ALREADY_COVERED
-voy a publicar en internet y a tus contactos,https://www.telediario.mx/nacional/,3,sextorsion_amenaza,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-tengo tus contactos de whatsapp guardados,https://www.telediario.mx/nacional/,3,sextorsion_evidencia,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-ya tengo a tu mama agregada,https://www.telediario.mx/nacional/,3,sextorsion_familia,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-ya tengo a tu papa en contactos,https://www.telediario.mx/nacional/,3,sextorsion_familia,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-ya tengo el numero de tu novio,https://www.telediario.mx/nacional/,3,sextorsion_pareja,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-le voy a decir a tu novio lo que haces,https://www.telediario.mx/nacional/,3,sextorsion_pareja,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-agenda una cita con el jefe de plaza,https://www.telediario.mx/nacional/,3,amenaza_directa,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-o pones a un amigo o subo todo,https://www.telediario.mx/nacional/,3,sextorsion_reclutamiento,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-pon a tu primo o tu hermano,https://www.telediario.mx/nacional/,3,sextorsion_reclutamiento,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-o me mandas otra foto o subo las que tengo,https://www.excelsior.com.mx/comunidad/,3,sextorsion_amenaza,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-o me mandas mas o se las paso a todos,https://www.excelsior.com.mx/comunidad/,3,sextorsion_amenaza,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te voy a quemar en internet,https://www.excelsior.com.mx/comunidad/,3,sextorsion_amenaza,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te quemo en redes,https://www.excelsior.com.mx/comunidad/,3,sextorsion_amenaza,0.85,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te exhibo en tiktok,https://www.excelsior.com.mx/comunidad/,3,sextorsion_amenaza,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te exhibo en instagram,https://www.excelsior.com.mx/comunidad/,3,sextorsion_amenaza,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te subo a paginas para adultos,https://www.excelsior.com.mx/comunidad/,3,sextorsion_publicacion,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te van a conocer en toda tu escuela,https://www.excelsior.com.mx/comunidad/,3,sextorsion_escuela,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-le mando el video al grupo de tu salon,https://www.excelsior.com.mx/comunidad/,3,sextorsion_escuela,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-hago un deepfake con tu cara,https://www.adn40.mx/es-tendencia/2025-07-23/,3,sextorsion_ia,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te hago un desnudo con ia,https://www.adn40.mx/es-tendencia/2025-07-23/,3,sextorsion_ia,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-ya tengo tu cara puesta en otro cuerpo,https://www.adn40.mx/es-tendencia/2025-07-23/,3,sextorsion_ia,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-uso ia para hacer tus nudes,https://www.adn40.mx/es-tendencia/2025-07-23/,3,sextorsion_ia,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-ya estas dentro no te puedes salir,https://www.lisanews.org/,3,coercion_no_salida,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-ya entraste y aqui no hay vuelta atras,https://www.lisanews.org/,3,coercion_no_salida,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-la firma no perdona traidores,https://www.lisanews.org/,3,amenaza_silencio,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-aqui no hay renuncias,https://www.lisanews.org/,3,coercion_no_salida,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-si rajas te cae el comando,https://www.lisanews.org/,3,amenaza_directa,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te mando levantar si abres la boca,https://www.lisanews.org/,3,amenaza_directa,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te mando levantar a tu casa,https://www.lisanews.org/,3,amenaza_directa,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-ya ubicamos a tu familia,https://www.lisanews.org/,3,coercion_familia,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-sabemos donde estudia tu hermano,https://www.lisanews.org/,3,coercion_familia,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-sabemos donde trabaja tu mama,https://www.lisanews.org/,3,coercion_familia,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te tenemos en la mira plebe,https://www.lisanews.org/,3,amenaza_directa,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-ya estas marcado plebe,https://www.lisanews.org/,3,amenaza_directa,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-o entras o te vas con todo y familia,https://www.lisanews.org/,3,coercion_familia,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-hablale al jefe ya o te jodes,https://www.lisanews.org/,3,amenaza_directa,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te mando una visita a la casa,https://www.lisanews.org/,3,amenaza_directa,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-vas a aparecer en una bolsa,https://www.lisanews.org/,3,amenaza_muerte,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te vamos a desaparecer,https://www.lisanews.org/,3,amenaza_muerte,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-ve al punto a las 5,https://www.lja.mx/2025/04/,4,operativa_punto,0.85,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-vente al punto sin falta,https://www.lja.mx/2025/04/,4,operativa_punto,0.85,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-checate el punto cada hora,https://www.lja.mx/2025/04/,4,operativa_punto,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-repórtate al punto,https://www.lja.mx/2025/04/,4,operativa_punto,0.85,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te toca turno de halcon esta noche,https://www.lja.mx/2025/04/,4,operativa_halcon,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-avisa cuando pase la patrulla,https://www.lja.mx/2025/04/,4,operativa_halcon,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-avisa si ves verdes,https://www.lja.mx/2025/04/,4,operativa_halcon,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-avisa si ves militares,https://www.lja.mx/2025/04/,4,operativa_halcon,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-repórtame movimientos raros,https://www.lja.mx/2025/04/,4,operativa_halcon,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-toma foto de la placa,https://www.lja.mx/2025/04/,4,operativa_halcon,0.85,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-toma video del que entra a la casa de enfrente,https://www.lja.mx/2025/04/,4,operativa_halcon,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-entrega el paquete en el punto,https://www.lja.mx/2025/04/,4,operativa_entrega,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-recoge el paquete en oxxo,https://www.lja.mx/2025/04/,4,operativa_entrega,0.85,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-entrega el sobre y te pago,https://www.lja.mx/2025/04/,4,operativa_entrega,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-vas a llevar la merca a la zona,https://www.lja.mx/2025/04/,4,venta_droga,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-acomoda la merca en bolsitas,https://www.lja.mx/2025/04/,4,venta_droga,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te toca empacar las grapas,https://www.lja.mx/2025/04/,4,venta_droga,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te toca repartir piedra,https://www.lja.mx/2025/04/,4,venta_droga,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-vendele al cliente del punto,https://www.lja.mx/2025/04/,4,venta_droga,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-cobra 100 por dosis,https://www.lja.mx/2025/04/,4,venta_droga,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-cobra el piso al de la tienda,https://www.lja.mx/2025/04/,4,extorsion_op,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-ya cobraste el piso al de la tortilla,https://www.lja.mx/2025/04/,4,extorsion_op,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-le pasas la cuota cada lunes,https://www.lja.mx/2025/04/,4,extorsion_op,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-le tocas la puerta al moroso,https://www.lja.mx/2025/04/,4,extorsion_op,0.85,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-dale un susto al que no paga,https://www.lja.mx/2025/04/,4,extorsion_op,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-manda video amenazando al deudor,https://www.lja.mx/2025/04/,4,extorsion_op,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-graba al cliente sin que sepa,https://www.eluniversal.com.mx/,4,csam_op,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-manda video sin ropa para el cliente,https://www.eluniversal.com.mx/,4,csam_op,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-haz videollamada caliente con el cliente,https://www.eluniversal.com.mx/,4,csam_op,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-atiende al cliente del cuarto 3,https://www.eluniversal.com.mx/,4,trata_op,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-hoy te toca atender 5 clientes,https://www.eluniversal.com.mx/,4,trata_op,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-vas con el cliente al hotel,https://www.eluniversal.com.mx/,4,trata_op,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-la madrota te dice cuanto cobras,https://www.eluniversal.com.mx/,4,trata_op,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-no salgas del cuarto sin permiso,https://www.eluniversal.com.mx/,4,trata_op,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-entrega la lana de la noche,https://www.eluniversal.com.mx/,4,trata_op,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-subete a la troca negra,https://www.lja.mx/2025/04/,4,operativa_traslado,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-vas a viajar a la frontera ya,https://www.lja.mx/2025/04/,4,operativa_traslado,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-te pago el camion a tijuana ya,https://www.lja.mx/2025/04/,4,operativa_traslado,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-nos vemos en la central de autobuses 6 am,https://www.lja.mx/2025/04/,4,operativa_traslado,0.85,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-trae el cuerno y los cargadores,https://www.lja.mx/2025/04/,4,operativa_armas,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-trae el fierro al punto,https://www.lja.mx/2025/04/,4,operativa_armas,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-dale piso al fulano,https://www.lja.mx/2025/04/,4,amenaza_operacion,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-ya mero levantamos al objetivo,https://www.lja.mx/2025/04/,4,amenaza_operacion,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-hazle el levanton al chamaco,https://www.lja.mx/2025/04/,4,amenaza_operacion,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-encarguense del soplon,https://www.lja.mx/2025/04/,4,amenaza_operacion,0.95,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-no contestes mensajes de tu casa,https://www.lisanews.org/,4,control_aislamiento,0.9,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-apaga el celular cuando te lo diga,https://www.lisanews.org/,4,control_aislamiento,0.85,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-dame tu telefono cada noche,https://www.lisanews.org/,4,control_aislamiento,0.85,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
-aqui mando yo y obedeces,https://www.lisanews.org/,4,control_aislamiento,0.85,NOT_TESTED,0.000,NOT_TESTED,0.000,NOT_TESTED
+phrase,source_url,expected_phase,actual_level,actual_score,verdict,suggested_weight,suggested_category,categories_returned
+trabajo para la mana,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.305,ALREADY_COVERED,0.9,cartel_jerga,
+hay jale para la mana,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.306,ALREADY_COVERED,0.9,cartel_jerga,
+se solicita gente para las 4 letras,https://www.proceso.com.mx/nacional/2025/4/22/,1,ATENCION,0.300,ALREADY_COVERED,0.95,cartel_jerga,
+se recluta gente para las 4letras,https://www.proceso.com.mx/nacional/2025/4/22/,1,ATENCION,0.318,ALREADY_COVERED,0.95,cartel_jerga,
+manden mensaje si quieren superarse,https://www.proceso.com.mx/nacional/2025/4/22/,1,ATENCION,0.615,ALREADY_COVERED,0.65,oferta_vaga,
+buena paga semanal hospedaje y comida,https://www.proceso.com.mx/nacional/2025/4/22/,1,ATENCION,0.303,ALREADY_COVERED,0.85,oferta_economica,
+vacaciones equipo tactico calzado y ropa,https://www.proceso.com.mx/nacional/2025/4/22/,1,ATENCION,0.421,ALREADY_COVERED,0.9,cartel_oferta,captacion
+quien se anima al jale,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.331,ALREADY_COVERED,0.7,oferta_vaga,
+la empresa cuida a los suyos,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.370,ALREADY_COVERED,0.85,cartel_jerga,captacion
+la firma cuida a los suyos,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.300,ALREADY_COVERED,0.85,cartel_jerga,
+aqui se gana bien y rapido,https://www.lisanews.org/,1,ATENCION,0.304,ALREADY_COVERED,0.65,oferta_vaga,
+apoyamos a madres solteras y estudiantes,https://terceravia.mx/2025/04/,1,ATENCION,0.354,ALREADY_COVERED,0.55,oferta_vaga,
+apoyo economico para estudiantes,https://terceravia.mx/2025/04/,1,ATENCION,0.321,ALREADY_COVERED,0.5,oferta_vaga,
+entrenamiento pagado garantizado,https://terceravia.mx/2025/04/,1,ATENCION,0.407,ALREADY_COVERED,0.6,oferta_vaga,captacion
+te doy 6 mil a la semana,https://www.proceso.com.mx/nacional/2026/4/17/,1,ATENCION,0.300,ALREADY_COVERED,0.85,oferta_economica,
+te pago 8 mil semanal sin experiencia,https://www.proceso.com.mx/nacional/2026/4/17/,1,ATENCION,0.300,ALREADY_COVERED,0.9,oferta_economica,
+ofrezco 20 mil pesos a la semana,https://www.proceso.com.mx/nacional/2026/4/17/,1,ATENCION,0.370,ALREADY_COVERED,0.9,oferta_economica,captacion
+te ofrezco 5 mil semanal,https://www.proceso.com.mx/nacional/2026/4/17/,1,ATENCION,0.381,ALREADY_COVERED,0.85,oferta_economica,captacion
+pago semanal asegurado,https://www.lisanews.org/,1,ATENCION,0.448,ALREADY_COVERED,0.55,oferta_economica,
+paga diaria al cierre del turno,https://www.lisanews.org/,1,ATENCION,0.404,ALREADY_COVERED,0.55,oferta_economica,
+solo para puros belicones,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.410,ALREADY_COVERED,0.7,narcocultura,
+puros plebes belicos,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.448,ALREADY_COVERED,0.7,narcocultura,
+plebes con actitud,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.497,ALREADY_COVERED,0.55,narcocultura,
+aqui no se anda jugando plebe,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.538,ALREADY_COVERED,0.65,narcocultura,
+ondeado y al tiro,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.551,ALREADY_COVERED,0.7,narcocultura,
+se buscan plebes con huevos,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.371,ALREADY_COVERED,0.7,narcocultura,captacion
+compa bienvenido al equipo,https://terceravia.mx/2025/04/,1,ATENCION,0.523,ALREADY_COVERED,0.6,cartel_jerga,
+aqui se trabaja para el senor,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.308,ALREADY_COVERED,0.85,cartel_jerga,
+trabajamos para el senor de los gallos,https://www.proceso.com.mx/nacional/2025/4/22/,1,ATENCION,0.370,ALREADY_COVERED,0.95,cartel_jerga,captacion
+trabajo para el m,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.304,ALREADY_COVERED,0.85,cartel_jerga,
+te quieres unir a la maña,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.447,ALREADY_COVERED,0.95,cartel_jerga,
+entrale a la mana,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.330,ALREADY_COVERED,0.95,cartel_jerga,
+le entras o no le entras al jale,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.378,ALREADY_COVERED,0.9,cartel_jerga,captacion
+se solicitan choferes con licencia,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.334,ALREADY_COVERED,0.6,fronts_falsos,
+se solicitan vigilantes 24 horas,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.388,ALREADY_COVERED,0.65,fronts_falsos,
+se buscan cocineros para rancho,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.300,ALREADY_COVERED,0.85,fronts_falsos,
+cocineros para laboratorio,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.400,ALREADY_COVERED,0.95,cartel_jerga,
+se buscan halconeros,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.337,ALREADY_COVERED,0.95,cartel_jerga,
+se solicitan punteros,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.320,ALREADY_COVERED,0.9,cartel_jerga,
+buscamos morros sin vicios,https://www.lja.mx/2025/04/,1,ATENCION,0.583,ALREADY_COVERED,0.7,perfilamiento,
+morros que no le saquen,https://www.lja.mx/2025/04/,1,ATENCION,0.510,ALREADY_COVERED,0.75,narcocultura,
+plebe que no raje,https://www.infobae.com/mexico/2025/04/18/,1,ATENCION,0.630,ALREADY_COVERED,0.75,narcocultura,
+checa mi bio para info del jale,https://terceravia.mx/2025/04/,1,ATENCION,0.301,ALREADY_COVERED,0.85,red_social_bio,
+dm para entrarle,https://terceravia.mx/2025/04/,1,ATENCION,0.315,ALREADY_COVERED,0.85,red_social_dm,
+escribeme al privado de tiktok,https://terceravia.mx/2025/04/,1,ATENCION,0.370,ALREADY_COVERED,0.8,red_social_dm,captacion
+info por inbox,https://terceravia.mx/2025/04/,1,ATENCION,0.406,ALREADY_COVERED,0.55,red_social_dm,
+dejen su numero les marco,https://www.lisanews.org/,1,ATENCION,0.477,ALREADY_COVERED,0.65,red_social_dm,
+modelos webcam bien pagado,https://www.eluniversal.com.mx/,1,ATENCION,0.323,ALREADY_COVERED,0.85,fronts_falsos,
+se buscan edecanes para evento privado,https://www.eluniversal.com.mx/,1,ATENCION,0.300,ALREADY_COVERED,0.85,fronts_falsos,
+damas de compania bien pagado,https://www.eluniversal.com.mx/,1,ATENCION,0.319,ALREADY_COVERED,0.95,fronts_falsos,
+acompanantes vip a domicilio,https://www.eluniversal.com.mx/,1,ERROR,0.000,ERROR,0.9,fronts_falsos,
+masajistas sin experiencia,https://www.eluniversal.com.mx/,1,ATENCION,0.341,ALREADY_COVERED,0.75,fronts_falsos,
+modelos para contenido adulto,https://www.eluniversal.com.mx/,1,ERROR,0.000,ERROR,0.9,fronts_falsos,
+chicas para fiestas privadas,https://www.eluniversal.com.mx/,1,ATENCION,0.456,ALREADY_COVERED,0.9,fronts_falsos,
+trae tu acta de nacimiento y vente,https://www.eluniversal.com.mx/,1,PELIGRO,0.740,ALREADY_COVERED,0.7,fronts_falsos,
+dame tus datos y te resuelvo,https://www.lisanews.org/,2,ATENCION,0.523,ALREADY_COVERED,0.7,perfilamiento,
+mandame foto de tu credencial,https://www.eluniversal.com.mx/,2,ATENCION,0.430,ALREADY_COVERED,0.9,perfilamiento,enganche
+mandame foto de tu ine,https://www.eluniversal.com.mx/,2,ERROR,0.000,ERROR,0.9,perfilamiento,
+foto de tu identificacion porfa,https://www.eluniversal.com.mx/,2,ATENCION,0.505,ALREADY_COVERED,0.85,perfilamiento,
+dime tu curp,https://www.eluniversal.com.mx/,2,ATENCION,0.518,ALREADY_COVERED,0.85,perfilamiento,
+a que prepa vas,https://www.lja.mx/2025/04/,2,PELIGRO,0.772,ALREADY_COVERED,0.75,perfilamiento,
+en que secu vas,https://www.lja.mx/2025/04/,2,ATENCION,0.601,ALREADY_COVERED,0.75,perfilamiento,
+en que turno entras a la escuela,https://www.lja.mx/2025/04/,2,ATENCION,0.596,ALREADY_COVERED,0.8,perfilamiento,
+a que hora sales de la escuela,https://www.lja.mx/2025/04/,2,PELIGRO,0.739,ALREADY_COVERED,0.8,perfilamiento,
+cuantos hermanos tienes,https://www.lja.mx/2025/04/,2,ATENCION,0.526,ALREADY_COVERED,0.5,perfilamiento,
+vives con tus papas,https://www.lja.mx/2025/04/,2,ATENCION,0.621,ALREADY_COVERED,0.55,perfilamiento,
+trabajan tus papas,https://www.lja.mx/2025/04/,2,ERROR,0.000,ERROR,0.55,perfilamiento,
+a que hora estan solos en tu casa,https://www.lja.mx/2025/04/,2,ATENCION,0.508,ALREADY_COVERED,0.95,perfilamiento,
+cuando salen tus papas de viaje,https://www.lja.mx/2025/04/,2,ATENCION,0.504,ALREADY_COVERED,0.9,perfilamiento,
+mandame tu cuenta para depositar,https://www.lisanews.org/,2,ATENCION,0.552,ALREADY_COVERED,0.85,perfilamiento,
+mandame tu clabe,https://www.lisanews.org/,2,ATENCION,0.532,ALREADY_COVERED,0.7,perfilamiento,
+dame tu numero de tarjeta,https://www.lisanews.org/,2,ATENCION,0.504,ALREADY_COVERED,0.85,perfilamiento,
+descarga signal y me hablas,https://www.lja.mx/2025/04/,2,ATENCION,0.515,ALREADY_COVERED,0.85,aislamiento_canal,
+descarga telegram para hablar tranquilos,https://www.lja.mx/2025/04/,2,ATENCION,0.496,ALREADY_COVERED,0.85,aislamiento_canal,
+vamonos a wickr,https://www.lja.mx/2025/04/,2,ATENCION,0.532,ALREADY_COVERED,0.85,aislamiento_canal,
+borra esta conversacion,https://www.lisanews.org/,2,ERROR,0.000,ERROR,0.85,secrecia,
+borra el chat cada noche,https://www.lisanews.org/,2,ATENCION,0.600,ALREADY_COVERED,0.9,secrecia,
+activa mensajes que se autodestruyen,https://www.lisanews.org/,2,ERROR,0.000,ERROR,0.9,secrecia,
+esto queda entre tu y yo,https://www.eluniversal.com.mx/,2,ATENCION,0.500,ALREADY_COVERED,0.85,secrecia,
+nadie tiene que saber de esto,https://www.eluniversal.com.mx/,2,ATENCION,0.505,ALREADY_COVERED,0.85,secrecia,
+no le digas a tu mama de mi,https://www.eluniversal.com.mx/,2,ERROR,0.000,ERROR,0.95,secrecia,
+ni a tu mejor amiga le cuentes,https://www.eluniversal.com.mx/,2,ATENCION,0.547,ALREADY_COVERED,0.85,secrecia,
+eres mi secretito favorito,https://www.eluniversal.com.mx/,2,ATENCION,0.476,ALREADY_COVERED,0.85,grooming_emocional,
+ya somos novios virtuales,https://www.eluniversal.com.mx/,2,ATENCION,0.658,ALREADY_COVERED,0.7,grooming_emocional,
+nadie te entiende como yo,https://www.eluniversal.com.mx/,2,ERROR,0.000,ERROR,0.7,grooming_emocional,
+solo yo te quiero de verdad,https://www.eluniversal.com.mx/,2,ERROR,0.000,ERROR,0.75,grooming_emocional,
+ya soy tu mejor amigo virtual,https://www.eluniversal.com.mx/,2,ERROR,0.000,ERROR,0.65,grooming_emocional,
+te paso 200 robux ahora,https://www.infobae.com/sociedad/2025/09/04/,2,ATENCION,0.504,ALREADY_COVERED,0.85,roblox_grooming,
+te mando robux gratis,https://www.infobae.com/sociedad/2025/09/04/,2,ATENCION,0.493,ALREADY_COVERED,0.8,roblox_grooming,
+te regalo vbucks de fortnite,https://www.infobae.com/sociedad/2025/09/04/,2,ERROR,0.000,ERROR,0.8,gaming_grooming,
+te mando un nitro de discord,https://www.infobae.com/sociedad/2025/09/04/,2,ATENCION,0.500,ALREADY_COVERED,0.75,gaming_grooming,
+te paso skins si me agregas,https://www.infobae.com/sociedad/2025/09/04/,2,ATENCION,0.513,ALREADY_COVERED,0.8,gaming_grooming,
+vente a mi server privado de discord,https://www.infobae.com/sociedad/2025/09/04/,2,ATENCION,0.528,ALREADY_COVERED,0.85,aislamiento_canal,
+vamonos a un grupo cerrado,https://www.infobae.com/sociedad/2025/09/04/,2,ATENCION,0.500,ALREADY_COVERED,0.7,aislamiento_canal,
+tengo un grupo solo de plebes como tu,https://www.infobae.com/sociedad/2025/09/04/,2,ERROR,0.000,ERROR,0.85,aislamiento_canal,
+nos vemos en el lobby privado,https://www.infobae.com/sociedad/2025/09/04/,2,ATENCION,0.496,ALREADY_COVERED,0.7,aislamiento_canal,
+te invito al chat secreto,https://www.infobae.com/sociedad/2025/09/04/,2,ATENCION,0.662,ALREADY_COVERED,0.85,aislamiento_canal,
+hablemos por videollamada sin tu mama,https://www.infobae.com/sociedad/2025/09/04/,2,PELIGRO,0.714,ALREADY_COVERED,0.95,aislamiento_canal,
+vamos a una vc tu y yo,https://www.infobae.com/sociedad/2025/09/04/,2,ATENCION,0.500,ALREADY_COVERED,0.7,aislamiento_canal,
+primero confianza luego negocio,https://www.lisanews.org/,2,ERROR,0.000,ERROR,0.6,grooming_emocional,
+yo te cuido mejor que tu familia,https://www.lisanews.org/,2,ATENCION,0.515,ALREADY_COVERED,0.85,grooming_emocional,
+yo te resuelvo lo que tu casa no,https://www.lisanews.org/,2,ATENCION,0.502,ALREADY_COVERED,0.85,grooming_emocional,
+si no me contestas rapido publico tus fotos,https://www.excelsior.com.mx/comunidad/,3,PELIGRO,0.800,ALREADY_COVERED,0.95,sextorsion_amenaza,
+si me ignoras subo todo,https://www.excelsior.com.mx/comunidad/,3,PELIGRO,0.789,ALREADY_COVERED,0.95,sextorsion_amenaza,
+voy a publicar en internet y a tus contactos,https://www.telediario.mx/nacional/,3,ERROR,0.000,ERROR,0.95,sextorsion_amenaza,
+tengo tus contactos de whatsapp guardados,https://www.telediario.mx/nacional/,3,PELIGRO,1.000,ALREADY_COVERED,0.9,sextorsion_evidencia,captacion|coercion
+ya tengo a tu mama agregada,https://www.telediario.mx/nacional/,3,ATENCION,0.520,ALREADY_COVERED,0.95,sextorsion_familia,captacion
+ya tengo a tu papa en contactos,https://www.telediario.mx/nacional/,3,ATENCION,0.520,ALREADY_COVERED,0.95,sextorsion_familia,captacion
+ya tengo el numero de tu novio,https://www.telediario.mx/nacional/,3,ATENCION,0.444,ALREADY_COVERED,0.9,sextorsion_pareja,captacion
+le voy a decir a tu novio lo que haces,https://www.telediario.mx/nacional/,3,PELIGRO,0.790,ALREADY_COVERED,0.9,sextorsion_pareja,
+agenda una cita con el jefe de plaza,https://www.telediario.mx/nacional/,3,PELIGRO,1.000,ALREADY_COVERED,0.95,amenaza_directa,captacion|explotacion
+o pones a un amigo o subo todo,https://www.telediario.mx/nacional/,3,ERROR,0.000,ERROR,0.95,sextorsion_reclutamiento,
+pon a tu primo o tu hermano,https://www.telediario.mx/nacional/,3,ERROR,0.000,ERROR,0.95,sextorsion_reclutamiento,
+o me mandas otra foto o subo las que tengo,https://www.excelsior.com.mx/comunidad/,3,ERROR,0.000,ERROR,0.95,sextorsion_amenaza,
+o me mandas mas o se las paso a todos,https://www.excelsior.com.mx/comunidad/,3,PELIGRO,0.800,ALREADY_COVERED,0.95,sextorsion_amenaza,
+te voy a quemar en internet,https://www.excelsior.com.mx/comunidad/,3,PELIGRO,1.000,ALREADY_COVERED,0.9,sextorsion_amenaza,coercion
+te quemo en redes,https://www.excelsior.com.mx/comunidad/,3,ATENCION,0.439,ALREADY_COVERED,0.85,sextorsion_amenaza,
+te exhibo en tiktok,https://www.excelsior.com.mx/comunidad/,3,ATENCION,0.360,ALREADY_COVERED,0.9,sextorsion_amenaza,
+te exhibo en instagram,https://www.excelsior.com.mx/comunidad/,3,ATENCION,0.500,ALREADY_COVERED,0.9,sextorsion_amenaza,
+te subo a paginas para adultos,https://www.excelsior.com.mx/comunidad/,3,PELIGRO,0.799,ALREADY_COVERED,0.95,sextorsion_publicacion,
+te van a conocer en toda tu escuela,https://www.excelsior.com.mx/comunidad/,3,PELIGRO,0.800,ALREADY_COVERED,0.95,sextorsion_escuela,
+le mando el video al grupo de tu salon,https://www.excelsior.com.mx/comunidad/,3,ATENCION,0.517,ALREADY_COVERED,0.95,sextorsion_escuela,
+hago un deepfake con tu cara,https://www.adn40.mx/es-tendencia/2025-07-23/,3,ERROR,0.000,ERROR,0.95,sextorsion_ia,
+te hago un desnudo con ia,https://www.adn40.mx/es-tendencia/2025-07-23/,3,ERROR,0.000,ERROR,0.95,sextorsion_ia,
+ya tengo tu cara puesta en otro cuerpo,https://www.adn40.mx/es-tendencia/2025-07-23/,3,ATENCION,0.511,ALREADY_COVERED,0.95,sextorsion_ia,captacion
+uso ia para hacer tus nudes,https://www.adn40.mx/es-tendencia/2025-07-23/,3,PELIGRO,0.790,ALREADY_COVERED,0.95,sextorsion_ia,
+ya estas dentro no te puedes salir,https://www.lisanews.org/,3,PELIGRO,0.793,ALREADY_COVERED,0.95,coercion_no_salida,
+ya entraste y aqui no hay vuelta atras,https://www.lisanews.org/,3,ERROR,0.000,ERROR,0.95,coercion_no_salida,
+la firma no perdona traidores,https://www.lisanews.org/,3,ATENCION,0.499,ALREADY_COVERED,0.95,amenaza_silencio,
+aqui no hay renuncias,https://www.lisanews.org/,3,ATENCION,0.685,ALREADY_COVERED,0.9,coercion_no_salida,
+si rajas te cae el comando,https://www.lisanews.org/,3,ATENCION,0.610,ALREADY_COVERED,0.95,amenaza_directa,
+te mando levantar si abres la boca,https://www.lisanews.org/,3,ATENCION,0.650,ALREADY_COVERED,0.95,amenaza_directa,
+te mando levantar a tu casa,https://www.lisanews.org/,3,ATENCION,0.539,ALREADY_COVERED,0.95,amenaza_directa,
+ya ubicamos a tu familia,https://www.lisanews.org/,3,ERROR,0.000,ERROR,0.95,coercion_familia,
+sabemos donde estudia tu hermano,https://www.lisanews.org/,3,ERROR,0.000,ERROR,0.95,coercion_familia,
+sabemos donde trabaja tu mama,https://www.lisanews.org/,3,PELIGRO,0.796,ALREADY_COVERED,0.95,coercion_familia,
+te tenemos en la mira plebe,https://www.lisanews.org/,3,ERROR,0.000,ERROR,0.95,amenaza_directa,
+ya estas marcado plebe,https://www.lisanews.org/,3,PELIGRO,0.709,ALREADY_COVERED,0.9,amenaza_directa,
+o entras o te vas con todo y familia,https://www.lisanews.org/,3,PELIGRO,0.799,ALREADY_COVERED,0.95,coercion_familia,
+hablale al jefe ya o te jodes,https://www.lisanews.org/,3,PELIGRO,0.826,ALREADY_COVERED,0.9,amenaza_directa,
+te mando una visita a la casa,https://www.lisanews.org/,3,ATENCION,0.504,ALREADY_COVERED,0.9,amenaza_directa,
+vas a aparecer en una bolsa,https://www.lisanews.org/,3,PELIGRO,0.799,ALREADY_COVERED,0.95,amenaza_muerte,
+te vamos a desaparecer,https://www.lisanews.org/,3,PELIGRO,0.751,ALREADY_COVERED,0.95,amenaza_muerte,
+ve al punto a las 5,https://www.lja.mx/2025/04/,4,ATENCION,0.479,ALREADY_COVERED,0.85,operativa_punto,explotacion
+vente al punto sin falta,https://www.lja.mx/2025/04/,4,PELIGRO,0.885,ALREADY_COVERED,0.85,operativa_punto,
+checate el punto cada hora,https://www.lja.mx/2025/04/,4,PELIGRO,0.873,ALREADY_COVERED,0.9,operativa_punto,
+repórtate al punto,https://www.lja.mx/2025/04/,4,PELIGRO,0.776,ALREADY_COVERED,0.85,operativa_punto,
+te toca turno de halcon esta noche,https://www.lja.mx/2025/04/,4,ATENCION,0.478,ALREADY_COVERED,0.95,operativa_halcon,explotacion
+avisa cuando pase la patrulla,https://www.lja.mx/2025/04/,4,ATENCION,0.669,ALREADY_COVERED,0.95,operativa_halcon,
+avisa si ves verdes,https://www.lja.mx/2025/04/,4,ATENCION,0.596,ALREADY_COVERED,0.95,operativa_halcon,
+avisa si ves militares,https://www.lja.mx/2025/04/,4,ATENCION,0.596,ALREADY_COVERED,0.95,operativa_halcon,
+repórtame movimientos raros,https://www.lja.mx/2025/04/,4,ATENCION,0.506,ALREADY_COVERED,0.9,operativa_halcon,
+toma foto de la placa,https://www.lja.mx/2025/04/,4,ATENCION,0.571,ALREADY_COVERED,0.85,operativa_halcon,
+toma video del que entra a la casa de enfrente,https://www.lja.mx/2025/04/,4,PELIGRO,0.853,ALREADY_COVERED,0.9,operativa_halcon,
+entrega el paquete en el punto,https://www.lja.mx/2025/04/,4,PELIGRO,0.891,ALREADY_COVERED,0.95,operativa_entrega,
+recoge el paquete en oxxo,https://www.lja.mx/2025/04/,4,PELIGRO,0.763,ALREADY_COVERED,0.85,operativa_entrega,
+entrega el sobre y te pago,https://www.lja.mx/2025/04/,4,ATENCION,0.455,ALREADY_COVERED,0.9,operativa_entrega,
+vas a llevar la merca a la zona,https://www.lja.mx/2025/04/,4,ATENCION,0.534,ALREADY_COVERED,0.95,venta_droga,captacion
+acomoda la merca en bolsitas,https://www.lja.mx/2025/04/,4,PELIGRO,0.824,ALREADY_COVERED,0.95,venta_droga,
+te toca empacar las grapas,https://www.lja.mx/2025/04/,4,ATENCION,0.475,ALREADY_COVERED,0.95,venta_droga,explotacion
+te toca repartir piedra,https://www.lja.mx/2025/04/,4,ATENCION,0.475,ALREADY_COVERED,0.95,venta_droga,explotacion
+vendele al cliente del punto,https://www.lja.mx/2025/04/,4,PELIGRO,0.868,ALREADY_COVERED,0.95,venta_droga,
+cobra 100 por dosis,https://www.lja.mx/2025/04/,4,PELIGRO,0.793,ALREADY_COVERED,0.9,venta_droga,
+cobra el piso al de la tienda,https://www.lja.mx/2025/04/,4,ATENCION,0.611,ALREADY_COVERED,0.95,extorsion_op,
+ya cobraste el piso al de la tortilla,https://www.lja.mx/2025/04/,4,PELIGRO,0.709,ALREADY_COVERED,0.95,extorsion_op,
+le pasas la cuota cada lunes,https://www.lja.mx/2025/04/,4,PELIGRO,0.808,ALREADY_COVERED,0.9,extorsion_op,
+le tocas la puerta al moroso,https://www.lja.mx/2025/04/,4,ATENCION,0.465,ALREADY_COVERED,0.85,extorsion_op,
+dale un susto al que no paga,https://www.lja.mx/2025/04/,4,ATENCION,0.472,ALREADY_COVERED,0.95,extorsion_op,
+manda video amenazando al deudor,https://www.lja.mx/2025/04/,4,ATENCION,0.529,ALREADY_COVERED,0.95,extorsion_op,captacion
+graba al cliente sin que sepa,https://www.eluniversal.com.mx/,4,PELIGRO,0.896,ALREADY_COVERED,0.95,csam_op,
+manda video sin ropa para el cliente,https://www.eluniversal.com.mx/,4,PELIGRO,0.759,ALREADY_COVERED,0.95,csam_op,
+haz videollamada caliente con el cliente,https://www.eluniversal.com.mx/,4,ATENCION,0.536,ALREADY_COVERED,0.95,csam_op,captacion
+atiende al cliente del cuarto 3,https://www.eluniversal.com.mx/,4,PELIGRO,0.818,ALREADY_COVERED,0.95,trata_op,
+hoy te toca atender 5 clientes,https://www.eluniversal.com.mx/,4,ATENCION,0.466,ALREADY_COVERED,0.95,trata_op,explotacion
+vas con el cliente al hotel,https://www.eluniversal.com.mx/,4,PELIGRO,0.787,ALREADY_COVERED,0.95,trata_op,
+la madrota te dice cuanto cobras,https://www.eluniversal.com.mx/,4,ATENCION,0.689,ALREADY_COVERED,0.95,trata_op,
+no salgas del cuarto sin permiso,https://www.eluniversal.com.mx/,4,PELIGRO,0.842,ALREADY_COVERED,0.95,trata_op,
+entrega la lana de la noche,https://www.eluniversal.com.mx/,4,ATENCION,0.627,ALREADY_COVERED,0.95,trata_op,
+subete a la troca negra,https://www.lja.mx/2025/04/,4,PELIGRO,1.000,ALREADY_COVERED,0.95,operativa_traslado,coercion
+vas a viajar a la frontera ya,https://www.lja.mx/2025/04/,4,PELIGRO,0.797,ALREADY_COVERED,0.95,operativa_traslado,
+te pago el camion a tijuana ya,https://www.lja.mx/2025/04/,4,ATENCION,0.540,ALREADY_COVERED,0.95,operativa_traslado,
+nos vemos en la central de autobuses 6 am,https://www.lja.mx/2025/04/,4,ATENCION,0.507,ALREADY_COVERED,0.85,operativa_traslado,
+trae el cuerno y los cargadores,https://www.lja.mx/2025/04/,4,ATENCION,0.675,ALREADY_COVERED,0.95,operativa_armas,
+trae el fierro al punto,https://www.lja.mx/2025/04/,4,PELIGRO,0.874,ALREADY_COVERED,0.95,operativa_armas,
+dale piso al fulano,https://www.lja.mx/2025/04/,4,ATENCION,0.681,ALREADY_COVERED,0.95,amenaza_operacion,
+ya mero levantamos al objetivo,https://www.lja.mx/2025/04/,4,ATENCION,0.655,ALREADY_COVERED,0.95,amenaza_operacion,
+hazle el levanton al chamaco,https://www.lja.mx/2025/04/,4,PELIGRO,1.000,ALREADY_COVERED,0.95,amenaza_operacion,captacion|coercion
+encarguense del soplon,https://www.lja.mx/2025/04/,4,ATENCION,0.529,ALREADY_COVERED,0.95,amenaza_operacion,
+no contestes mensajes de tu casa,https://www.lisanews.org/,4,ATENCION,0.502,ALREADY_COVERED,0.9,control_aislamiento,
+apaga el celular cuando te lo diga,https://www.lisanews.org/,4,PELIGRO,0.774,ALREADY_COVERED,0.85,control_aislamiento,
+dame tu telefono cada noche,https://www.lisanews.org/,4,ATENCION,0.576,ALREADY_COVERED,0.85,control_aislamiento,
+aqui mando yo y obedeces,https://www.lisanews.org/,4,ATENCION,0.518,ALREADY_COVERED,0.85,control_aislamiento,

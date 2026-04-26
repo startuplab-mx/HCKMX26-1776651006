@@ -87,31 +87,49 @@ stateDiagram-v2
     end note
 ```
 
-## Lógica del clasificador
+## Lógica del clasificador (4 capas cognitivas — v1.4)
 
 ```mermaid
 flowchart LR
-    T[texto] --> N[normalize<br/>lowercase + sin diacríticos]
+    T[texto] --> N[normalize_advanced<br/>chat MX + números + typos]
     N --> P1[Fase 1<br/>Captación]
     N --> P2[Fase 2<br/>Enganche]
     N --> P3[Fase 3<br/>Coerción]
     N --> P4[Fase 4<br/>Explotación]
     N --> EM[Emojis narco<br/>boost por afinidad]
+    N --> BAY[Capa 1.5<br/>Naive Bayes<br/>n-gramas 1-3<br/>911 docs]
     EM --> P1
     EM --> P2
     EM --> P3
     EM --> P4
-    P3 --> OV{phase3 ≥ 0.80?}
+    P3 --> OV{phase3/4 ≥ 0.80?}
     P4 --> OV
     OV -- sí --> R1[risk_score = 1.0<br/>PELIGRO + override]
-    OV -- no --> W[weighted avg<br/>+ saturation floor]
-    P1 --> W
-    P2 --> W
-    W --> GZ{0.3 ≤ score ≤ 0.6?}
-    GZ -- sí --> LLM[Claude API<br/>5s timeout]
-    GZ -- no --> R2[risk_level<br/>SEGURO/ATENCION/PELIGRO]
-    LLM --> R2
+    OV -- no --> CB[contextual_boost<br/>1.3× ó 1.5× si danger combo]
+    P1 --> CB
+    P2 --> CB
+    CB --> W[weighted avg<br/>+ saturation floor]
+    W --> ACT{Activación LLM:<br/>grey zone OR<br/>score=0+texto>30 OR<br/>score<0.3+keywords}
+    ACT -- sí --> LLM[Claude Sonnet 4.5<br/>5s timeout]
+    ACT -- no --> MERGE[Merge 3-vías:<br/>heur 50% + bayes 20% + LLM 30%]
+    BAY --> MERGE
+    LLM --> MERGE
+    MERGE --> R2[risk_level<br/>SEGURO/ATENCION/PELIGRO]
 ```
+
+**Activación LLM** — la Capa 2 ya no espera solo la zona gris (0.3-0.6).
+Activa en 3 condiciones:
+- Zona gris clásica
+- score=0 con texto sustantivo (>30 chars) — Marco gap
+- score<0.3 con keywords de money/work/threat/sextorsion
+
+**Merge 3-vías** depende de qué capas se activaron:
+- Solo heurístico → score = heur
+- Heur + Bayes → 70% heur + 30% bayes
+- Heur + LLM (sin Bayes) → 50% heur + 50% LLM
+- Heur + Bayes + LLM → 50% heur + 20% bayes + 30% LLM
+- heur=0 + LLM → 100% LLM (no merge con 0)
+- heur=0 + Bayes + LLM → 30% bayes + 70% LLM
 
 ## Datos persistidos
 

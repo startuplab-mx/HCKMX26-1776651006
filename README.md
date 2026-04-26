@@ -36,16 +36,22 @@ Si Fase 3 o Fase 4 obtienen score individual ≥ 0.80, el sistema ignora el prom
 └──────────────────────┬──────────────────────────────────┘
                        ▼
 ┌─────────────────────────────────────────────────────────┐
-│  BACKEND CORE (FastAPI :8000)                            │
-│  • Capa 1: Heurístico (regex + keywords + emojis)        │
-│  • Capa 2: Claude API (zona gris 0.3–0.6, timeout 5s)    │
-│  • Override: Fase 3/4 ≥ 0.80 → risk_score = 1.0          │
-│  • SQLite + PDF (ReportLab) + Webhooks                   │
+│  BACKEND CORE (FastAPI :8000) — 4 CAPAS COGNITIVAS       │
+│                                                          │
+│  Capa 0 — OVERRIDE: Fase 3/4 ≥ 0.80 → risk_score = 1.0  │
+│  Capa 1 — Heurístico: regex + 870 patrones + emojis     │
+│  Capa 1.5 — Bayesiano: Naive Bayes n-gramas (911 docs,  │
+│             vocab 5701) — aprende de feedback           │
+│  Capa 2 — LLM: Sonnet 4.5 (zona gris OR score=0+kwd)    │
+│  Capa 3 — Trayectoria: escalamiento por sesión          │
+│                                                          │
+│  Merge: heur 50% + bayes 20% + LLM 30% (cuando todos)   │
+│  SQLite + WAL · Retry on lock · PDF · Webhooks          │
 └──────────────────────┬──────────────────────────────────┘
                        ▼
 ┌─────────────────────────────────────────────────────────┐
-│  PANEL WEB (:3000)                                       │
-│  Dashboard alertas + semáforo + descarga PDF             │
+│  PANEL WEB (159.223.187.6/)                              │
+│  Dashboard + 🧪 manual analyze + 🔬 deep check + toast  │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -57,8 +63,9 @@ Si Fase 3 o Fase 4 obtienen score individual ≥ 0.80, el sistema ignora el prom
 |------------|-----------|
 | Bot WhatsApp | Node.js 20 + `@whiskeysockets/baileys` 6.7 |
 | Backend API | Python 3.12+ + FastAPI + Uvicorn |
-| Clasificador | Regex + keyword scoring (768 patrones, sin GPU) |
-| LLM Layer | Anthropic `claude-sonnet-4-5-20250929` (zona gris 0.3–0.6) |
+| Clasificador Capa 1 | Regex + keyword scoring (**870 patrones**, sin GPU) |
+| Clasificador Capa 1.5 | **Naive Bayes** con n-gramas (1, 2, 3) — aprende del feedback |
+| Clasificador Capa 2 | Anthropic `claude-sonnet-4-5-20250929` (zona gris OR score=0+keywords) |
 | Audio STT | Groq Whisper-large-v3 (`/transcribe`) |
 | Imagen OCR | Anthropic Claude Sonnet 4.5 Vision (`/ocr`) |
 | Database | SQLite3 con WAL mode + retry on lock |
@@ -283,16 +290,46 @@ DNS preparado para `nahualshield.com` y `nahualsec.com` (subdominios `panel.` / 
 
 ---
 
-## Endpoints de observabilidad (`/admin/*`)
+## Endpoints de observabilidad (`/admin/*` y `/bayesian/*`)
 
 Públicos, read-only, PII-free:
 
 ```bash
-GET /admin/version             # commit SHA + branch + env + python
-GET /admin/dataset-info        # 768 patrones · histograma de pesos · 14 emojis
-GET /admin/metrics             # request counters por endpoint + uptime
-GET /admin/healthcheck-deep    # ping live a DB + Anthropic + Groq
-GET /alerts.csv (PROTECTED)    # export Excel UTF-8-BOM
+GET  /admin/version             # commit SHA + branch + env + python
+GET  /admin/dataset-info        # 870 patrones · histograma de pesos · 14 emojis
+GET  /admin/metrics             # request counters por endpoint + uptime
+GET  /admin/healthcheck-deep    # ping live a DB + Anthropic + Groq
+GET  /alerts.csv (PROTECTED)    # export Excel UTF-8-BOM
+GET  /bayesian/stats            # 911 docs · vocab 5701 · top features por clase
+POST /bayesian/predict          # predicción aislada del Naive Bayes (debug)
+```
+
+### Capa 1.5 — Bayesiano (Naive Bayes incremental)
+
+Clasificador que **aprende de cada feedback** (`confirm` → train(fase
+detectada), `deny` → train("seguro")) sin reentrenamiento batch. Usa
+n-gramas (1, 2, 3) como features con smoothing de Laplace y persiste
+en JSON atómico. Entrenado con **911 ejemplos** del bootstrap (836
+patrones del dataset + 75 frases inocuas).
+
+**Distribución de clases:**
+- `seguro` (75) · `captacion` (264) · `enganche` (189) · `coercion` (222) · `explotacion` (161)
+
+**Score-comparison contra el structural verification suite (sin LLM):**
+- Heurístico solo: 16/20 (80%)
+- Heurístico + Bayesiano: **20/20 (100%)** ← rescata 4 falsos negativos
+
+```bash
+$ curl -X POST http://159.223.187.6/bayesian/predict \
+       -H "Content-Type: application/json" \
+       -d '{"text":"me obligaron a llevar algo al punto"}'
+{
+  "predicted_class": "explotacion",
+  "confidence": 0.932,
+  "probabilities": {"seguro":0.015, "captacion":0.046, "enganche":0.001, "coercion":0.006, "explotacion":0.932},
+  "risk_score": 0.858,
+  "insufficient_data": false
+}
 ```
 
 ```bash
@@ -335,18 +372,31 @@ Disponibles en cualquier estado del FSM (slash opcional):
 
 ---
 
+## Mejoras estructurales recientes (Apr 25, 2026)
+
+Cinco capas de mejora aplicadas tras testing en vivo de Marco + audits:
+
+1. **CAPA A — LLM activación extendida**: la Capa 2 ya no espera solo la zona gris (0.3-0.6). Activa en 3 condiciones: zona gris clásica, score=0 con texto >30 chars, o score<0.3 con keywords de dinero/trabajo/amenaza/sextorsión. Cuando el heurístico da 0 y el LLM activa, el LLM tiene 100% del peso (ya no se promedia con 0).
+2. **CAPA B — +102 patrones perspectiva-víctima**: el dataset pasó de 643 → 870 patrones. Cubre `me ofrecieron`, `me pidieron`, `me amenazaron`, `me obligaron`, etc. — la forma en que las víctimas REPORTAN, no solo cómo el agresor habla.
+3. **CAPA C — Normalización avanzada del texto**: chat MX (x→por, q→que, pa→para, toy→estoy), números escritos (quince mil → 15000), formato dinero ($15,000 → $15000, "15 mil" → "15000"), typos (ofresieron → ofrecieron).
+4. **CAPA G — Boost contextual**: 1.30× cuando hay 3+ categorías distintas, 1.50× cuando hay danger combos (`{oferta_economica, perfilamiento}`, `{amenaza, orden_directa}`, `{sextorsion_recibida, sextorsion_chantaje}`).
+5. **CAPA 1.5 — Naive Bayes**: nueva capa que aprende de cada feedback. 911 docs entrenados, vocab 5701. Mejoró el structural verification suite de **80% → 100%** sin necesidad de LLM.
+
+Hardening de producción: Baileys exp backoff + listener cleanup + SIGTERM, SQLite WAL retry on lock, webhook retry budget (3× backoff), Nginx security headers + per-IP rate limit, bot per-JID rate limit (5 alerts/60s), session TTL eviction (drop idle >7d), MIME normalization para `audio/ogg; codecs=opus` y `image/jpeg;charset=binary`.
+
 ## Limitaciones conocidas
 
 Nahual es un MVP de hackathon. Lo enviamos con una lectura honesta de lo que **no** hace todavía:
 
 1. **No reemplaza a un profesional.** Nahual orienta, no diagnostica. PELIGRO siempre debe escalarse a Policía Cibernética 088, SIPINNA o un adulto de confianza. El bot lo dice explícitamente en cada mensaje crítico.
-2. **Cobertura idiomática limitada.** El dataset (768 patrones, 433 de alta confianza) está calibrado para español mexicano informal. Variantes regionales y otros países hispanohablantes tienen menor recall hasta enriquecer el dataset.
+2. **Cobertura idiomática limitada.** El dataset (870 patrones, 460 de alta confianza) está calibrado para español mexicano informal. Variantes regionales (norteño, sureste, Bajío) y otros países hispanohablantes tienen menor recall hasta enriquecer el dataset.
 3. **Texto > multimedia.** STT (Whisper-large-v3 vía Groq) y OCR (Claude Sonnet 4.5 Vision) están integrados con confirmación explícita del usuario. Audios muy ruidosos o capturas borrosas pueden fallar.
 4. **Sin detección de deepfakes ni perfiles falsos.** Solo analizamos texto recibido. Verificación de identidad del emisor no es parte del pipeline.
-5. **Falsos positivos posibles.** El panel permite marcar "descartar" y eso retro-alimenta al auto-tuner. La extensión usa whitelist + scope al chat container para evitar matches en UI/catálogo.
-6. **Falsos negativos posibles.** Lenguaje codificado nuevo puede pasar inadvertido hasta que un operador lo reporte vía `/feedback`. La capa LLM mitiga esto en zona gris (0.3–0.6).
+5. **Falsos positivos posibles.** El panel permite marcar "descartar" y eso retro-alimenta al auto-tuner + Bayesiano. La extensión usa whitelist + scope al chat container para evitar matches en UI/catálogo.
+6. **Falsos negativos posibles.** Lenguaje codificado nuevo puede pasar inadvertido hasta que un operador lo reporte vía `/feedback`. La capa Bayesiana + la LLM mitigan esto.
 7. **Privacy-first, telemetría limitada.** No almacenamos mensajes originales, solo SHA-256 + resumen anonimizado. NO podemos auditar retroactivamente el texto que disparó una alerta — solo los pattern_ids que matchearon.
 8. **HTTPS pendiente.** Producción usa HTTP por IP mientras se configura DNS. HSTS preparado en Nginx, listo para `certbot --nginx` cuando los subdominios apunten al droplet.
+9. **Bayesiano en bootstrap inicial.** El modelo se inicializa con 911 ejemplos (836 patrones + 75 frases seguras). Su precisión real se solidifica con feedback de usuarios reales — los primeros +30 testers de Marco son la primera ronda de tuning.
 
 Si encuentras un caso donde Nahual falla, abre un issue con el texto literal (sin PII de la víctima) y lo agregamos al dataset.
 
