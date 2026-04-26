@@ -5,6 +5,7 @@ import { FlowSection } from "@/components/sections/flow-section";
 import { FooterSection } from "@/components/sections/footer-section";
 import { HeroSection } from "@/components/sections/hero-section";
 import { ImpactSourcesSection } from "@/components/sections/impact-sources-section";
+import { LiveDemoSection } from "@/components/sections/live-demo-section";
 import { OutputsSection } from "@/components/sections/outputs-section";
 import { ProblemSection } from "@/components/sections/problem-section";
 import { RoadmapTeamSection } from "@/components/sections/roadmap-team-section";
@@ -15,6 +16,7 @@ export default function HomePage() {
   return (
     <main className="site-shell">
       <HeroSection />
+      <LiveDemoSection />
       <ProblemSection />
       <SolutionSection />
       <ValidationSection />

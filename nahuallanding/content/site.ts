@@ -157,7 +157,7 @@ export const site = {
       title: "Bot WhatsApp",
       subtitle: "Canal reactivo",
       detail:
-        "Recibe mensajes sospechosos, clasifica riesgo, responde en lenguaje claro y permite escalar a un adulto o generar evidencia.",
+        "Recibe mensajes sospechosos, clasifica riesgo, responde en lenguaje claro y permite escalar a un adulto o generar evidencia. Live en +52 844 538 7404.",
       x: 28,
       y: 52,
       w: 160,
@@ -168,7 +168,7 @@ export const site = {
       title: "Backend FastAPI",
       subtitle: "Orquestación",
       detail:
-        "Normaliza entradas, corre el clasificador, registra eventos y coordina generación de reportes y panel.",
+        "Normaliza entradas, corre 4 capas cognitivas, registra eventos y coordina generación de reportes y panel.",
       x: 258,
       y: 48,
       w: 176,
@@ -179,7 +179,7 @@ export const site = {
       title: "Nahual Shield",
       subtitle: "Modo proactivo",
       detail:
-        "Observa texto visible en navegador y permite reportar hallazgos al bot sin sacar al usuario del flujo.",
+        "Observa texto visible en WA Web / IG / Discord / Roblox. URL allowlist + whitelist + scope al chat container para evitar falsos positivos.",
       x: 510,
       y: 52,
       w: 170,
@@ -188,9 +188,9 @@ export const site = {
     {
       id: "classifier",
       title: "Clasificador",
-      subtitle: "Heurístico + IA",
+      subtitle: "4 capas cognitivas",
       detail:
-        "Combina patrones ponderados por fase con revisión de lenguaje sensible y reglas de override para riesgo crítico.",
+        "Heurístico → Bayesiano → LLM → Trayectoria. Cada capa aporta señal independiente con merge ponderado y override en alto riesgo.",
       x: 288,
       y: 170,
       w: 116,
@@ -199,21 +199,43 @@ export const site = {
     {
       id: "heuristic",
       title: "Heurístico",
-      subtitle: "122 patrones",
+      subtitle: "900 patrones",
       detail:
-        "Expresiones, símbolos, promesas, coerción y explotación mapeados a las cuatro fases del ciclo.",
-      x: 186,
+        "Regex + categorías ponderadas por fase. Normalización avanzada (chat MX, dígitos escritos, typos). 487 patrones de alta confianza.",
+      x: 76,
+      y: 274,
+      w: 128,
+      h: 52
+    },
+    {
+      id: "bayesian",
+      title: "Bayesiano",
+      subtitle: "Capa 1.5 · 1031 docs",
+      detail:
+        "Naive Bayes con n-gramas (1,2,3) que aprende de cada feedback. Aporta señal complementaria sin reemplazar al heurístico.",
+      x: 220,
       y: 274,
       w: 128,
       h: 52
     },
     {
       id: "claude",
-      title: "Modelo IA",
+      title: "Sonnet 4.5",
       subtitle: "Análisis contextual",
       detail:
-        "Segunda lectura contextual para matizar el score, resumir el caso y explicar hallazgos en lenguaje entendible.",
-      x: 380,
+        "Activa en zona gris (0.3-0.6), score=0+keywords o texto>30 chars. Razonamiento en lenguaje natural sobre contexto sutil.",
+      x: 364,
+      y: 274,
+      w: 128,
+      h: 52
+    },
+    {
+      id: "trajectory",
+      title: "Trayectoria",
+      subtitle: "EscalationDetector",
+      detail:
+        "Rastrea evolución de riesgo entre mensajes de una misma sesión. Override automático cuando el riesgo escala rápido o cambia de fase.",
+      x: 508,
       y: 274,
       w: 128,
       h: 52
@@ -223,7 +245,7 @@ export const site = {
       title: "SQLite",
       subtitle: "Persistencia",
       detail:
-        "Almacena eventos, scores, historiales de alerta, bitácoras y evidencia mínima necesaria para auditoría.",
+        "WAL + retry on lock + atomic writes. Solo SHA-256 + resumen anonimizado — nunca el texto original.",
       x: 112,
       y: 396,
       w: 114,
@@ -231,10 +253,10 @@ export const site = {
     },
     {
       id: "pdf",
-      title: "PDF",
+      title: "PDF Forense",
       subtitle: "Cadena de evidencia",
       detail:
-        "Arma un reporte exportable con metadatos, análisis, resumen legal y contactos institucionales.",
+        "Reporte oficial con folio NAH-2026-XXXX, marco legal mexicano (LGDNNA, CPF 209 Sextus, Ley Olimpia), autoridades y derechos.",
       x: 290,
       y: 396,
       w: 108,
@@ -243,9 +265,9 @@ export const site = {
     {
       id: "panel",
       title: "Panel Web",
-      subtitle: "Monitoreo",
+      subtitle: "Live · 159.223.187.6",
       detail:
-        "Vista de alertas para familias o instituciones con prioridad, trazabilidad y exportación de incidentes.",
+        "Dashboard con auto-refresh, manual analyze textbox, deep healthcheck, PELIGRO toast, alertas filtrables, exportación CSV.",
       x: 468,
       y: 396,
       w: 118,
@@ -257,24 +279,31 @@ export const site = {
     { from: "extension", to: "backend" },
     { from: "backend", to: "classifier" },
     { from: "classifier", to: "heuristic" },
+    { from: "classifier", to: "bayesian" },
     { from: "classifier", to: "claude" },
+    { from: "classifier", to: "trajectory" },
     { from: "heuristic", to: "sqlite" },
     { from: "claude", to: "pdf" },
+    { from: "trajectory", to: "panel" },
     { from: "backend", to: "panel" }
   ] satisfies ArchitectureEdge[],
   techStack: [
-    "Next.js",
+    "Next.js 14",
     "TypeScript",
     "Tailwind CSS",
     "Framer Motion",
-    "Node.js",
-    "Baileys",
-    "Python",
+    "Node.js 20",
+    "Baileys 6.7",
+    "Python 3.12",
     "FastAPI",
-    "SQLite",
+    "SQLite + WAL",
     "ReportLab",
-    "Extensión Chrome",
-    "Claude API"
+    "Manifest V3",
+    "Claude Sonnet 4.5",
+    "Naive Bayes",
+    "Whisper-large-v3",
+    "Nginx",
+    "DigitalOcean"
   ],
   classifierPhases: [
     {
@@ -282,27 +311,39 @@ export const site = {
       title: "CAPTACIÓN",
       accent: "var(--green)",
       weight: "15%",
-      summary: "Ofertas falsas, narcocultura y glorificación criminal para abrir la puerta.",
-      patterns: ["Yo quiero jale", "$15,000 semanales", "te pago el viaje"],
-      source: "SVP Colmex · El País · Swissinfo"
+      summary: "Ofertas falsas, narcocultura, glorificación criminal y víctimas reportando \"me ofrecieron…\".",
+      patterns: [
+        "te pago $15,000 semanales",
+        "me ofrecieron jale en TikTok",
+        "se solicita gente para la mana",
+      ],
+      source: "Colmex · Infobae · Proceso · 299 patrones"
     },
     {
       id: "enganche",
       title: "ENGANCHE",
       accent: "var(--yellow)",
       weight: "25%",
-      summary: "Extracción de datos, migración de canal y confianza artificial.",
-      patterns: ["dónde vives", "pásate a Telegram", "no le digas a nadie"],
-      source: "SVP Colmex · evidencia de campo Nahual"
+      summary: "Extracción de datos, cambio de canal, secrecía y confianza artificial — desde aggresor y víctima.",
+      patterns: [
+        "pásate a Telegram, no le digas",
+        "me pidieron mi ubicación",
+        "vamos a Snapchat que se borra",
+      ],
+      source: "Colmex · evidencia de campo · 192 patrones"
     },
     {
       id: "coercion",
       title: "COERCIÓN",
       accent: "var(--cobre-light)",
       weight: "35%",
-      summary: "Amenazas, ultimátums y control conductual.",
-      patterns: ["ya sabes demasiado", "te vamos a buscar", "si intentas escapar…"],
-      source: "FBI · reportes de sobrevivientes",
+      summary: "Amenazas directas + recibidas (\"me van a matar\"), distress, vigilancia, stalking.",
+      patterns: [
+        "te voy a matar",
+        "me amenazaron de muerte",
+        "saben dónde vivo",
+      ],
+      source: "FBI · sobrevivientes · 236 patrones",
       badge: "OVERRIDE: score ≥ 0.80 → peligro inminente"
     },
     {
@@ -310,9 +351,13 @@ export const site = {
       title: "EXPLOTACIÓN",
       accent: "var(--red)",
       weight: "25%",
-      summary: "Actividades ilícitas, sextorsión o demanda financiera.",
-      patterns: ["ve al punto", "deposita $500", "manda fotos"],
-      source: "FBI · Ley Olimpia · patrones de sextorsión",
+      summary: "Sextorsión (agresor + víctima), órdenes operativas narco, deepfakes CSAM, demanda financiera.",
+      patterns: [
+        "manda fotos o las publico",
+        "me forzaron a vender",
+        "tienes que levantar a alguien",
+      ],
+      source: "FBI · Ley Olimpia · CSAM · 173 patrones",
       badge: "OVERRIDE: score ≥ 0.80 → peligro inminente"
     }
   ] satisfies PhaseCard[],
@@ -404,28 +449,28 @@ export const site = {
   ],
   impactStats: [
     {
-      value: 122,
+      value: 900,
       suffix: "",
       label: "patrones de detección en el clasificador",
-      detail: "Mapa inicial de señales lingüísticas y contextuales"
+      detail: "487 de alta confianza · 4 fases · victim + aggressor perspectives"
+    },
+    {
+      value: 99.6,
+      suffix: "%",
+      label: "precisión en suite de validación de 240 frases",
+      detail: "0 falsos negativos · 1 falso positivo · sin LLM · 4 iteraciones"
     },
     {
       value: 4,
       suffix: "",
-      label: "fases del ciclo de reclutamiento",
-      detail: "Captación, enganche, coerción y explotación"
-    },
-    {
-      value: 100,
-      suffix: "",
-      label: "cuentas analizadas por el estudio de Colmex",
-      detail: "Muestra documentada en TikTok"
+      label: "capas cognitivas independientes",
+      detail: "Heurístico · Naive Bayes (1031 docs) · Sonnet 4.5 · Trayectoria"
     },
     {
       value: 250,
       suffix: "k",
       label: "NNA en el extremo alto del rango de riesgo",
-      detail: "Estimación ONC + REDIM"
+      detail: "Estimación ONC + REDIM en México"
     }
   ] satisfies MetricCard[],
   institutionBadges: [
@@ -468,28 +513,42 @@ export const site = {
   ] satisfies SourceLink[],
   advancedFeatures: [
     {
+      id: "bayesian",
+      title: "Capa Bayesiana que aprende del feedback",
+      icon: "activity",
+      description: "Naive Bayes con n-gramas (1, 2, 3) entrenado con 1031 ejemplos. Cada vez que un usuario confirma o niega una alerta, el modelo se re-entrena automáticamente — sin reentrenamiento batch ni GPU. Vocabulario de 6104 features, 5 clases balanceadas. Aporta el 20% del score final junto con el heurístico (50%) y el LLM (30%)."
+    },
+    {
       id: "privacy",
       title: "Data Anónima by Design",
       icon: "shield",
-      description: "Construido bajo el Art. 16 de la Constitución. El analizador procesa los bytes de imágenes y audios extrayendo el texto y descartando el archivo original. Únicamente se almacena el Hash SHA-256 de los mensajes junto con telemetría no rastreable, bloqueando PII mediante validación estricta."
+      description: "Construido bajo el Art. 16 de la Constitución. Nunca se almacena el texto original — solo el hash SHA-256 + un resumen anonimizado + los pattern_ids que matchearon. Cumplimiento LFPDPPP (datos personales) y LGDNNA (derechos de menores). Validación Pydantic con extra=\"forbid\" en cada endpoint."
     },
     {
       id: "multimedia",
-      title: "Procesamiento OCR & Audio Extendido",
+      title: "OCR + STT con confirmación explícita",
       icon: "mic",
-      description: "El reclutamiento raramente ocurre en texto plano. Nahual incluye un pipeline para extraer intenciones ocultas de notas de voz (Groq Whisper) y capturas de pantalla de Roblox o Instagram (Claude Vision), interpretando el engaño incluso en imágenes."
+      description: "Pipeline para audios (Groq Whisper-large-v3) y capturas (Anthropic Claude Vision). El usuario debe confirmar el texto extraído antes del análisis — los bytes originales se descartan al instante. MIME normalization para formatos WhatsApp (audio/ogg; codecs=opus, image/jpeg;charset=binary)."
     },
     {
       id: "trayectory",
-      title: "Trayectory Override & Memoria",
+      title: "Trayectory Override & Memoria de Sesión",
       icon: "activity",
-      description: "El abuso criminal es progresivo. El EscalationDetector rastrea la velocidad y desviación del riesgo a través del ciclo de vida de una sesión. Si el perpetrador transita gradualmente de \"captación\" a \"enganche\", el sistema detona preventivamente un Peligro por trayectoria."
+      description: "El abuso criminal es progresivo. El EscalationDetector rastrea velocidad de cambio + desviación + progresión de fase a través del ciclo de vida de una sesión. Si el perpetrador transita ATENCIÓN → ATENCIÓN → ATENCIÓN con velocity ≥ 0.20, dispara un PELIGRO por trayectoria antes de que llegue a override estático."
     },
     {
       id: "legal",
       title: "Trazabilidad Forense Automática",
       icon: "scale",
-      description: "No solo predice riesgo; lo mapea. Las heurísticas referencian en tiempo real la Ley Olimpia, la LGDNNA y las reformas pendientes al Código Penal Federal (Art. 201), compilando un reporte PDF validado para abrir carpeta directa en Policía Cibernética."
+      description: "No solo predice riesgo; lo mapea legalmente. Cada fase referencia los artículos aplicables: LGDNNA (Art. 47, 101 Bis 2), CPF Art. 209 Sextus (propuesto), Ley Olimpia, LGAMVLV 20 Quáter, LGPSEDMTP 10. Compila un reporte PDF con folio NAH-2026-XXXX listo para abrir carpeta en Policía Cibernética 088."
     }
-  ] satisfies AdvancedFeature[]
+  ] satisfies AdvancedFeature[],
+  liveDemo: {
+    panelUrl: "http://159.223.187.6/",
+    swaggerUrl: "http://159.223.187.6/docs",
+    botPhone: "+52 844 538 7404",
+    botPhoneIntl: "5218445387404",
+    waLink: "https://wa.me/5218445387404?text=Hola%20Nahual",
+    note: "Sistema en producción 24/7. Mánda \"hola\" al número del bot para probar el flujo completo."
+  }
 };

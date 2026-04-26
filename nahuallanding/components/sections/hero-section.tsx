@@ -42,10 +42,19 @@ export function HeroSection() {
             <Reveal delay={0.3}>
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <a
-                  href="#problema"
+                  href={site.liveDemo.waLink}
+                  target="_blank"
+                  rel="noreferrer"
                   className="inline-flex items-center justify-center gap-2 rounded-full border border-[rgba(193,106,76,0.26)] bg-cobre px-6 py-3 text-sm font-semibold text-white transition hover:bg-cobre-light"
                 >
-                  Conoce el sistema
+                  Probar el bot en WhatsApp
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+                <a
+                  href="#live"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[rgba(245,240,235,0.12)] bg-[rgba(245,240,235,0.04)] px-6 py-3 text-sm font-semibold text-cream transition hover:border-[rgba(193,106,76,0.28)] hover:text-cobre-light"
+                >
+                  Sistema en producción
                   <ArrowDown className="h-4 w-4" />
                 </a>
                 <a
