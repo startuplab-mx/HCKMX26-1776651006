@@ -7,8 +7,8 @@ export function FlowSection() {
     <SectionShell
       id="flujo"
       eyebrow="Flujo conversacional"
-      title="El bot responde como sistema de triage, no como chatbot genérico."
-      copy="El flujo busca tres cosas: reconocer riesgo, explicar por qué lo ve y activar la siguiente acción con el menor nivel de fricción posible."
+      title="Sistema de triage, no chatbot genérico."
+      copy="El bot reconoce 13+ comandos universales (menu, ayuda, privacidad, estado, reset, reporte) que funcionan en cualquier estado. Distingue cierres conversacionales (gracias, ok, bye, no) de mensajes a analizar. Detecta distress (tengo miedo, necesito ayuda) y responde con empatía + Línea de la Vida 800-911-2000 antes de pedir el contenido sospechoso."
     >
       <Reveal>
         <FlowDiagram />
